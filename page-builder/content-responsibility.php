@@ -1,4 +1,4 @@
-<section class="home-mod-cta bg-blue-900 mt-[50px] sm:mt-[100px]">
+<section class="_home-mod-cta bg-blue-900">
     <div class="container px-3 sm:px-0">
         <div
             class="flex flex-wrap justify-center content-center sm:h-[490px] bg-[url('<?php echo get_template_directory_uri() ?>/assets/images/home-bubbles-bg-01.png')] bg-no-repeat bg-center py-[50px] sm:py-0">

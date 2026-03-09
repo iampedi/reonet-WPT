@@ -1,0 +1,11 @@
+{
+  "tailwindCSS.experimental.configFile": "./tailwind.config.js",
+  "tailwindCSS.includeLanguages": { "php": "html" },
+  "editor.quickSuggestions": { "strings": true },
+  "tailwindCSS.experimental.classRegex": [
+    ["class\\s*=\\s*\"([^\"]*)\"", 1],
+    ["class\\s*=\\s*'([^']*)'", 1],
+    ["body_class\\(\\s*'([^']*)'\\s*\\)", 1],
+    ["body_class\\(\\s*\"([^\"]*)\"\\s*\\)", 1]
+  ]
+}

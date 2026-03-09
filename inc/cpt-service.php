@@ -6,6 +6,8 @@
  * - Per-language slugs via WPML:
  *   EN => /services/
  *   FI => /palvelut/
+ * - Hierarchical URLs:
+ *   /{base}/{parent}/{child}/ (e.g., /palvelut/mattopesu/vantaa/)
  */
 
 if (!defined('ABSPATH')) {
@@ -17,7 +19,6 @@ if (!defined('ABSPATH')) {
  */
 function reonet_register_service_cpt()
 {
-    // UI labels used in the WordPress admin
     $labels = array(
         'name'                  => _x('Services', 'Post Type General Name', 'textdomain'),
         'singular_name'         => _x('Service', 'Post Type Singular Name', 'textdomain'),
@@ -41,21 +42,20 @@ function reonet_register_service_cpt()
         'use_featured_image'    => __('Use as featured image', 'textdomain'),
     );
 
-    // Core registration arguments for the post type
     $args = array(
         'label'               => __('Services', 'textdomain'),
         'description'         => __('Services', 'textdomain'),
         'labels'              => $labels,
 
-        // Editor/UI features enabled for this post type
-        // NOTE: Do not use "tags" here; tags/categories are enabled via "taxonomies"
-        'supports'            => array('title', 'editor', 'thumbnail', 'excerpt'),
+        // Enable parent/child structure like Pages
+        'hierarchical'        => true,
 
-        // Enable built-in taxonomies (optional)
-        // Remove 'category' or 'post_tag' if you don't want them for Services
+        // Add "page-attributes" so you can set Parent and Order in admin
+        'supports'            => array('title', 'editor', 'thumbnail', 'excerpt', 'page-attributes'),
+
+        // Optional: enable built-in taxonomies
         'taxonomies'          => array('category', 'post_tag'),
 
-        'hierarchical'        => false,
         'public'              => true,
         'show_ui'             => true,
         'show_in_menu'        => true,
@@ -68,13 +68,14 @@ function reonet_register_service_cpt()
         'exclude_from_search' => false,
         'publicly_queryable'  => true,
 
-        // Enable an archive page; the actual archive slug will be overridden per language
+        // Enable an archive page; archive slug will be overridden per language
         'has_archive'         => true,
 
-        // Default rewrite slug (will be overridden per language via WPML filter below)
+        // Default rewrite slug (overridden per language via WPML filter below)
         'rewrite'             => array(
-            'slug'       => 'services',
-            'with_front' => false,
+            'slug'         => 'services',
+            'with_front'   => false,
+            'hierarchical' => true,
         ),
 
         // Enable Gutenberg / REST API support
@@ -83,16 +84,14 @@ function reonet_register_service_cpt()
 
     register_post_type('service', $args);
 }
-add_action('init', 'reonet_register_service_cpt', 0);
+
+// Use a slightly later priority so WPML language is more likely available
+add_action('init', 'reonet_register_service_cpt', 20);
 
 /**
  * WPML: Override the CPT slug and archive slug per language.
- * This makes URLs like:
- * - English: /services/ and /services/{post-slug}/
- * - Finnish: /palvelut/ and /palvelut/{post-slug}/
  */
 add_filter('register_post_type_args', function ($args, $post_type) {
-    // Only target the "service" post type
     if ($post_type !== 'service') {
         return $args;
     }
@@ -102,22 +101,23 @@ add_filter('register_post_type_args', function ($args, $post_type) {
         return $args;
     }
 
-    // Read the current WPML language code (e.g., "en", "fi")
     $lang = apply_filters('wpml_current_language', null);
 
-    // Define per-language slugs here
+    // Map language code => slug
     $slugs = array(
-        'en' => 'services',
-        'fi' => 'palvelut',
+        'en'    => 'services',
+        'en-US' => 'services',
+        'fi'    => 'palvelut',
+        'fi-FI' => 'palvelut',
     );
 
-    // Fallback to English slug if language is not mapped
     $slug = isset($slugs[$lang]) ? $slugs[$lang] : 'services';
 
     // Override rewrite rules for the CPT
     $args['rewrite'] = array_merge($args['rewrite'] ?? array(), array(
-        'slug'       => $slug,
-        'with_front' => false,
+        'slug'         => $slug,
+        'with_front'   => false,
+        'hierarchical' => true,
     ));
 
     // Make the archive page use the same slug as the CPT base
@@ -128,7 +128,7 @@ add_filter('register_post_type_args', function ($args, $post_type) {
 
 /**
  * IMPORTANT:
- * After adding or changing rewrite/slug settings, go to:
- * Settings -> Permalinks -> Save Changes
- * to flush rewrite rules.
+ * After adding/changing rewrite/slug settings:
+ * WordPress Admin -> Settings -> Permalinks -> Save Changes
+ * (This flushes rewrite rules.)
  */

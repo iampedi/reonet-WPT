@@ -33,29 +33,40 @@ j(document).ready(function () {
     }
   });
 
-  // بقیه کدها همون قبلی
-  if (window.innerWidth > 768) {
-    const button = document.querySelector(".to-top");
-    const displayButton = () => {
-      window.addEventListener("scroll", () => {
-        if (window.scrollY > 300) {
-          button.style.display = "block";
-        } else {
-          button.style.display = "none";
-        }
-      });
+  // To Top Script
+  const button = document.querySelector(".to-top");
+
+  if (button) {
+    const updateButton = () => {
+      const scrollTop = window.scrollY;
+      const windowHeight = window.innerHeight;
+      const docHeight = document.documentElement.scrollHeight;
+      const distanceToBottom = docHeight - (scrollTop + windowHeight);
+
+      // نمایش دکمه
+      button.style.display = scrollTop > 800 ? "block" : "none";
+
+      // تشخیص توقف
+      const stopAt = window.innerWidth <= 768 ? 215 : 515;
+
+      if (distanceToBottom <= stopAt) {
+        button.classList.add("stop");
+      } else {
+        button.classList.remove("stop");
+      }
     };
-    const scrollToTop = () => {
-      button.addEventListener("click", () => {
-        window.scroll({
-          top: 0,
-          left: 0,
-          behavior: "smooth",
-        });
+
+    window.addEventListener("scroll", updateButton);
+    window.addEventListener("resize", updateButton);
+
+    button.addEventListener("click", () => {
+      window.scroll({
+        top: 0,
+        behavior: "smooth",
       });
-    };
-    displayButton();
-    scrollToTop();
+    });
+
+    updateButton();
   }
 
   // Menu Item Active
