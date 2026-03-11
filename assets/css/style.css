@@ -351,7 +351,6 @@
 }
 
 .owl-theme .owl-nav {
-  margin-top: 10px;
   text-align: center;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
@@ -401,27 +400,6 @@
 .owl-theme .owl-dots .owl-dot.active span,
 .owl-theme .owl-dots .owl-dot:hover span {
   background: #869791;
-}
-
-.btn {
-  border: 3px solid;
-  font-weight: 500;
-  padding: 0 35px;
-  height: 60px;
-  font-size: 22px;
-  border-radius: 100px;
-  transition: all 0.3s;
-}
-
-.btn-green {
-  border-color: #5bd075;
-  color: #5bd075;
-}
-
-.btn-green:hover {
-  border-color: #268b32;
-  background-color: #396;
-  color: #fff;
 }
 
 .services-card {

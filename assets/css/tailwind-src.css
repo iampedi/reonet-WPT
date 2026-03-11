@@ -3,6 +3,7 @@
 @theme inline {
   --color-primary: var(--primary);
   --color-secondary: var(--secondary);
+  --color-green: var(--green);
   --color-muted-forground: var(--muted-forground);
   --color-border: var(--border);
 }
@@ -10,10 +11,19 @@
 :root {
   --primary: oklch(0.355 0.0868 255.5);
   --secondary: oklch(0.7684 0.1665 148.47);
+  --green: oklch(0.6346 0.1387 148.7);
   --muted-forground: oklch(55.1% 0.027 264.364);
   --border: oklch(92.9% 0.013 255.508);
 }
 
 .container {
   @apply max-w-6xl px-4 mx-auto;
+}
+
+.btn {
+  @apply font-medium px-9 h-14 text-xl rounded-full duration-300 flex items-center justify-center;
+}
+
+.btn-secondary {
+  @apply bg-green text-white;
 }

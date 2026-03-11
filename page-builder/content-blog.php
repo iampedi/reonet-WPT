@@ -6,7 +6,7 @@ $blog_url = $current_lang === 'fi'
     : home_url('/en/blog/');
 ?>
 
-<section class="_home-mod-blog py-10 sm:py-12">
+<section class="_home-mod-blog py-8">
     <div class="container">
         <div class="mb-4 sm:mb-5 flex items-center justify-between">
             <h2 class="text-[26px] font-medium text-primary"><?php the_sub_field('title'); ?></h2>
