@@ -200,8 +200,8 @@
 
 .owl-carousel .owl-nav button.owl-prev,
 .owl-carousel .owl-nav button.owl-next {
-  width: 48px;
-  height: 48px;
+  width: 44px;
+  height: 44px;
   margin: 0;
 }
 
@@ -589,31 +589,6 @@
   }
 }
 
-.navbar .fi-menu {
-  display: flex;
-  align-items: center;
-}
-
-.navbar .fi-menu li.item {
-  padding-right: 1.5rem;
-  font-size: 16px;
-  font-weight: 500;
-  text-transform: uppercase;
-}
-
-.navbar .fi-menu li.item:last-child {
-  padding-right: 0;
-}
-
-.navbar .fi-menu li.item a {
-  color: #000;
-}
-
-.navbar .fi-menu li.item a:hover,
-.navbar .fi-menu li.item a.active {
-  color: #268b32;
-}
-
 .arrow-list li span {
   color: #777;
   padding-left: 35px;
@@ -777,27 +752,6 @@ textarea:focus {
 input {
   height: 50px;
   padding: 5px;
-}
-
-.mobile-menu {
-  padding: 20px 25px;
-  border-radius: 20px;
-}
-
-.mobile-menu .fi-menu li.item {
-  font-size: 17px;
-  font-weight: 500;
-  text-transform: uppercase;
-}
-
-.mobile-menu .fi-menu li.item a {
-  color: #000;
-  line-height: 34px;
-}
-
-.mobile-menu .fi-menu li.item a:hover,
-.mobile-menu .fi-menu li.item a.active {
-  color: #268b32;
 }
 
 .home-mod-cta {

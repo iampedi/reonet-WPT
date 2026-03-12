@@ -27,3 +27,27 @@
 .btn-secondary {
   @apply bg-green text-white;
 }
+
+.navbar .fi-menu {
+  @apply flex items-center;
+}
+
+.navbar .fi-menu li.item a {
+  @apply text-base uppercase rounded-full font-medium px-4 h-9 flex items-center hover:text-green;
+}
+
+.navbar .fi-menu li.item a[aria-current="page"] {
+  @apply text-white bg-green font-normal;
+}
+
+.mobile-menu .fi-menu-mobile li.item a {
+  @apply text-primary uppercase font-medium h-10 flex items-center hover:text-green border-b border-primary/20 border-dashed justify-center;
+}
+
+.mobile-menu .fi-menu-mobile li.item:last-child a {
+  @apply border-b-0;
+}
+
+.mobile-menu .fi-menu-mobile li.item a[aria-current="page"] {
+  @apply text-white bg-green font-normal;
+}

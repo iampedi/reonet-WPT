@@ -9,21 +9,21 @@ j(document).ready(function () {
       dots: false,
       nav: true,
       items: 1,
-      autoplay: false,
+      autoplay: true,
       autoplayHoverPause: false,
     });
 
     j(".next-btn").on("click", function () {
       owl.trigger("next.owl.carousel");
-      owl.trigger("stop.owl.autoplay");
+      // owl.trigger("stop.owl.autoplay");
     });
 
     j(".prev-btn").on("click", function () {
       owl.trigger("prev.owl.carousel");
-      owl.trigger("stop.owl.autoplay");
+      // owl.trigger("stop.owl.autoplay");
     });
 
-    owl.trigger("stop.owl.autoplay");
+    // owl.trigger("stop.owl.autoplay");
   }
 
   // To Top Script
@@ -59,15 +59,6 @@ j(document).ready(function () {
 
     updateButton();
   }
-
-  // Menu Item Active
-  const cUrl = window.location.href;
-  j(".fi-menu li a").each(function () {
-    const targetUrl = j(this).attr("href");
-    if (targetUrl && cUrl.indexOf(targetUrl) !== -1) {
-      j(this).addClass("active");
-    }
-  });
 
   // AJAX Contact Form
   j("#ct-form").on("submit", function (e) {

@@ -5,7 +5,9 @@ if (!defined('ABSPATH')) {
 
 // Theme support + image sizes
 add_action('after_setup_theme', function () {
+    add_theme_support('title-tag');
     add_theme_support('post-thumbnails');
+
     add_image_size('blog', 612, 416, true);
     add_image_size('service', 300, 240, true);
     add_image_size('service-first', 320, 340, true);
