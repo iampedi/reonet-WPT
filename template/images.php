@@ -1,6 +1,6 @@
 <?php
 /*
-Template Name: Upload Images Page
+Template Name: Upload Images
 */
 ?>
 

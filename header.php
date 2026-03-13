@@ -5,13 +5,13 @@ if (!defined('ABSPATH')) exit;
 <html <?php language_attributes(); ?>>
 
 <head>
-    <meta charset="<?php bloginfo('charset'); ?>">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <?php wp_head(); ?>
+  <meta charset="<?php bloginfo('charset'); ?>">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <?php wp_head(); ?>
 </head>
 
 <body <?php body_class('font-jost'); ?>>
-    <?php wp_body_open(); ?>
+  <?php wp_body_open(); ?>
 
-    <div class="page-wrap">
-        <?php get_template_part('template-parts/layout/header'); ?>
+  <div class="page-wrap">
+    <?php get_template_part('template-parts/layout/header'); ?>
