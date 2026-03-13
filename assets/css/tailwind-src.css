@@ -51,3 +51,23 @@
 .mobile-menu .fi-menu-mobile li.item a[aria-current="page"] {
   @apply text-white bg-green font-normal;
 }
+
+.blog-body h2 {
+  @apply text-2xl font-semibold mb-4;
+}
+
+.blog-body h3 {
+  @apply text-xl font-medium mt-6 mb-1;
+}
+
+.blog-body img {
+  @apply my-6 sm:my-10 mx-auto rounded-xl;
+}
+
+.blog-body p {
+  @apply text-lg mb-2 leading-snug;
+}
+
+.blog-body ul {
+  @apply mt-3 mb-6 pl-6 list-disc text-lg [&_strong]:font-medium [&_li]:leading-tight [&_li]:mb-2;
+}
