@@ -1,0 +1,234 @@
+@import "tailwindcss";
+@source "../../**/*.php";
+@source "./assets/src/**/*.{js,ts,jsx,tsx}";
+
+@theme inline {
+  --color-primary: var(--primary);
+  --color-secondary: var(--secondary);
+  --color-green: var(--green);
+  --color-muted-forground: var(--muted-forground);
+  --color-input-background: var(--input-background);
+  --color-border: var(--border);
+}
+
+:root {
+  --primary: oklch(0.355 0.0868 255.5);
+  --secondary: oklch(0.7684 0.1665 148.47);
+  --green: oklch(0.6346 0.1387 148.7);
+  --muted-forground: oklch(55.1% 0.027 264.364);
+  --input-background: oklch(96.7% 0.003 264.542);
+  --border: oklch(92.9% 0.013 255.508);
+}
+
+.container {
+  @apply max-w-6xl px-4 mx-auto;
+}
+
+.btn {
+  @apply font-medium px-9 h-14 text-xl rounded-full duration-300 flex items-center justify-center cursor-pointer;
+}
+
+.btn-md {
+  @apply px-6 h-12 text-lg font-normal gap-2 has-[i]:pr-2 [&_i]:text-lg;
+}
+
+.btn-sm {
+  @apply px-4 h-8 text-base font-normal gap-2 has-[i]:pr-2 [&_i]:text-lg;
+}
+
+.btn-primary {
+  @apply bg-primary text-white hover:bg-green duration-300;
+}
+
+.btn-primary.btn-ghost {
+  @apply sm:bg-transparent sm:text-primary sm:hover:text-white sm:group-hover:text-white sm:hover:bg-primary sm:group-hover:bg-primary;
+}
+
+.btn-secondary {
+  @apply bg-green text-white;
+}
+
+.navbar .main-menu {
+  @apply flex items-center;
+}
+
+.navbar .main-menu li.item a {
+  @apply text-base uppercase rounded-full font-medium px-4 h-9 flex items-center hover:text-green;
+}
+
+.navbar .main-menu li.item a[aria-current="page"] {
+  @apply text-white bg-green font-normal;
+}
+
+.mobile-menu .main-menu-mobile li.item a {
+  @apply text-primary uppercase font-medium h-10 flex items-center hover:text-green border-b border-primary/20 border-dashed justify-center;
+}
+
+.mobile-menu .main-menu-mobile li.item:last-child a {
+  @apply border-b-0;
+}
+
+.mobile-menu .main-menu-mobile li.item a[aria-current="page"] {
+  @apply text-white bg-green font-normal;
+}
+
+.mobile-menu .footer-menu-mobile li.item a {
+  @apply text-primary uppercase font-medium h-10 flex items-center hover:text-green border-b border-primary/20 border-dashed justify-center;
+}
+
+.mobile-menu .footer-menu-mobile li.item:last-child a {
+  @apply border-b-0;
+}
+
+.mobile-menu .footer-menu-mobile li.item a[aria-current="page"] {
+  @apply text-white bg-green font-normal;
+}
+
+/* Blog Page */
+.blog-body h2 {
+  @apply text-2xl font-semibold mb-4;
+}
+
+.blog-body h3 {
+  @apply text-xl font-medium mt-6 mb-1;
+}
+
+.blog-body img {
+  @apply my-6 sm:my-10 mx-auto rounded-xl;
+}
+
+.blog-body p {
+  @apply text-lg mb-2 leading-snug;
+}
+
+.blog-body ul {
+  @apply mt-3 mb-6 pl-6 list-disc text-lg [&_strong]:font-medium [&_li]:leading-tight [&_li]:mb-2;
+}
+
+/* Service Body */
+.service-body p {
+  @apply text-lg mb-3 leading-snug;
+}
+
+.service-body h3 {
+  @apply text-xl font-semibold mt-8 mb-2 text-primary;
+}
+
+.service-body strong {
+  @apply font-medium;
+}
+
+.service-body ul {
+  @apply mt-3 mb-6 px-6 list-disc text-lg [&_li]:leading-tight [&_li]:mb-3;
+}
+
+/* About Page */
+.page-wrap .content p {
+  @apply text-lg mb-3 leading-snug;
+}
+
+.page-wrap .content h3 {
+  @apply text-xl font-semibold mt-8 mb-2 text-primary;
+}
+
+.page-wrap .content strong {
+  @apply font-medium;
+}
+
+.page-wrap .content ul {
+  @apply mt-3 mb-6 px-6 list-disc text-lg [&_li]:leading-tight [&_li]:mb-3;
+}
+
+.page-wrap .content figure.is-type-video {
+  @apply my-8 last:mb-0;
+}
+
+.page-wrap .content figure.is-type-video .wp-block-embed__wrapper {
+  @apply w-full aspect-video;
+}
+
+.page-wrap .content figure.is-type-video .wp-block-embed__wrapper iframe {
+  @apply w-full h-full;
+}
+
+.services-card .group {
+  @apply relative w-full;
+}
+
+.home-page .pb-services {
+  @apply my-8 sm:mb-12;
+}
+
+.service-single .pb-services {
+  @apply my-6 sm:mb-12;
+}
+
+/* Woocommerce Styles */
+.price-fileds {
+  @apply space-y-3;
+}
+
+.price-per-unit {
+  @apply flex items-center gap-3 [&_.label]:font-semibold;
+}
+
+.price-per-unit .price-regular .woocommerce-Price-amount,
+.price-per-unit .price-onsale ins .woocommerce-Price-amount {
+  @apply text-green text-lg font-semibold;
+}
+
+.price-per-unit .price-onsale del .woocommerce-Price-amount,
+.price-per-unit del {
+  @apply text-rose-500;
+}
+
+.price-per-unit ins {
+  @apply no-underline;
+}
+
+.product-dimensions,
+.product-quantity {
+  @apply space-y-2;
+}
+
+.product-dimensions .dimensions-title {
+  @apply font-semibold;
+}
+
+.product-dimensions .dimensions-wrapper {
+  @apply flex items-center gap-4;
+}
+
+.product-dimensions .dimensions-wrapper .area-wrap {
+  @apply flex items-center gap-1.5;
+}
+
+.product-dimensions .dimensions-wrapper .area-wrap .area-value {
+  @apply text-lg font-medium;
+}
+
+.product-quantity .quantity-title {
+  @apply font-semibold;
+}
+
+.total-price {
+  @apply flex items-end gap-6;
+}
+
+.calculated-price-wrap {
+  @apply h-10 flex items-center gap-1.5;
+}
+
+.calculated-price-wrap .calculated-price {
+  @apply text-2xl font-semibold text-green;
+}
+
+/* Forms */
+input,
+textarea {
+  @apply bg-input-background h-10 px-2 border border-gray-300 rounded-lg focus-within:outline-1 outline-primary [[type="number"]]:w-20;
+}
+
+.horizontal-field {
+  @apply flex items-center gap-2;
+}
