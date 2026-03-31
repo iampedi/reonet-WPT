@@ -50,7 +50,21 @@ add_action('wp_enqueue_scripts', function () {
     // JS files
     wp_enqueue_script('reonet-owl-carousel', get_template_directory_uri() . '/assets/js/owl.carousel.js', ['jquery'], '2.3.4', true);
     wp_enqueue_script('reonet-owl-nav', get_template_directory_uri() . '/assets/js/owl.navigation.js', ['jquery'], null, true);
-    wp_enqueue_script('reonet-app', get_template_directory_uri() . '/assets/js/app.js', ['jquery'], '1.1.8', true);
+    $app_js_path = get_template_directory() . '/assets/js/app.js';
+    $app_js_url  = get_template_directory_uri() . '/assets/js/app.js';
+
+    $app_deps = ['jquery'];
+    if (wp_script_is('wc-cart-fragments', 'registered')) {
+        $app_deps[] = 'wc-cart-fragments';
+    }
+
+    wp_enqueue_script(
+        'reonet-app',
+        $app_js_url,
+        $app_deps,
+        file_exists($app_js_path) ? filemtime($app_js_path) : null,
+        true
+    );
 
     // Conditional assets
     if (is_page_template('template/contact.php')) {

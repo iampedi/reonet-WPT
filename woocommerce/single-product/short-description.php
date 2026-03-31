@@ -30,6 +30,8 @@ if (! $short_description) {
 
 ?>
 
+<p class="reonet-variation-notice alert alert-danger hidden" role="alert" aria-live="polite"></p>
+
 <div class="woocommerce-product-details__short-description text-gray-600 leading-tight">
 	<?php echo $short_description; // WPCS: XSS ok. 
 	?>

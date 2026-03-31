@@ -1,5 +1,29 @@
 <?php
 if (!defined('ABSPATH')) exit;
+
+$cart_count = function_exists('reonet_woocommerce_get_cart_item_count')
+   ? reonet_woocommerce_get_cart_item_count()
+   : 0;
+
+$account_url = function_exists('wc_get_page_permalink')
+   ? wc_get_page_permalink('myaccount')
+   : wp_login_url();
+
+$auth_url = is_user_logged_in()
+   ? $account_url
+   : $account_url;
+
+$auth_label = is_user_logged_in()
+   ? __('My account', 'reonet')
+   : __('Log in', 'reonet');
+
+$auth_icon_class = is_user_logged_in()
+   ? 'ph-duotone ph-user'
+   : 'ph-duotone ph-lock-simple';
+
+$cart_url = function_exists('wc_get_cart_url')
+   ? wc_get_cart_url()
+   : home_url('/cart/');
 ?>
 
 <header class="py-4 sm:py-5">
@@ -39,10 +63,11 @@ if (!defined('ABSPATH')) exit;
             </nav>
 
             <?php
-            $languages = apply_filters('wpml_active_languages', null, [
+            $show_language_switcher = false;
+            $languages = $show_language_switcher ? apply_filters('wpml_active_languages', null, [
                'skip_missing' => 0,
                'orderby'      => 'code',
-            ]);
+            ]) : [];
 
             if (!empty($languages)) : ?>
                <ul class="language-switcher flex items-center gap-2">
@@ -62,6 +87,19 @@ if (!defined('ABSPATH')) exit;
                   <?php endforeach; ?>
                </ul>
             <?php endif; ?>
+
+            <div class="flex items-center gap-2">
+               <a href="<?php echo esc_url($auth_url); ?>" class="inline-flex size-10 items-center justify-center rounded-full border-2 border-dashed border-gray-200 text-primary duration-200 hover:bg-gray-100" aria-label="<?php echo esc_attr($auth_label); ?>" title="<?php echo esc_attr($auth_label); ?>">
+                  <i class="<?php echo esc_attr($auth_icon_class); ?> text-xl"></i>
+               </a>
+
+               <a href="<?php echo esc_url($cart_url); ?>" class="relative inline-flex size-10 items-center justify-center rounded-full border-2 border-dashed border-gray-200 text-primary duration-200 hover:bg-gray-100" aria-label="<?php echo esc_attr__('Cart', 'reonet'); ?>" title="<?php echo esc_attr__('Cart', 'reonet'); ?>">
+                  <i class="ph-duotone ph-basket text-xl"></i>
+                  <span class="reonet-header-cart-count absolute -right-1 -top-1 inline-flex min-w-5 items-center justify-center rounded-full bg-primary px-1.5 text-[11px] font-medium leading-5 text-white">
+                     <?php echo esc_html($cart_count); ?>
+                  </span>
+               </a>
+            </div>
 
             <button class="menu-bars sm:hidden flex" type="button" onclick="mobileMenu()" aria-label="Open menu">
                <i class="ph-bold ph-list text-4xl text-primary"></i>

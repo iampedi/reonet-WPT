@@ -9,18 +9,21 @@
   --color-muted-forground: var(--muted-forground);
   --color-input-background: var(--input-background);
   --color-border: var(--border);
+  --color-danger: var(--danger);
 }
 
 :root {
   --primary: oklch(0.355 0.0868 255.5);
   --secondary: oklch(0.7684 0.1665 148.47);
   --green: oklch(0.6346 0.1387 148.7);
-  --muted-forground: oklch(55.1% 0.027 264.364);
+  --muted-forground: oklch(70.7% 0.022 261.325);
   --input-background: oklch(96.7% 0.003 264.542);
   --border: oklch(92.9% 0.013 255.508);
+  --danger: oklch(64.5% 0.246 16.439);
 }
 
-.container {
+.container,
+.reonet-woocommerce-page {
   @apply max-w-6xl px-4 mx-auto;
 }
 
@@ -172,14 +175,16 @@
   @apply flex items-center gap-3 [&_.label]:font-semibold;
 }
 
-.price-per-unit .price-regular .woocommerce-Price-amount,
-.price-per-unit .price-onsale ins .woocommerce-Price-amount {
-  @apply text-green text-lg font-semibold;
+.price-per-unit .price-onsale del .woocommerce-Price-amount,
+.price-per-unit del,
+del .woocommerce-Price-amount bdi {
+  @apply text-rose-500 font-normal text-[15px];
 }
 
-.price-per-unit .price-onsale del .woocommerce-Price-amount,
-.price-per-unit del {
-  @apply text-rose-500;
+.price-per-unit .price-regular .woocommerce-Price-amount,
+.price-per-unit .price-onsale ins .woocommerce-Price-amount,
+.woocommerce-Price-amount bdi {
+  @apply text-green text-lg font-semibold;
 }
 
 .price-per-unit ins {
@@ -229,6 +234,347 @@ textarea {
   @apply bg-input-background h-10 px-2 border border-gray-300 rounded-lg focus-within:outline-1 outline-primary [[type="number"]]:w-20;
 }
 
+select {
+  @apply cursor-pointer bg-input-background h-10 px-2 border border-gray-300 rounded-lg focus-within:outline-1 outline-primary;
+}
+
 .horizontal-field {
   @apply flex items-center gap-2;
+}
+
+.variation-field-label-error {
+  @apply text-danger;
+}
+
+.reonet-variation-select-error {
+  @apply border-danger outline-danger;
+}
+
+/* Alert Style */
+.alert {
+  @apply border border-gray-300 rounded-xl px-3 py-2.5 bg-gray-50 leading-tight;
+}
+
+.alert-danger {
+  @apply border-danger text-danger bg-rose-50;
+}
+
+.alert-success {
+  @apply border-green text-green-700 bg-green-50 outline-green;
+}
+
+/* Cart Page */
+.reonet-cart-page {
+  @apply py-8 sm:py-12;
+}
+
+.reonet-cart-page .reonet-cart-header h1 {
+  @apply text-2xl font-semibold;
+}
+
+.reonet-cart-page .reonet-cart-header p {
+  @apply text-gray-600;
+}
+
+.reonet-cart-items {
+  @apply rounded-2xl border border-gray-200 bg-white p-4 sm:p-6;
+}
+
+.reonet-cart-page .shop_table {
+  @apply w-full rounded-2xl overflow-hidden border border-gray-200 bg-white;
+}
+
+.reonet-cart-table thead th {
+  @apply bg-gray-100 text-gray-700 font-semibold text-left;
+}
+
+.reonet-cart-table th,
+.reonet-cart-table td {
+  @apply p-3 sm:p-4 align-middle;
+}
+
+.reonet-cart-table .product-thumbnail img {
+  @apply rounded-lg;
+}
+
+.reonet-cart-table .product-name a {
+  @apply font-medium;
+}
+
+.reonet-cart-table .product-quantity .qty {
+  @apply w-full max-w-24;
+}
+
+.reonet-cart-table .actions {
+  @apply bg-gray-50;
+}
+
+.reonet-cart-table .coupon .input-text {
+  @apply h-10 min-w-56;
+}
+
+.reonet-cart-summary .cart_totals {
+  @apply rounded-2xl border border-gray-200 bg-white p-4 sm:p-6 sticky top-4;
+}
+
+.reonet-cart-summary .cart_totals h2 {
+  @apply text-xl font-semibold mb-4;
+}
+
+.reonet-cart-summary .shop_table {
+  @apply rounded-xl border border-gray-200 overflow-hidden;
+}
+
+.reonet-cart-summary .shop_table th,
+.reonet-cart-summary .shop_table td {
+  @apply p-3;
+}
+
+.reonet-cart-summary .wc-proceed-to-checkout {
+  @apply mt-4;
+}
+
+.reonet-cart-summary .checkout-button {
+  @apply h-12 px-6 rounded-full bg-primary text-white inline-flex items-center justify-center w-full hover:bg-green duration-300;
+}
+
+.reonet-cart-cross-sells .cross-sells {
+  @apply space-y-4 rounded-2xl border border-gray-200 bg-white p-4 sm:p-6;
+}
+
+.reonet-cart-cross-sells .cross-sells h2 {
+  @apply text-2xl font-semibold;
+}
+
+/* Shop Page */
+.reonet-shop-page .reonet-shop-toolbar .woocommerce-result-count {
+  @apply m-0 text-sm text-gray-600;
+}
+
+.reonet-shop-page .reonet-shop-toolbar .woocommerce-ordering {
+  @apply m-0;
+}
+
+.reonet-shop-page .reonet-shop-toolbar .orderby {
+  @apply min-w-52;
+}
+
+.reonet-shop-pagination .woocommerce-pagination {
+  @apply mt-2;
+}
+
+.reonet-shop-pagination .page-numbers {
+  @apply m-0 flex list-none items-center justify-center gap-2 p-0;
+}
+
+.reonet-shop-pagination .page-numbers li {
+  @apply list-none;
+}
+
+.reonet-shop-pagination .page-numbers a,
+.reonet-shop-pagination .page-numbers span {
+  @apply inline-flex h-9 min-w-9 items-center justify-center rounded-full border border-gray-200 px-3 text-sm text-primary duration-200;
+}
+
+.reonet-shop-pagination .page-numbers .current {
+  @apply border-primary bg-primary text-white;
+}
+
+.reonet-shop-page .star-rating {
+  @apply text-amber-400;
+}
+
+/* Checkout Page Style */
+.reonet-checkout-wrapper {
+  @apply pb-8 sm:pb-12;
+}
+
+.reonet-checkout-login {
+  @apply mb-6 rounded-2xl border border-blue-200 bg-blue-50/70 p-4 sm:p-6;
+}
+
+.reonet-checkout-form .reonet-checkout-panel {
+  @apply rounded-2xl border border-gray-200 bg-white p-4 sm:p-6;
+}
+
+.reonet-checkout-form #customer_details {
+  @apply grid grid-cols-1 gap-6;
+}
+
+.reonet-checkout-form #customer_details .col-1,
+.reonet-checkout-form #customer_details .col-2 {
+  @apply w-full;
+  float: none;
+}
+
+.reonet-checkout-form #customer_details h3 {
+  @apply text-xl font-semibold mb-4;
+}
+
+.reonet-checkout-form .woocommerce-billing-fields__field-wrapper,
+.reonet-checkout-form .woocommerce-shipping-fields__field-wrapper,
+.reonet-checkout-form .woocommerce-additional-fields__field-wrapper {
+  @apply grid grid-cols-1 gap-3;
+}
+
+.reonet-checkout-form .form-row {
+  @apply mb-3;
+}
+
+.reonet-checkout-form .form-row label {
+  @apply text-sm font-medium mb-1 inline-block;
+}
+
+.reonet-checkout-form .form-row input.input-text,
+.reonet-checkout-form .form-row textarea,
+.reonet-checkout-form .form-row select {
+  @apply w-full;
+}
+
+.reonet-checkout-form .woocommerce-checkout-review-order-table {
+  @apply w-full rounded-2xl overflow-hidden border border-gray-200 bg-white;
+}
+
+.reonet-checkout-form .woocommerce-checkout-review-order-table th {
+  @apply text-left;
+}
+
+.reonet-checkout-form .woocommerce-checkout-review-order-table thead th {
+  @apply bg-gray-100 text-gray-700 font-semibold;
+}
+
+.reonet-checkout-form .woocommerce-checkout-review-order-table td,
+.reonet-checkout-form .woocommerce-checkout-review-order-table th {
+  @apply p-3 sm:p-4 align-top;
+}
+
+.reonet-checkout-form .woocommerce-checkout-payment {
+  @apply mt-4 rounded-2xl border border-gray-200 bg-white p-4 sm:p-5;
+}
+
+.reonet-checkout-form .wc_payment_methods {
+  @apply space-y-3 mb-4;
+}
+
+.reonet-checkout-form .wc_payment_method {
+  @apply rounded-xl border border-gray-200 p-3;
+}
+
+.reonet-checkout-form .payment_box {
+  @apply mt-2 text-sm text-gray-600;
+}
+
+.reonet-checkout-form .place-order {
+  @apply flex flex-col gap-3;
+}
+
+.reonet-checkout-form #place_order {
+  @apply h-12 px-6 rounded-full bg-primary text-white inline-flex items-center justify-center w-full hover:bg-green duration-300;
+}
+
+.reonet-checkout-form .woocommerce-privacy-policy-text,
+.reonet-checkout-form .woocommerce-terms-and-conditions-wrapper {
+  @apply text-sm text-gray-600;
+}
+
+/* Order Received Page */
+.reonet-order-received-page .woocommerce-order-details,
+.reonet-order-received-page .woocommerce-customer-details {
+  @apply rounded-2xl border border-gray-200 bg-white p-4 sm:p-6 mt-6;
+}
+
+.reonet-order-received-page .woocommerce-order-details__title,
+.reonet-order-received-page .woocommerce-column__title {
+  @apply text-xl font-semibold mb-4;
+}
+
+.reonet-order-received-page .woocommerce-table--order-details,
+.reonet-order-received-page .woocommerce-table--customer-details {
+  @apply w-full rounded-xl overflow-hidden border border-gray-200;
+}
+
+.reonet-order-received-page .woocommerce-table--order-details th,
+.reonet-order-received-page .woocommerce-table--order-details td,
+.reonet-order-received-page .woocommerce-table--customer-details th,
+.reonet-order-received-page .woocommerce-table--customer-details td {
+  @apply p-3 sm:p-4 text-left align-top;
+}
+
+.reonet-order-received-page .woocommerce-table--order-details thead th {
+  @apply bg-gray-100 text-gray-700 font-semibold;
+}
+
+.reonet-order-received-page .woocommerce-customer-details address {
+  @apply not-italic text-sm sm:text-base leading-relaxed;
+}
+
+/* My Account Page */
+.woocommerce-account .woocommerce-Addresses,
+.woocommerce-account .woocommerce-EditAccountForm,
+.woocommerce-account .woocommerce-address-fields,
+.woocommerce-account .woocommerce-order-details,
+.woocommerce-account .woocommerce-customer-details,
+.woocommerce-account .woocommerce-orders-table,
+.woocommerce-account .woocommerce-table--order-details,
+.woocommerce-account .woocommerce-table--order-downloads,
+.woocommerce-account .woocommerce-table--my_account_orders {
+  @apply rounded-2xl border border-gray-200 bg-white;
+}
+
+.woocommerce-account .woocommerce-Addresses {
+  @apply p-4 sm:p-6;
+}
+
+.woocommerce-account .woocommerce-column__title,
+.woocommerce-account .woocommerce-order-details__title,
+.woocommerce-account .woocommerce-Address-title h3,
+.woocommerce-account .woocommerce-orders-table__header {
+  @apply text-xl font-semibold;
+}
+
+.woocommerce-account .woocommerce-form-row,
+.woocommerce-account .form-row {
+  @apply mb-3;
+}
+
+.woocommerce-account .form-row label {
+  @apply text-sm font-medium mb-1 inline-block;
+}
+
+.woocommerce-account .woocommerce-Input,
+.woocommerce-account .input-text,
+.woocommerce-account select,
+.woocommerce-account textarea {
+  @apply w-full;
+}
+
+.woocommerce-account .button,
+.woocommerce-account .woocommerce-Button,
+.woocommerce-account .woocommerce-button {
+  @apply h-10 px-5 rounded-full bg-primary text-white inline-flex items-center justify-center hover:bg-green duration-300 border-0;
+}
+
+.woocommerce-account .woocommerce-orders-table,
+.woocommerce-account .woocommerce-table--order-details,
+.woocommerce-account .woocommerce-table--order-downloads,
+.woocommerce-account .woocommerce-table--my_account_orders {
+  @apply w-full overflow-hidden;
+}
+
+.woocommerce-account .woocommerce-orders-table th,
+.woocommerce-account .woocommerce-orders-table td,
+.woocommerce-account .woocommerce-table--order-details th,
+.woocommerce-account .woocommerce-table--order-details td,
+.woocommerce-account .woocommerce-table--order-downloads th,
+.woocommerce-account .woocommerce-table--order-downloads td,
+.woocommerce-account .woocommerce-table--my_account_orders th,
+.woocommerce-account .woocommerce-table--my_account_orders td {
+  @apply p-3 sm:p-4 text-left align-top;
+}
+
+.woocommerce-account .woocommerce-orders-table thead th,
+.woocommerce-account .woocommerce-table--order-details thead th,
+.woocommerce-account .woocommerce-table--order-downloads thead th,
+.woocommerce-account .woocommerce-table--my_account_orders thead th {
+  @apply bg-gray-100 text-gray-700 font-semibold;
 }

@@ -1,6 +1,63 @@
 let j = jQuery.noConflict();
 
 j(document).ready(function () {
+  const getWooFragmentsEndpoint = function () {
+    if (
+      typeof window.wc_cart_fragments_params !== "undefined" &&
+      window.wc_cart_fragments_params.wc_ajax_url
+    ) {
+      return window.wc_cart_fragments_params.wc_ajax_url.replace(
+        "%%endpoint%%",
+        "get_refreshed_fragments"
+      );
+    }
+
+    return `${window.location.origin}/?wc-ajax=get_refreshed_fragments`;
+  };
+
+  const refreshHeaderCartBadgeFromServer = function () {
+    j.ajax({
+      url: getWooFragmentsEndpoint(),
+      type: "POST",
+      success: function (response) {
+        const badgeHtml = response?.fragments?.[".reonet-header-cart-count"];
+        if (badgeHtml) {
+          j(".reonet-header-cart-count").replaceWith(badgeHtml);
+        }
+      },
+    });
+  };
+
+  const refreshHeaderCartBadge = function () {
+    if (typeof window.wc_cart_fragments_params !== "undefined") {
+      j(document.body).trigger("wc_fragment_refresh");
+    } else {
+      refreshHeaderCartBadgeFromServer();
+    }
+
+    const badge = j(".reonet-header-cart-count");
+    const qtyInputs = j(".woocommerce-cart-form .qty");
+
+    if (!badge.length || !qtyInputs.length) {
+      return;
+    }
+
+    let total = 0;
+    qtyInputs.each(function () {
+      const qty = parseFloat(j(this).val());
+      if (!Number.isNaN(qty) && qty > 0) {
+        total += qty;
+      }
+    });
+
+    badge.text(Math.round(total));
+  };
+
+  j(document.body).on(
+    "updated_wc_div updated_cart_totals removed_from_cart added_to_cart wc_cart_emptied",
+    refreshHeaderCartBadge
+  );
+
   // Loader
   window.addEventListener("load", function () {
     const loader = document.getElementById("site-loader");
@@ -96,6 +153,247 @@ j(document).ready(function () {
       error: function () {
         alert("Something went wrong. Please try again.");
       },
+    });
+  });
+
+  j(".variations_form").each(function () {
+    const form = j(this);
+    const product = form.closest(".product");
+    const variationNotice = product.find(".reonet-variation-notice").first();
+    const shortDescription = product
+      .find(".woocommerce-product-details__short-description")
+      .first();
+    const productPrice = product.find(".reonet-product-price").first();
+    const productPriceValue = productPrice.find(".price").first();
+    const variationSelects = form.find(".reonet-variation-select");
+
+    let defaultDescription = shortDescription.html();
+    let defaultPriceHtml = productPriceValue.html() || "";
+
+    if (productPrice.length) {
+      const defaultPriceHtmlRaw = productPrice.attr("data-default-price");
+
+      if (defaultPriceHtmlRaw) {
+        try {
+          defaultPriceHtml = JSON.parse(defaultPriceHtmlRaw);
+        } catch (error) {
+          defaultPriceHtml = productPriceValue.html() || "";
+        }
+      }
+    }
+
+    const showVariationNotice = function (message) {
+      if (!message) {
+        variationNotice.addClass("hidden").text("");
+        return;
+      }
+
+      variationNotice.removeClass("hidden").text(message);
+    };
+
+    const renderMainPrice = function (html) {
+      if (!productPriceValue.length || typeof html !== "string") {
+        return;
+      }
+
+      productPriceValue.html(html);
+    };
+
+    const renderShortDescription = function (html) {
+      if (!shortDescription.length) {
+        return;
+      }
+
+      shortDescription.html(html);
+    };
+
+    const getBestMatchedVariation = function (fallbackVariation) {
+      const variations = form.data("product_variations");
+      const selectedAttributes = {};
+      let hasEmptySelection = false;
+
+      if (!Array.isArray(variations) || !variations.length) {
+        return fallbackVariation || null;
+      }
+
+      variationSelects.each(function () {
+        const select = j(this);
+        const attributeName = select.data("attribute_name");
+        const value = select.val();
+
+        if (!attributeName) {
+          return;
+        }
+
+        selectedAttributes[attributeName] = value;
+
+        if (!value) {
+          hasEmptySelection = true;
+        }
+      });
+
+      if (hasEmptySelection) {
+        return fallbackVariation || null;
+      }
+
+      const candidates = variations.filter(function (variation) {
+        const variationAttributes = variation?.attributes || {};
+
+        return Object.keys(selectedAttributes).every(function (attributeName) {
+          const selectedValue = selectedAttributes[attributeName];
+          const variationValue = variationAttributes[attributeName];
+
+          if (!selectedValue) {
+            return false;
+          }
+
+          return !variationValue || variationValue === selectedValue;
+        });
+      });
+
+      if (!candidates.length) {
+        return fallbackVariation || null;
+      }
+
+      candidates.sort(function (a, b) {
+        const aSpecificity = Object.values(a?.attributes || {}).filter(Boolean).length;
+        const bSpecificity = Object.values(b?.attributes || {}).filter(Boolean).length;
+
+        return bSpecificity - aSpecificity;
+      });
+
+      return candidates[0];
+    };
+
+    const clearVariationFieldState = function ($select) {
+      const field = $select.closest(".horizontal-field");
+
+      $select.removeClass("reonet-variation-select-error");
+      $select.removeAttr("aria-invalid");
+      field.find("label").removeClass("variation-field-label-error");
+    };
+
+    const clearAllVariationFieldStates = function () {
+      variationSelects.each(function () {
+        clearVariationFieldState(j(this));
+      });
+    };
+
+    const focusMissingVariationField = function () {
+      const missingSelect = variationSelects
+        .filter(function () {
+          return !j(this).val();
+        })
+        .first();
+
+      if (!missingSelect.length) {
+        return;
+      }
+
+      clearAllVariationFieldStates();
+      missingSelect.addClass("reonet-variation-select-error");
+      missingSelect.attr("aria-invalid", "true");
+      missingSelect
+        .closest(".horizontal-field")
+        .find("label")
+        .addClass("variation-field-label-error");
+      missingSelect.trigger("focus");
+    };
+
+    const formElement = form.get(0);
+
+    if (formElement && !formElement.dataset.reonetVariationNoticeBound) {
+      formElement.dataset.reonetVariationNoticeBound = "true";
+
+      formElement.addEventListener(
+        "click",
+        function (event) {
+          const button = event.target.closest(".single_add_to_cart_button");
+
+          if (!button || !formElement.contains(button)) {
+            return;
+          }
+
+          const $button = j(button);
+
+          if (!$button.hasClass("disabled")) {
+            showVariationNotice("");
+            return;
+          }
+
+          event.preventDefault();
+          event.stopPropagation();
+          event.stopImmediatePropagation();
+
+          if (
+            $button.hasClass("wc-variation-selection-needed") &&
+            window.wc_add_to_cart_variation_params?.i18n_make_a_selection_text
+          ) {
+            showVariationNotice(
+              window.wc_add_to_cart_variation_params.i18n_make_a_selection_text
+            );
+            focusMissingVariationField();
+            return;
+          }
+
+          if (
+            $button.hasClass("wc-variation-is-unavailable") &&
+            window.wc_add_to_cart_variation_params?.i18n_unavailable_text
+          ) {
+            showVariationNotice(
+              window.wc_add_to_cart_variation_params.i18n_unavailable_text
+            );
+          }
+        },
+        true
+      );
+    }
+
+    variationSelects.on("change", function () {
+      const select = j(this);
+
+      if (select.val()) {
+        clearVariationFieldState(select);
+      }
+    });
+
+    const updateVariationContent = function (variation) {
+      const matchedVariation = getBestMatchedVariation(variation);
+      const variationDescription = matchedVariation?.variation_description || "";
+      const variationPriceHtml = matchedVariation?.price_html || "";
+      const variationId = matchedVariation?.variation_id;
+
+      showVariationNotice("");
+      clearAllVariationFieldStates();
+
+      if (variationId) {
+        form
+          .find('input[name="variation_id"], input.variation_id')
+          .val(variationId);
+      }
+
+      if (variationPriceHtml) {
+        renderMainPrice(variationPriceHtml);
+      } else {
+        renderMainPrice(defaultPriceHtml);
+      }
+
+      if (variationDescription) {
+        renderShortDescription(variationDescription);
+      } else {
+        renderShortDescription(defaultDescription);
+      }
+    };
+
+    form.on("found_variation", function (_, variation) {
+      updateVariationContent(variation);
+    });
+
+    form.on("reset_data", function () {
+      showVariationNotice("");
+      clearAllVariationFieldStates();
+      renderMainPrice(defaultPriceHtml);
+      renderShortDescription(defaultDescription);
     });
   });
 });
