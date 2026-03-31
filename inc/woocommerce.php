@@ -527,3 +527,55 @@ function reonet_redirect_product_cat_to_service()
   exit;
 }
 add_action('template_redirect', 'reonet_redirect_product_cat_to_service');
+
+/**
+ * --------------------------------------------------------------------------
+ * WooCommerce: Hide SKU and Product Type Tabs
+ * --------------------------------------------------------------------------
+ */
+
+/**
+ * Disable SKU output site-wide.
+ */
+add_filter('wc_product_sku_enabled', '__return_false');
+
+/**
+ * Remove frontend "Additional information" tab (attributes/product type details).
+ *
+ * @param array $tabs Product tabs.
+ * @return array
+ */
+function reonet_remove_additional_information_tab($tabs)
+{
+  if (isset($tabs['additional_information'])) {
+    unset($tabs['additional_information']);
+  }
+
+  return $tabs;
+}
+add_filter('woocommerce_product_tabs', 'reonet_remove_additional_information_tab', 98);
+
+/**
+ * Keep admin product type selector on "Simple product" only.
+ *
+ * @param array $types Registered product types.
+ * @return array
+ */
+function reonet_limit_product_type_selector_to_simple($types)
+{
+  return array(
+    'simple' => __('Simple product', 'woocommerce'),
+  );
+}
+add_filter('product_type_selector', 'reonet_limit_product_type_selector_to_simple');
+
+/**
+ * Default product type for newly created products.
+ *
+ * @return string
+ */
+function reonet_default_product_type_simple()
+{
+  return 'simple';
+}
+add_filter('default_product_type', 'reonet_default_product_type_simple');

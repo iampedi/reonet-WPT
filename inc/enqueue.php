@@ -44,7 +44,6 @@ add_action('wp_enqueue_scripts', function () {
 
     // Legacy CSS
     wp_enqueue_style('reonet-style', get_template_directory_uri() . '/assets/css/style.css', [], null);
-    wp_enqueue_style('reonet-swiper', get_template_directory_uri() . '/assets/css/swiper.css', [], null);
     wp_enqueue_style('reonet-responsive', get_template_directory_uri() . '/assets/css/responsive.css', [], null);
 
     // JS files
@@ -65,10 +64,4 @@ add_action('wp_enqueue_scripts', function () {
         file_exists($app_js_path) ? filemtime($app_js_path) : null,
         true
     );
-
-    // Conditional assets
-    if (is_page_template('template/contact.php')) {
-        wp_enqueue_style('reonet-leaflet', get_template_directory_uri() . '/assets/css/leaflet.css', [], null);
-        wp_enqueue_script('reonet-leaflet', get_template_directory_uri() . '/assets/js/leaflet.js', [], null, true);
-    }
 }, 20);

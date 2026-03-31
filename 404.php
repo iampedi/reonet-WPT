@@ -1,102 +1,46 @@
-<!DOCTYPE html>
-<html lang="en">
+<?php
+/**
+ * The template for displaying 404 pages (not found).
+ *
+ * @package reonet
+ */
 
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>404 Page</title>
-  <link type="text/css" href="<?php echo get_template_directory_uri(); ?>/404/css/style.css" rel="stylesheet" />
-</head>
+defined('ABSPATH') || exit;
 
-<body>
-  <div id="wrap">
-    <div id="wordsearch">
-      <ul>
-        <li>k</li>
-        <li>v</li>
-        <li>n</li>
-        <li>z</li>
-        <li>i</li>
-        <li>x</li>
-        <li>m</li>
-        <li>e</li>
-        <li>t</li>
-        <li>a</li>
-        <li>x</li>
-        <li>l</li>
-        <li class="one">4</li>
-        <li class="two">0</li>
-        <li class="three">4</li>
-        <li>y</li>
-        <li>y</li>
-        <li>w</li>
-        <li>v</li>
-        <li>b</li>
-        <li>o</li>
-        <li>q</li>
-        <li>d</li>
-        <li>y</li>
-        <li>p</li>
-        <li>a</li>
-        <li class="four">p</li>
-        <li class="five">a</li>
-        <li class="six">g</li>
-        <li class="seven">e</li>
-        <li>v</li>
-        <li>j</li>
-        <li>a</li>
-        <li class="eight">n</li>
-        <li class="nine">o</li>
-        <li class="ten">t</li>
-        <li>s</li>
-        <li>c</li>
-        <li>e</li>
-        <li>w</li>
-        <li>v</li>
-        <li>x</li>
-        <li>e</li>
-        <li>p</li>
-        <li>c</li>
-        <li>f</li>
-        <li>h</li>
-        <li>q</li>
-        <li>e</li>
-        <li class="eleven">f</li>
-        <li class="twelve">o</li>
-        <li class="thirteen">u</li>
-        <li class="fourteen">n</li>
-        <li class="fifteen">d</li>
-        <li>s</li>
-        <li>w</li>
-        <li>q</li>
-        <li>v</li>
-        <li>o</li>
-        <li>s</li>
-        <li>m</li>
-        <li>v</li>
-        <li>f</li>
-        <li>u</li>
-      </ul>
-    </div>
-    <div id="main-content">
-      <h1>Page Not Found!</h1>
-      <p>The page you are looking for could not be found. It might have been moved or removed.</p>
-      <div id="search">
-        <form id="search-form" method="get" action="/">
-          <input type="text" placeholder="Search" value="" name="s">
-        </form>
-      </div>
-      <div id="navigation">
-        <a class="navigation" href="/">Home</a>
-        <a class="navigation" href="/about">About Us</a>
-        <a class="navigation" href="/contact">Contact Us</a>
-      </div>
-      <br>
+get_header();
+?>
+
+<main class="component _404-page" id="main-content">
+  <div
+    class="_page-header flex flex-col items-center justify-center bg-no-repeat bg-center bg-contain h-40"
+    style="background-image: url('<?php echo esc_url(get_template_directory_uri() . '/assets/images/bg-symbol-gray.png'); ?>');">
+    <h1 class="uppercase text-4xl pt-3 font-semibold text-gray-600">404</h1>
+  </div>
+
+  <div class="py-16 sm:py-24">
+    <div class="container">
+      <section class="mx-auto max-w-2xl rounded-3xl border border-gray-200 bg-white p-6 sm:p-10 text-center space-y-5">
+        <h2 class="text-2xl sm:text-3xl font-semibold text-primary">
+          <?php echo esc_html(reonet_tr('Page not found')); ?>
+        </h2>
+
+        <p class="text-gray-600">
+          <?php echo esc_html(reonet_tr('The page you are looking for does not exist or may have been moved.')); ?>
+        </p>
+
+        <div class="flex flex-wrap items-center justify-center gap-3 pt-2">
+          <a class="btn btn-primary btn-sm" href="<?php echo esc_url(home_url('/')); ?>">
+            <?php echo esc_html(reonet_tr('Back to home')); ?>
+          </a>
+          <?php if (post_type_exists('service')) : ?>
+            <a class="btn btn-ghost btn-sm" href="<?php echo esc_url(get_post_type_archive_link('service')); ?>">
+              <?php echo esc_html(reonet_tr('View services')); ?>
+            </a>
+          <?php endif; ?>
+        </div>
+      </section>
     </div>
   </div>
-  <script src="<?php echo get_template_directory_uri(); ?>/404/js/jquery-3.1.1.min.js"></script>
-  <script src="<?php echo get_template_directory_uri(); ?>/404/js/scripts.js"></script>
-</body><!-- This template has been downloaded from Webrubik.com -->
+</main>
 
-</html>
+<?php get_footer(); ?>
