@@ -76,18 +76,13 @@ if ($acf_available) {
         <?php endwhile; ?>
       </div>
     <?php endif; ?>
-  </div>
 
-  <?php if (function_exists('have_rows') && have_rows('page_builder')) : ?>
-    <?php while (have_rows('page_builder')) : the_row(); ?>
-      <div class="py-4 sm:py-6">
-        <h2 class="text-2xl sm:text-2xl font-semibold text-center uppercase text-primary">
-          <?php echo function_exists('pll__') ? esc_html(pll__('Other Services')) : esc_html__('Other Services', 'reonet'); ?>
-        </h2>
+    <?php if (function_exists('have_rows') && have_rows('page_builder')) : ?>
+      <?php while (have_rows('page_builder')) : the_row(); ?>
         <?php get_template_part('page-builder/content', get_row_layout()); ?>
-      </div>
-    <?php endwhile; ?>
-  <?php endif; ?>
+      <?php endwhile; ?>
+    <?php endif; ?>
+  </div>
 </main>
 
 <?php get_footer(); ?>

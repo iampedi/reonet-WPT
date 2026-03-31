@@ -16,6 +16,7 @@ function reonet_register_polylang_strings()
   pll_register_string('Address One', 'Address One', 'Theme');
   pll_register_string('Address Two', 'Address Two', 'Theme');
   pll_register_string('Addresses', 'Addresses', 'Theme');
+  pll_register_string('All products', 'All products', 'Theme');
   pll_register_string('Area', 'Area', 'Theme');
   pll_register_string('Back to home', 'Back to home', 'Theme');
   pll_register_string('Contact Information', 'Contact Information', 'Theme');
