@@ -58,6 +58,148 @@ j(document).ready(function () {
     refreshHeaderCartBadge
   );
 
+  const ensureToastContainer = function () {
+    let container = j("#reonet-toast-container");
+
+    if (!container.length) {
+      j("body").append(
+        '<div id="reonet-toast-container" class="fixed bottom-4 left-4 z-[9999] flex w-[calc(100%-2rem)] max-w-sm flex-col gap-3 sm:bottom-6 sm:left-6"></div>'
+      );
+      container = j("#reonet-toast-container");
+    }
+
+    return container;
+  };
+
+  const getToastAppearance = function (type) {
+    if (type === "error") {
+      return {
+        wrapper: "border-red-300 bg-red-50 text-red-800",
+        icon: "ph-warning-octagon text-red-600",
+      };
+    }
+
+    if (type === "warning") {
+      return {
+        wrapper: "border-amber-300 bg-amber-50 text-amber-800",
+        icon: "ph-warning-circle text-amber-600",
+      };
+    }
+
+    if (type === "success") {
+      return {
+        wrapper: "border-green-300 bg-green-50 text-green-800",
+        icon: "ph-check-circle text-green-600",
+      };
+    }
+
+    return {
+      wrapper: "border-blue-300 bg-blue-50 text-blue-800",
+      icon: "ph-info text-blue-600",
+    };
+  };
+
+  const showToast = function ({
+    message = "",
+    actionHtml = "",
+    type = "info",
+    duration = 4500,
+  }) {
+    if (!message) {
+      return;
+    }
+
+    const appearance = getToastAppearance(type);
+    const toastId = `reonet-toast-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+    const container = ensureToastContainer();
+
+    const toast = j(`
+      <div id="${toastId}" class="reonet-toast pointer-events-auto flex w-full items-start gap-3 rounded-lg border p-4 text-sm shadow-lg transition-all duration-200 opacity-0 translate-y-2 ${appearance.wrapper}" role="alert" aria-live="polite">
+        <i class="ph-duotone text-xl ${appearance.icon}"></i>
+        <div class="min-w-0 flex-1 leading-tight">
+          <div class="reonet-toast-message"></div>
+          <div class="reonet-toast-action mt-2"></div>
+        </div>
+        <button type="button" class="reonet-toast-close inline-flex h-6 w-6 items-center justify-center rounded-md text-current/70 hover:bg-black/5 hover:text-current" aria-label="Close notification">
+          <i class="ph ph-x text-base"></i>
+        </button>
+      </div>
+    `);
+
+    toast.find(".reonet-toast-message").html(message);
+
+    if (actionHtml) {
+      toast
+        .find(".reonet-toast-action")
+        .html(actionHtml)
+        .find("a")
+        .addClass("font-medium underline underline-offset-4");
+    } else {
+      toast.find(".reonet-toast-action").remove();
+    }
+
+    const removeToast = function () {
+      toast.removeClass("opacity-100 translate-y-0").addClass("opacity-0 translate-y-2");
+      window.setTimeout(function () {
+        toast.remove();
+      }, 220);
+    };
+
+    toast.on("click", ".reonet-toast-close", removeToast);
+
+    container.append(toast);
+    window.requestAnimationFrame(function () {
+      toast.removeClass("opacity-0 translate-y-2").addClass("opacity-100 translate-y-0");
+    });
+
+    window.setTimeout(removeToast, duration);
+  };
+
+  const convertSingleProductNoticesToToasts = function () {
+    if (!j("body").hasClass("single-product")) {
+      return;
+    }
+
+    j(
+      ".woocommerce-notices-wrapper .woocommerce-message, .woocommerce-notices-wrapper .woocommerce-error, .woocommerce-notices-wrapper .woocommerce-info"
+    ).each(function () {
+      const notice = j(this);
+      const type = notice.hasClass("woocommerce-error")
+        ? "error"
+        : notice.hasClass("woocommerce-message")
+          ? "success"
+          : "info";
+
+      const messageContainer = notice.find(".woocommerce-message-content > div").first();
+      const messageHtml = messageContainer.length
+        ? messageContainer.html()
+        : notice
+            .clone()
+            .find("a, i")
+            .remove()
+            .end()
+            .text()
+            .trim();
+
+      const actionLink = notice.find("a.wc-forward, a.restore-item").first();
+      const actionHtml = actionLink.length ? actionLink.prop("outerHTML") : "";
+
+      showToast({
+        message: messageHtml,
+        actionHtml,
+        type,
+      });
+
+      notice.remove();
+    });
+  };
+
+  convertSingleProductNoticesToToasts();
+  j(document.body).on(
+    "added_to_cart wc_fragments_loaded wc_fragments_refreshed",
+    convertSingleProductNoticesToToasts
+  );
+
   // Loader
   window.addEventListener("load", function () {
     const loader = document.getElementById("site-loader");
@@ -160,6 +302,12 @@ j(document).ready(function () {
     const form = j(this);
     const product = form.closest(".product");
     const variationNotice = product.find(".reonet-variation-notice").first();
+    const variationNoticeIcon = variationNotice
+      .find(".reonet-variation-notice-icon")
+      .first();
+    const variationNoticeText = variationNotice
+      .find(".reonet-variation-notice-text")
+      .first();
     const shortDescription = product
       .find(".woocommerce-product-details__short-description")
       .first();
@@ -182,13 +330,61 @@ j(document).ready(function () {
       }
     }
 
-    const showVariationNotice = function (message) {
-      if (!message) {
-        variationNotice.addClass("hidden").text("");
+    const setVariationNoticeType = function (type) {
+      const noticeType = ["error", "warning", "info", "success"].includes(type)
+        ? type
+        : "error";
+
+      variationNotice.removeClass(
+        "border-red-300 bg-red-50 text-red-800 border-amber-300 bg-amber-50 text-amber-800 border-blue-300 bg-blue-50 text-blue-800 border-green-300 bg-green-50 text-green-800"
+      );
+
+      variationNoticeIcon.removeClass(
+        "ph-warning-octagon ph-warning-circle ph-info ph-check-circle text-red-600 text-amber-600 text-blue-600 text-green-600"
+      );
+
+      if (noticeType === "warning") {
+        variationNotice.addClass("border-amber-300 bg-amber-50 text-amber-800");
+        variationNoticeIcon.addClass("ph-warning-circle text-amber-600");
         return;
       }
 
-      variationNotice.removeClass("hidden").text(message);
+      if (noticeType === "info") {
+        variationNotice.addClass("border-blue-300 bg-blue-50 text-blue-800");
+        variationNoticeIcon.addClass("ph-info text-blue-600");
+        return;
+      }
+
+      if (noticeType === "success") {
+        variationNotice.addClass("border-green-300 bg-green-50 text-green-800");
+        variationNoticeIcon.addClass("ph-check-circle text-green-600");
+        return;
+      }
+
+      variationNotice.addClass("border-red-300 bg-red-50 text-red-800");
+      variationNoticeIcon.addClass("ph-warning-octagon text-red-600");
+    };
+
+    const showVariationNotice = function (message, type = "error") {
+      if (!message) {
+        variationNotice.addClass("hidden");
+        if (variationNoticeText.length) {
+          variationNoticeText.text("");
+        } else {
+          variationNotice.text("");
+        }
+        return;
+      }
+
+      setVariationNoticeType(type);
+
+      if (variationNoticeText.length) {
+        variationNoticeText.text(message);
+      } else {
+        variationNotice.text(message);
+      }
+
+      variationNotice.removeClass("hidden");
     };
 
     const renderMainPrice = function (html) {
@@ -330,7 +526,8 @@ j(document).ready(function () {
             window.wc_add_to_cart_variation_params?.i18n_make_a_selection_text
           ) {
             showVariationNotice(
-              window.wc_add_to_cart_variation_params.i18n_make_a_selection_text
+              window.wc_add_to_cart_variation_params.i18n_make_a_selection_text,
+              "warning"
             );
             focusMissingVariationField();
             return;
@@ -341,7 +538,8 @@ j(document).ready(function () {
             window.wc_add_to_cart_variation_params?.i18n_unavailable_text
           ) {
             showVariationNotice(
-              window.wc_add_to_cart_variation_params.i18n_unavailable_text
+              window.wc_add_to_cart_variation_params.i18n_unavailable_text,
+              "error"
             );
           }
         },

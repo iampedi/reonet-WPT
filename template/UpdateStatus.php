@@ -62,16 +62,16 @@ body { font-family: Tahoma, sans-serif; background:#f3f3f3; margin:0; padding-to
 
 <div id="header-bar">
     <img src="https://finservice.ir/wp-content/uploads/2025/11/WhatsApp-Image-2025-11-22-at-19.01.08_35603e30-1.jpg" class="logo-header" alt="Logo">
-    <button id="logout-btn">⎋ Logout</button>
+    <button id="logout-btn" class="inline-flex items-center justify-center rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300">⎋ Logout</button>
 </div>
 
 <div class="login-container" id="login-form-container">
     <img src="https://finservice.ir/wp-content/uploads/2025/11/WhatsApp-Image-2025-11-22-at-19.01.08_35603e30.jpg" class="logo" alt="Logo">
     <form id="custom-login-form">
-        <input type="text" name="username" placeholder="Email Or Username" required>
-        <input type="password" name="password" placeholder="Password" required>
+        <input type="text" name="username" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20" placeholder="Email Or Username" required>
+        <input type="password" name="password" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20" placeholder="Password" required>
         <br>
-        <button type="submit" id="login-btn">Login</button>
+        <button type="submit" id="login-btn" class="inline-flex items-center justify-center rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300">Login</button>
     </form>
     <div id="login-message"></div>
 </div>
@@ -79,8 +79,8 @@ body { font-family: Tahoma, sans-serif; background:#f3f3f3; margin:0; padding-to
 <div class="status-app" id="status-app">
 
     <div class="search-box">
-        <input type="text" id="barcode" placeholder="Scan or Enter Barcode">
-        <button id="search-btn">🔍</button>
+        <input type="text" id="barcode" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20" placeholder="Scan or Enter Barcode">
+        <button id="search-btn" class="inline-flex items-center justify-center rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-100">🔍</button>
     </div>
 
     <div id="order-info"></div>

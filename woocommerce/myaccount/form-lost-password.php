@@ -35,14 +35,14 @@ do_action('woocommerce_before_lost_password_form');
 			<span class="required" aria-hidden="true">*</span>
 			<span class="screen-reader-text"><?php esc_html_e('Required', 'woocommerce'); ?></span>
 		</label>
-		<input class="woocommerce-Input woocommerce-Input--text input-text w-full" type="text" name="user_login" id="user_login" autocomplete="username" required aria-required="true" />
+		<input class="<?php echo esc_attr(reonet_flowbite_input_class_string()); ?>" type="text" name="user_login" id="user_login" autocomplete="username" required aria-required="true" />
 	</p>
 
 	<?php do_action('woocommerce_lostpassword_form'); ?>
 
 	<div class="pt-1">
 		<input type="hidden" name="wc_reset_password" value="true" />
-		<button type="submit" class="woocommerce-Button button btn btn-md btn-primary" value="<?php esc_attr_e('Reset password', 'woocommerce'); ?>">
+		<button type="submit" class="woocommerce-Button button <?php echo esc_attr(reonet_flowbite_button_class_string()); ?>" value="<?php esc_attr_e('Reset password', 'woocommerce'); ?>">
 			<?php esc_html_e('Reset password', 'woocommerce'); ?>
 		</button>
 	</div>

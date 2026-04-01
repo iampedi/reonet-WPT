@@ -42,11 +42,11 @@ defined( 'ABSPATH' ) || exit;
 
 	<p class="form-row">
 		<label for="email"><?php esc_html_e( 'Email address', 'woocommerce' ); ?>&nbsp;<span class="required">*</span></label>
-		<input type="email" class="input-text" name="email" id="email" autocomplete="email" />
+		<input type="email" class="<?php echo esc_attr(reonet_flowbite_input_class_string()); ?>" name="email" id="email" autocomplete="email" />
 	</p>
 
 	<p class="form-row">
-		<button type="submit" class="woocommerce-button button <?php echo esc_attr( wc_wp_theme_get_element_class_name( 'button' ) ); ?>" name="verify" value="1">
+		<button type="submit" class="woocommerce-button button <?php echo esc_attr(reonet_flowbite_button_class_string()); ?>" name="verify" value="1">
 			<?php esc_html_e( 'Verify', 'woocommerce' ); ?>
 		</button>
 	</p>

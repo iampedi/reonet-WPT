@@ -343,6 +343,57 @@ function reonet_woocommerce_limit_checkout_location_fields($fields)
 add_filter('woocommerce_checkout_fields', 'reonet_woocommerce_limit_checkout_location_fields', 20);
 
 /**
+ * Flowbite class helpers used across WooCommerce templates.
+ */
+function reonet_flowbite_input_class_string()
+{
+  return 'block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20';
+}
+
+function reonet_flowbite_checkbox_class_string()
+{
+  return 'h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500/30';
+}
+
+function reonet_flowbite_button_class_string($variant = 'primary')
+{
+  if ($variant === 'secondary') {
+    return 'inline-flex items-center justify-center rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-100';
+  }
+
+  return 'inline-flex items-center justify-center rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300';
+}
+
+/**
+ * Apply Flowbite-like classes to WooCommerce generated form fields.
+ */
+function reonet_woocommerce_apply_flowbite_field_classes($args, $key, $value)
+{
+  $input_base_classes = explode(' ', reonet_flowbite_input_class_string());
+  $checkbox_radio_classes = explode(' ', reonet_flowbite_checkbox_class_string());
+
+  if (in_array($args['type'], array('checkbox', 'radio'), true)) {
+    $args['input_class'] = array_values(array_unique(array_merge((array) $args['input_class'], $checkbox_radio_classes)));
+  } else {
+    $args['input_class'] = array_values(array_unique(array_merge((array) $args['input_class'], $input_base_classes)));
+  }
+
+  $args['label_class'] = array_values(array_unique(array_merge((array) $args['label_class'], array('mb-1', 'inline-block', 'text-sm', 'font-medium', 'text-gray-900'))));
+
+  return $args;
+}
+add_filter('woocommerce_form_field_args', 'reonet_woocommerce_apply_flowbite_field_classes', 10, 3);
+
+/**
+ * Apply Flowbite classes to WooCommerce quantity inputs.
+ */
+function reonet_woocommerce_quantity_input_classes($classes)
+{
+  return array_values(array_unique(array_merge((array) $classes, explode(' ', reonet_flowbite_input_class_string()))));
+}
+add_filter('woocommerce_quantity_input_classes', 'reonet_woocommerce_quantity_input_classes');
+
+/**
  * Keep "Ship to a different address?" unchecked by default.
  */
 function reonet_woocommerce_ship_to_different_address_unchecked_by_default()
@@ -579,3 +630,35 @@ function reonet_default_product_type_simple()
   return 'simple';
 }
 add_filter('default_product_type', 'reonet_default_product_type_simple');
+
+/**
+ * Prevent POST resubmission on refresh after add-to-cart (PRG flow).
+ *
+ * Redirect to a clean product URL without add-to-cart query args.
+ *
+ * @param string $url Redirect URL from WooCommerce.
+ * @return string
+ */
+function reonet_woocommerce_add_to_cart_prg_redirect($url)
+{
+  if (is_admin() || wp_doing_ajax()) {
+    return $url;
+  }
+
+  $product_id = isset($_REQUEST['add-to-cart']) ? absint(wp_unslash($_REQUEST['add-to-cart'])) : 0;
+  $fallback_url = wp_get_referer();
+
+  if (!$fallback_url && $product_id > 0) {
+    $fallback_url = get_permalink($product_id);
+  }
+
+  if (!$fallback_url) {
+    $fallback_url = home_url('/');
+  }
+
+  return remove_query_arg(
+    array('add-to-cart', 'quantity', 'variation_id'),
+    $fallback_url
+  );
+}
+add_filter('woocommerce_add_to_cart_redirect', 'reonet_woocommerce_add_to_cart_prg_redirect', 10);

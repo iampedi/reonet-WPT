@@ -28,12 +28,12 @@ if (! $notices) {
 	$notice_content = wc_kses_notice($notice['notice']);
 	$notice_content = preg_replace(
 		'/class=(["\'])button wc-forward\1/',
-		'class=$1wc-forward font-medium hover:underline underline-offset-4 text-primary$1',
+		'class=$1wc-forward font-medium hover:underline underline-offset-4 text-blue-700$1',
 		$notice_content
 	);
 	$notice_content = preg_replace(
 		'/class=(["\'])restore-item\1/',
-		'class=$1restore-item wc-forward font-medium hover:underline underline-offset-4 text-primary$1',
+		'class=$1restore-item wc-forward font-medium hover:underline underline-offset-4 text-blue-700$1',
 		$notice_content
 	);
 	$forward_button = '';
@@ -45,10 +45,10 @@ if (! $notices) {
 	}
 	?>
 
-	<div class="woocommerce-info mb-4 px-4! py-3.5! alert flex items-center justify-between" <?php echo wc_get_notice_data_attr($notice); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped 
+	<div class="woocommerce-info mb-4 flex items-start justify-between gap-4 rounded-lg border border-blue-300 bg-blue-50 p-4 text-sm text-blue-800" <?php echo wc_get_notice_data_attr($notice); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped 
 																																													?> role="status">
 		<div class="woocommerce-message-content flex items-center gap-2">
-			<i class="ph-duotone ph-info text-primary text-2xl"></i>
+			<i class="ph-duotone ph-info text-blue-600 text-2xl"></i>
 			<div><?php echo wp_kses_post($message_text); ?></div>
 		</div>
 

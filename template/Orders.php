@@ -333,26 +333,26 @@
   <!-- هدر -->
   <div id="header-bar">
     <img src="http://finservice.ir/wp-content/uploads/2025/11/WhatsApp-Image-2025-11-22-at-19.01.08_35603e30-1.jpg" class="logo-header" alt="Logo">
-    <button id="logout-btn">⎋ Logout</button>
+    <button id="logout-btn" class="inline-flex items-center justify-center rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300">⎋ Logout</button>
   </div>
 
   <div class="login-container" id="login-form-container">
     <img src="http://finservice.ir/wp-content/uploads/2025/11/WhatsApp-Image-2025-11-22-at-19.01.08_35603e30.jpg" class="logo" alt="Logo">
     <form id="custom-login-form">
-      <input type="text" name="username" placeholder="Email Or Username" required>
-      <input type="password" name="password" placeholder="Password" required>
+      <input type="text" name="username" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20" placeholder="Email Or Username" required>
+      <input type="password" name="password" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20" placeholder="Password" required>
 
       <br>
-      <button type="submit" id="login-btn">Login</button>
+      <button type="submit" id="login-btn" class="inline-flex items-center justify-center rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300">Login</button>
     </form>
     <div id="login-message"></div>
   </div>
 
   <div class="orders-container" id="orders-container" style="display:none;">
     <div id="orders-filter">
-      <label>Start Date: <input type="date" id="start-date"></label>
-      <label>End Date: <input type="date" id="end-date"></label>
-      <button id="filter-orders">Filter</button>
+      <label>Start Date: <input type="date" id="start-date" class="rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"></label>
+      <label>End Date: <input type="date" id="end-date" class="rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"></label>
+      <button id="filter-orders" class="inline-flex items-center justify-center rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300">Filter</button>
     </div>
     <div id="orders-table-wrapper"></div>
   </div>

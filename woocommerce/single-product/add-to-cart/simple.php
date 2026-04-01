@@ -34,7 +34,7 @@ if ($product->is_in_stock()) : ?>
 		<?php do_action('woocommerce_before_add_to_cart_button'); ?>
 
 		<div class="pt-2">
-			<button type="submit" name="add-to-cart" value="<?php echo esc_attr($product->get_id()); ?>" class="single_add_to_cart_button btn btn-primary btn-md alt<?php echo esc_attr(wc_wp_theme_get_element_class_name('button') ? ' ' . wc_wp_theme_get_element_class_name('button') : ''); ?>"><?php echo esc_html($product->single_add_to_cart_text()); ?></button>
+			<button type="submit" name="add-to-cart" value="<?php echo esc_attr($product->get_id()); ?>" class="single_add_to_cart_button <?php echo esc_attr(reonet_flowbite_button_class_string()); ?>"><?php echo esc_html($product->single_add_to_cart_text()); ?></button>
 		</div>
 
 		<?php do_action('woocommerce_after_add_to_cart_button'); ?>

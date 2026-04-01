@@ -264,24 +264,24 @@ Template Name: Upload Images
 
     <div id="header-bar">
         <img src="https://finservice.ir/wp-content/uploads/2025/11/WhatsApp-Image-2025-11-22-at-19.01.08_35603e30-1.jpg" class="logo-header" alt="Logo">
-        <button id="logout-btn">⎋ Logout</button>
+        <button id="logout-btn" class="inline-flex items-center justify-center rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300">⎋ Logout</button>
     </div>
 
     <div class="login-container" id="login-form-container">
         <img src="https://finservice.ir/wp-content/uploads/2025/11/WhatsApp-Image-2025-11-22-at-19.01.08_35603e30.jpg" class="logo" alt="Logo">
         <form id="custom-login-form">
-            <input type="text" name="username" placeholder="Email Or Username" required>
-            <input type="password" name="password" placeholder="Password" required>
+            <input type="text" name="username" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20" placeholder="Email Or Username" required>
+            <input type="password" name="password" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20" placeholder="Password" required>
             <br>
-            <button type="submit" id="login-btn">Login</button>
+            <button type="submit" id="login-btn" class="inline-flex items-center justify-center rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300">Login</button>
         </form>
         <div id="login-message"></div>
     </div>
 
     <div id="upload-container">
         <div class="search-box">
-            <input type="text" id="barcode" placeholder="Scan or Enter Barcode">
-            <button id="search-btn">🔍</button>
+            <input type="text" id="barcode" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20" placeholder="Scan or Enter Barcode">
+            <button id="search-btn" class="inline-flex items-center justify-center rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-100">🔍</button>
         </div><br>
         <div class="gallery-section">
             <div class="gallery-wrapper">
@@ -294,13 +294,13 @@ Template Name: Upload Images
             </div>
         </div>
         <br>
-        <input type="file" id="photo" accept="image/*" multiple>
+        <input type="file" id="photo" class="block w-full cursor-pointer rounded-lg border border-gray-300 bg-gray-50 text-sm text-gray-900 focus:outline-none" accept="image/*" multiple>
         <div style="margin:10px 0;">
-            <label><input type="radio" name="stageType" value="before" checked> Before</label>
-            <label style="margin-left:20px;"><input type="radio" name="stageType" value="after"> After</label>
+            <label><input type="radio" class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500/30" name="stageType" value="before" checked> Before</label>
+            <label style="margin-left:20px;"><input type="radio" class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500/30" name="stageType" value="after"> After</label>
         </div>
         <br>
-        <button id="uploadBtn">Upload</button>
+        <button id="uploadBtn" class="inline-flex items-center justify-center rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300">Upload</button>
         <div id="status"></div>
     </div>
 

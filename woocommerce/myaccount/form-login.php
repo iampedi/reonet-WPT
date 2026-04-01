@@ -31,7 +31,7 @@ $registration_enabled = 'yes' === get_option('woocommerce_enable_myaccount_regis
 					<span class="required" aria-hidden="true">*</span>
 					<span class="screen-reader-text"><?php esc_html_e('Required', 'woocommerce'); ?></span>
 				</label>
-				<input type="text" class="woocommerce-Input woocommerce-Input--text input-text w-full" name="username" id="username" autocomplete="username" value="<?php echo (!empty($_POST['username']) && is_string($_POST['username'])) ? esc_attr(wp_unslash($_POST['username'])) : ''; ?>" required aria-required="true" /><?php // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+				<input type="text" class="<?php echo esc_attr(reonet_flowbite_input_class_string()); ?>" name="username" id="username" autocomplete="username" value="<?php echo (!empty($_POST['username']) && is_string($_POST['username'])) ? esc_attr(wp_unslash($_POST['username'])) : ''; ?>" required aria-required="true" /><?php // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 			</p>
 
 			<p class="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide space-y-1">
@@ -40,14 +40,14 @@ $registration_enabled = 'yes' === get_option('woocommerce_enable_myaccount_regis
 					<span class="required" aria-hidden="true">*</span>
 					<span class="screen-reader-text"><?php esc_html_e('Required', 'woocommerce'); ?></span>
 				</label>
-				<input class="woocommerce-Input woocommerce-Input--text input-text w-full" type="password" name="password" id="password" autocomplete="current-password" required aria-required="true" />
+				<input class="<?php echo esc_attr(reonet_flowbite_input_class_string()); ?>" type="password" name="password" id="password" autocomplete="current-password" required aria-required="true" />
 			</p>
 
 			<?php do_action('woocommerce_login_form'); ?>
 
 			<div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
 				<label class="woocommerce-form__label woocommerce-form__label-for-checkbox woocommerce-form-login__rememberme inline-flex items-center gap-2">
-					<input class="woocommerce-form__input woocommerce-form__input-checkbox" name="rememberme" type="checkbox" id="rememberme" value="forever" />
+					<input class="<?php echo esc_attr(reonet_flowbite_checkbox_class_string()); ?>" name="rememberme" type="checkbox" id="rememberme" value="forever" />
 					<span><?php esc_html_e('Remember me', 'woocommerce'); ?></span>
 				</label>
 
@@ -60,7 +60,7 @@ $registration_enabled = 'yes' === get_option('woocommerce_enable_myaccount_regis
 
 			<div class="pt-1">
 				<?php wp_nonce_field('woocommerce-login', 'woocommerce-login-nonce'); ?>
-				<button type="submit" class="woocommerce-button woocommerce-form-login__submit btn btn-md btn-primary" name="login" value="<?php esc_attr_e('Log in', 'woocommerce'); ?>">
+				<button type="submit" class="woocommerce-button woocommerce-form-login__submit <?php echo esc_attr(reonet_flowbite_button_class_string()); ?>" name="login" value="<?php esc_attr_e('Log in', 'woocommerce'); ?>">
 					<?php esc_html_e('Log in', 'woocommerce'); ?>
 				</button>
 			</div>
@@ -83,7 +83,7 @@ $registration_enabled = 'yes' === get_option('woocommerce_enable_myaccount_regis
 							<span class="required" aria-hidden="true">*</span>
 							<span class="screen-reader-text"><?php esc_html_e('Required', 'woocommerce'); ?></span>
 						</label>
-						<input type="text" class="woocommerce-Input woocommerce-Input--text input-text w-full" name="username" id="reg_username" autocomplete="username" value="<?php echo (!empty($_POST['username'])) ? esc_attr(wp_unslash($_POST['username'])) : ''; ?>" required aria-required="true" /><?php // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+						<input type="text" class="<?php echo esc_attr(reonet_flowbite_input_class_string()); ?>" name="username" id="reg_username" autocomplete="username" value="<?php echo (!empty($_POST['username'])) ? esc_attr(wp_unslash($_POST['username'])) : ''; ?>" required aria-required="true" /><?php // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 					</p>
 				<?php endif; ?>
 
@@ -93,7 +93,7 @@ $registration_enabled = 'yes' === get_option('woocommerce_enable_myaccount_regis
 						<span class="required" aria-hidden="true">*</span>
 						<span class="screen-reader-text"><?php esc_html_e('Required', 'woocommerce'); ?></span>
 					</label>
-					<input type="email" class="woocommerce-Input woocommerce-Input--text input-text w-full" name="email" id="reg_email" autocomplete="email" value="<?php echo (!empty($_POST['email'])) ? esc_attr(wp_unslash($_POST['email'])) : ''; ?>" required aria-required="true" /><?php // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+					<input type="email" class="<?php echo esc_attr(reonet_flowbite_input_class_string()); ?>" name="email" id="reg_email" autocomplete="email" value="<?php echo (!empty($_POST['email'])) ? esc_attr(wp_unslash($_POST['email'])) : ''; ?>" required aria-required="true" /><?php // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 				</p>
 
 				<?php if ('no' === get_option('woocommerce_registration_generate_password')) : ?>
@@ -103,7 +103,7 @@ $registration_enabled = 'yes' === get_option('woocommerce_enable_myaccount_regis
 							<span class="required" aria-hidden="true">*</span>
 							<span class="screen-reader-text"><?php esc_html_e('Required', 'woocommerce'); ?></span>
 						</label>
-						<input type="password" class="woocommerce-Input woocommerce-Input--text input-text w-full" name="password" id="reg_password" autocomplete="new-password" required aria-required="true" />
+						<input type="password" class="<?php echo esc_attr(reonet_flowbite_input_class_string()); ?>" name="password" id="reg_password" autocomplete="new-password" required aria-required="true" />
 					</p>
 				<?php else : ?>
 					<p class="text-sm leading-relaxed text-gray-600"><?php esc_html_e('A link to set a new password will be sent to your email address.', 'woocommerce'); ?></p>
@@ -113,7 +113,7 @@ $registration_enabled = 'yes' === get_option('woocommerce_enable_myaccount_regis
 
 				<div class="pt-1">
 					<?php wp_nonce_field('woocommerce-register', 'woocommerce-register-nonce'); ?>
-					<button type="submit" class="woocommerce-Button woocommerce-button woocommerce-form-register__submit btn btn-md btn-primary" name="register" value="<?php esc_attr_e('Register', 'woocommerce'); ?>">
+					<button type="submit" class="woocommerce-Button woocommerce-button woocommerce-form-register__submit <?php echo esc_attr(reonet_flowbite_button_class_string()); ?>" name="register" value="<?php esc_attr_e('Register', 'woocommerce'); ?>">
 						<?php esc_html_e('Register', 'woocommerce'); ?>
 					</button>
 				</div>
@@ -125,4 +125,3 @@ $registration_enabled = 'yes' === get_option('woocommerce_enable_myaccount_regis
 </div>
 
 <?php do_action('woocommerce_after_customer_login_form'); ?>
-

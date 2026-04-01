@@ -36,7 +36,7 @@ do_action('woocommerce_before_reset_password_form');
 				<span class="required" aria-hidden="true">*</span>
 				<span class="screen-reader-text"><?php esc_html_e('Required', 'woocommerce'); ?></span>
 			</label>
-			<input type="password" class="woocommerce-Input woocommerce-Input--text input-text w-full" name="password_1" id="password_1" autocomplete="new-password" required aria-required="true" />
+			<input type="password" class="<?php echo esc_attr(reonet_flowbite_input_class_string()); ?>" name="password_1" id="password_1" autocomplete="new-password" required aria-required="true" />
 		</p>
 
 		<p class="woocommerce-form-row woocommerce-form-row--last form-row form-row-last space-y-1">
@@ -45,7 +45,7 @@ do_action('woocommerce_before_reset_password_form');
 				<span class="required" aria-hidden="true">*</span>
 				<span class="screen-reader-text"><?php esc_html_e('Required', 'woocommerce'); ?></span>
 			</label>
-			<input type="password" class="woocommerce-Input woocommerce-Input--text input-text w-full" name="password_2" id="password_2" autocomplete="new-password" required aria-required="true" />
+			<input type="password" class="<?php echo esc_attr(reonet_flowbite_input_class_string()); ?>" name="password_2" id="password_2" autocomplete="new-password" required aria-required="true" />
 		</p>
 	</div>
 
@@ -56,7 +56,7 @@ do_action('woocommerce_before_reset_password_form');
 
 	<div class="pt-1">
 		<input type="hidden" name="wc_reset_password" value="true" />
-		<button type="submit" class="woocommerce-Button button btn btn-md btn-primary" value="<?php esc_attr_e('Save', 'woocommerce'); ?>">
+		<button type="submit" class="woocommerce-Button button <?php echo esc_attr(reonet_flowbite_button_class_string()); ?>" value="<?php esc_attr_e('Save', 'woocommerce'); ?>">
 			<?php esc_html_e('Save', 'woocommerce'); ?>
 		</button>
 	</div>
@@ -65,4 +65,3 @@ do_action('woocommerce_before_reset_password_form');
 </form>
 
 <?php do_action('woocommerce_after_reset_password_form'); ?>
-

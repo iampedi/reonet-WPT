@@ -183,13 +183,13 @@ do_action('woocommerce_before_cart'); ?>
 										<?php if (wc_coupons_enabled()) { ?>
 											<div class="coupon flex items-center gap-2">
 												<label for="coupon_code" class="screen-reader-text"><?php esc_html_e('Coupon:', 'woocommerce'); ?></label>
-												<input type="text" name="coupon_code" class="input-text h-10!" id="coupon_code" value="" placeholder="<?php esc_attr_e('Coupon code', 'woocommerce'); ?>" />
-												<button type="submit" class="btn btn-sm btn-primary" name="apply_coupon" value="<?php esc_attr_e('Apply coupon', 'woocommerce'); ?>"><?php esc_html_e('Apply coupon', 'woocommerce'); ?></button>
+												<input type="text" name="coupon_code" class="<?php echo esc_attr(reonet_flowbite_input_class_string()); ?>" id="coupon_code" value="" placeholder="<?php esc_attr_e('Coupon code', 'woocommerce'); ?>" />
+												<button type="submit" class="<?php echo esc_attr(reonet_flowbite_button_class_string()); ?>" name="apply_coupon" value="<?php esc_attr_e('Apply coupon', 'woocommerce'); ?>"><?php esc_html_e('Apply coupon', 'woocommerce'); ?></button>
 												<?php do_action('woocommerce_cart_coupon'); ?>
 											</div>
 										<?php } ?>
 
-										<button type="submit" class="btn btn-sm btn-secondary" name="update_cart" value="<?php esc_attr_e('Update cart', 'woocommerce'); ?>"><?php esc_html_e('Update cart', 'woocommerce'); ?></button>
+										<button type="submit" class="<?php echo esc_attr(reonet_flowbite_button_class_string('secondary')); ?>" name="update_cart" value="<?php esc_attr_e('Update cart', 'woocommerce'); ?>"><?php esc_html_e('Update cart', 'woocommerce'); ?></button>
 									</div>
 
 									<?php do_action('woocommerce_cart_actions'); ?>

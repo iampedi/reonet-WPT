@@ -47,12 +47,28 @@ add_action('wp_enqueue_scripts', function () {
     wp_enqueue_style('reonet-responsive', get_template_directory_uri() . '/assets/css/responsive.css', [], null);
 
     // JS files
+    $flowbite_js_path = get_template_directory() . '/node_modules/flowbite/dist/flowbite.min.js';
+    $flowbite_js_url  = get_template_directory_uri() . '/node_modules/flowbite/dist/flowbite.min.js';
+
+    if (file_exists($flowbite_js_path)) {
+        wp_enqueue_script(
+            'reonet-flowbite',
+            $flowbite_js_url,
+            [],
+            filemtime($flowbite_js_path),
+            true
+        );
+    }
+
     wp_enqueue_script('reonet-owl-carousel', get_template_directory_uri() . '/assets/js/owl.carousel.js', ['jquery'], '2.3.4', true);
     wp_enqueue_script('reonet-owl-nav', get_template_directory_uri() . '/assets/js/owl.navigation.js', ['jquery'], null, true);
     $app_js_path = get_template_directory() . '/assets/js/app.js';
     $app_js_url  = get_template_directory_uri() . '/assets/js/app.js';
 
     $app_deps = ['jquery'];
+    if (wp_script_is('reonet-flowbite', 'enqueued')) {
+        $app_deps[] = 'reonet-flowbite';
+    }
     if (wp_script_is('wc-cart-fragments', 'registered')) {
         $app_deps[] = 'wc-cart-fragments';
     }
@@ -65,3 +81,4 @@ add_action('wp_enqueue_scripts', function () {
         true
     );
 }, 20);
+

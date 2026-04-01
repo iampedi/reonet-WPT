@@ -33,17 +33,17 @@ do_action('woocommerce_before_add_to_cart_form'); ?>
 	<?php if (empty($available_variations) && false !== $available_variations) : ?>
 		<p class="stock out-of-stock"><?php echo esc_html(apply_filters('woocommerce_out_of_stock_message', __('This product is currently out of stock and unavailable.', 'woocommerce'))); ?></p>
 	<?php else : ?>
-		<div class="variations flex items-center gap-3 mb-4" cellspacing="0" role="presentation">
+		<div class="variations flex flex-wrap items-center gap-3 mb-4" cellspacing="0" role="presentation">
 			<?php foreach ($attributes as $attribute_name => $options) : ?>
 				<div class="horizontal-field">
-					<label class="font-semibold" for="<?php echo esc_attr(sanitize_title($attribute_name)); ?>"><?php echo wc_attribute_label($attribute_name);	?></label>
+					<label class="font-semibold whitespace-nowrap" for="<?php echo esc_attr(sanitize_title($attribute_name)); ?>"><?php echo wc_attribute_label($attribute_name);	?></label>
 					<?php
 					wc_dropdown_variation_attribute_options(
 						array(
 							'options'   => $options,
 							'attribute' => $attribute_name,
 							'product'   => $product,
-							'class'     => 'reonet-variation-select',
+							'class'     => 'reonet-variation-select block w-full min-w-40 rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20',
 						)
 					);
 					?>

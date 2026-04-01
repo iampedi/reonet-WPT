@@ -32,7 +32,7 @@ if (is_user_logged_in()) {
 				<span class="required" aria-hidden="true">*</span>
 				<span class="screen-reader-text"><?php esc_html_e('Required', 'woocommerce'); ?></span>
 			</label>
-			<input type="text" class="input-text w-full" name="username" id="username" autocomplete="username" required aria-required="true" />
+			<input type="text" class="<?php echo esc_attr(reonet_flowbite_input_class_string()); ?>" name="username" id="username" autocomplete="username" required aria-required="true" />
 		</p>
 
 		<p class="form-row form-row-last space-y-1">
@@ -41,7 +41,7 @@ if (is_user_logged_in()) {
 				<span class="required" aria-hidden="true">*</span>
 				<span class="screen-reader-text"><?php esc_html_e('Required', 'woocommerce'); ?></span>
 			</label>
-			<input class="input-text woocommerce-Input w-full" type="password" name="password" id="password" autocomplete="current-password" required aria-required="true" />
+			<input class="<?php echo esc_attr(reonet_flowbite_input_class_string()); ?>" type="password" name="password" id="password" autocomplete="current-password" required aria-required="true" />
 		</p>
 	</div>
 
@@ -49,7 +49,7 @@ if (is_user_logged_in()) {
 
 	<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
 		<label class="woocommerce-form__label woocommerce-form__label-for-checkbox woocommerce-form-login__rememberme inline-flex items-center gap-2">
-			<input class="woocommerce-form__input woocommerce-form__input-checkbox" name="rememberme" type="checkbox" id="rememberme" value="forever" />
+			<input class="<?php echo esc_attr(reonet_flowbite_checkbox_class_string()); ?>" name="rememberme" type="checkbox" id="rememberme" value="forever" />
 			<span><?php esc_html_e('Remember me', 'woocommerce'); ?></span>
 		</label>
 
@@ -61,7 +61,7 @@ if (is_user_logged_in()) {
 	<div class="pt-1">
 		<?php wp_nonce_field('woocommerce-login', 'woocommerce-login-nonce'); ?>
 		<input type="hidden" name="redirect" value="<?php echo esc_url($redirect); ?>" />
-		<button type="submit" class="woocommerce-button woocommerce-form-login__submit btn btn-md btn-primary" name="login" value="<?php esc_attr_e('Login', 'woocommerce'); ?>">
+		<button type="submit" class="woocommerce-button woocommerce-form-login__submit <?php echo esc_attr(reonet_flowbite_button_class_string()); ?>" name="login" value="<?php esc_attr_e('Login', 'woocommerce'); ?>">
 			<?php esc_html_e('Login', 'woocommerce'); ?>
 		</button>
 	</div>

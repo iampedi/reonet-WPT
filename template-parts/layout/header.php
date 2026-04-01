@@ -55,7 +55,7 @@ $cart_url = function_exists('wc_get_cart_url')
                <?php else : ?>
                   <div class="rounded-xl bg-gray-100 px-4 py-2 text-sm text-gray-600">
                      No menu has been assigned yet. Please go to
-                     <strong>Appearance → Menus</strong>
+                     <strong>Appearance â†’ Menus</strong>
                      and assign a menu to
                      <strong>Main Menu</strong>.
                   </div>
@@ -122,9 +122,10 @@ $cart_url = function_exists('wc_get_cart_url')
          <?php else : ?>
             <div class="text-sm text-gray-600">
                No menu has been assigned yet. Please create one in
-               <strong>Appearance → Menus</strong>.
+               <strong>Appearance â†’ Menus</strong>.
             </div>
          <?php endif; ?>
       </div>
    </div>
 </header>
+

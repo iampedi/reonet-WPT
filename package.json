@@ -5,7 +5,10 @@
   "main": "index.js",
   "scripts": {
     "dev": "tailwindcss -i ./assets/css/tailwind-src.css -o ./assets/css/tailwind.css --watch",
-    "build": "tailwindcss -i ./assets/css/tailwind-src.css -o ./assets/css/tailwind.css --minify"
+    "prebuild": "pnpm run check:bom",
+    "build": "tailwindcss -i ./assets/css/tailwind-src.css -o ./assets/css/tailwind.css --minify",
+    "check:bom": "node ./scripts/bom-guard.mjs",
+    "fix:bom": "node ./scripts/bom-guard.mjs --fix"
   },
   "keywords": [],
   "author": "",
@@ -17,5 +20,8 @@
     "autoprefixer": "^10.4.27",
     "postcss": "^8.5.8",
     "tailwindcss": "^4.2.2"
+  },
+  "dependencies": {
+    "flowbite": "^4.0.1"
   }
 }
