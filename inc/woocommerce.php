@@ -607,18 +607,16 @@ function reonet_remove_additional_information_tab($tabs)
 add_filter('woocommerce_product_tabs', 'reonet_remove_additional_information_tab', 98);
 
 /**
- * Keep admin product type selector on "Simple product" only.
+ * Keep all default WooCommerce product types available in admin.
  *
  * @param array $types Registered product types.
  * @return array
  */
-function reonet_limit_product_type_selector_to_simple($types)
+function reonet_keep_all_product_types_in_selector($types)
 {
-  return array(
-    'simple' => __('Simple product', 'woocommerce'),
-  );
+  return $types;
 }
-add_filter('product_type_selector', 'reonet_limit_product_type_selector_to_simple');
+add_filter('product_type_selector', 'reonet_keep_all_product_types_in_selector');
 
 /**
  * Default product type for newly created products.

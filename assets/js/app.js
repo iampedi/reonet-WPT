@@ -58,6 +58,56 @@ j(document).ready(function () {
     refreshHeaderCartBadge
   );
 
+  const setupCartAutoUpdateOnQuantityChange = function () {
+    let updateTimer = null;
+    let isUpdating = false;
+
+    j(document.body)
+      .off("input.reonetCartQty change.reonetCartQty", ".woocommerce-cart-form input.qty")
+      .on(
+        "input.reonetCartQty change.reonetCartQty",
+        ".woocommerce-cart-form input.qty",
+        function () {
+          const $input = j(this);
+          const $cartForm = $input.closest("form.woocommerce-cart-form");
+
+          if (!$cartForm.length) {
+            return;
+          }
+
+          if (updateTimer) {
+            window.clearTimeout(updateTimer);
+          }
+
+          updateTimer = window.setTimeout(function () {
+            if (isUpdating) {
+              return;
+            }
+
+            const $updateButton = $cartForm.find('button[name="update_cart"]');
+            if (!$updateButton.length) {
+              return;
+            }
+
+            isUpdating = true;
+            $updateButton.prop("disabled", false);
+            $updateButton.trigger("click");
+          }, 450);
+        }
+      );
+
+    j(document.body)
+      .off("updated_wc_div.reonetCartQty updated_cart_totals.reonetCartQty wc_cart_emptied.reonetCartQty")
+      .on(
+        "updated_wc_div.reonetCartQty updated_cart_totals.reonetCartQty wc_cart_emptied.reonetCartQty",
+        function () {
+          isUpdating = false;
+        }
+      );
+  };
+
+  setupCartAutoUpdateOnQuantityChange();
+
   const ensureToastContainer = function () {
     let container = j("#reonet-toast-container");
 
@@ -109,12 +159,20 @@ j(document).ready(function () {
       return;
     }
 
+    const now = Date.now();
+    const signature = `${type}::${String(message).trim()}`;
+    const lastToast = window.reonetLastToastMeta || { signature: "", at: 0 };
+    if (lastToast.signature === signature && now - lastToast.at < 1600) {
+      return;
+    }
+    window.reonetLastToastMeta = { signature, at: now };
+
     const appearance = getToastAppearance(type);
     const toastId = `reonet-toast-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
     const container = ensureToastContainer();
 
     const toast = j(`
-      <div id="${toastId}" class="reonet-toast pointer-events-auto flex w-full items-start gap-3 rounded-lg border p-4 text-sm shadow-lg transition-all duration-200 opacity-0 translate-y-2 ${appearance.wrapper}" role="alert" aria-live="polite">
+      <div id="${toastId}" class="reonet-toast pointer-events-auto flex w-full items-start gap-3 rounded-lg border p-4 text-sm shadow-lg transition-all duration-300 opacity-0 translate-y-2 translate-x-3 ${appearance.wrapper}" role="alert" aria-live="polite">
         <i class="ph-duotone text-xl ${appearance.icon}"></i>
         <div class="min-w-0 flex-1 leading-tight">
           <div class="reonet-toast-message"></div>
@@ -149,14 +207,254 @@ j(document).ready(function () {
 
     container.append(toast);
     window.requestAnimationFrame(function () {
-      toast.removeClass("opacity-0 translate-y-2").addClass("opacity-100 translate-y-0");
+      toast
+        .removeClass("opacity-0 translate-y-2 translate-x-3")
+        .addClass("opacity-100 translate-y-0 translate-x-0");
     });
 
     window.setTimeout(removeToast, duration);
   };
 
+  const getAddToCartEndpoint = function () {
+    if (
+      typeof window.wc_add_to_cart_params !== "undefined" &&
+      window.wc_add_to_cart_params.wc_ajax_url
+    ) {
+      return window.wc_add_to_cart_params.wc_ajax_url.replace("%%endpoint%%", "add_to_cart");
+    }
+
+    return `${window.location.origin}/?wc-ajax=add_to_cart`;
+  };
+
+  const setupSingleProductAjaxAddToCart = function () {
+    // Scenario switched: keep native WooCommerce submit/refresh flow.
+    return;
+
+    // Force add-to-cart buttons to non-submit to avoid native form POST refresh.
+    j("form.cart .single_add_to_cart_button").attr("type", "button");
+
+    if (!window.reonetAjaxAddToCartClickBlockBound) {
+      window.reonetAjaxAddToCartClickBlockBound = true;
+
+      // Capture-phase default prevention blocks native submit before other listeners.
+      document.addEventListener(
+        "click",
+        function (event) {
+          const button = event.target.closest("form.cart .single_add_to_cart_button");
+
+          if (!button || button.classList.contains("disabled")) {
+            return;
+          }
+
+          event.preventDefault();
+        },
+        true
+      );
+    }
+
+    if (!window.reonetAjaxAddToCartSubmitBlockBound) {
+      window.reonetAjaxAddToCartSubmitBlockBound = true;
+
+      document.addEventListener(
+        "submit",
+        function (event) {
+          const form = event.target;
+
+          if (!(form instanceof HTMLFormElement)) {
+            return;
+          }
+
+          if (!form.matches("form.cart")) {
+            return;
+          }
+
+          event.preventDefault();
+          event.stopPropagation();
+        },
+        true
+      );
+    }
+
+    if (!window.reonetNativeCartSubmitPatched) {
+      window.reonetNativeCartSubmitPatched = true;
+      const nativeFormSubmit = HTMLFormElement.prototype.submit;
+
+      HTMLFormElement.prototype.submit = function () {
+        try {
+          if (this && this.matches && this.matches("form.cart")) {
+            const submitEvent = new Event("submit", {
+              bubbles: true,
+              cancelable: true,
+            });
+            const notCancelled = this.dispatchEvent(submitEvent);
+
+            // If any handler prevented default, never fall through to native submit.
+            if (!notCancelled) {
+              return;
+            }
+          }
+        } catch (e) {
+          // Fall back to native submit below.
+        }
+
+        return nativeFormSubmit.call(this);
+      };
+    }
+
+    const isAjaxEligibleForm = function ($form) {
+      return $form.is("form.cart") && $form.find(".single_add_to_cart_button").length > 0;
+    };
+
+    const submitViaAjax = function ($form, $button) {
+      if ($form.data("reonetIsSubmitting")) {
+        return;
+      }
+
+      const payload = $form.serializeArray();
+      const submitName = $button.attr("name") || "add-to-cart";
+      const submitValue = $button.val() || $button.attr("value") || "";
+      const hasSubmitValue = payload.some((item) => item.name === submitName);
+
+      if (!hasSubmitValue) {
+        payload.push({
+          name: submitName,
+          value: submitValue,
+        });
+      }
+
+      const endpoint = getAddToCartEndpoint();
+      const cartUrl =
+        (typeof window.wc_add_to_cart_params !== "undefined" &&
+          window.wc_add_to_cart_params.cart_url) ||
+        "/cart/";
+
+      $form.data("reonetIsSubmitting", true);
+      $button.addClass("loading").prop("disabled", true);
+
+      j.ajax({
+        type: "POST",
+        url: endpoint,
+        data: j.param(payload),
+        success: function (response) {
+          if (response?.error && response?.product_url) {
+            window.location = response.product_url;
+            return;
+          }
+
+          if (response?.fragments) {
+            j(document.body).trigger("added_to_cart", [
+              response.fragments,
+              response.cart_hash,
+              $button,
+            ]);
+          } else {
+            j(document.body).trigger("wc_fragment_refresh");
+          }
+
+          const actionHtml = `<a href="${cartUrl}">${
+            window.wc_add_to_cart_params?.i18n_view_cart || "View cart"
+          }</a>`;
+
+          showToast({
+            message: "Product added to cart.",
+            actionHtml,
+            type: "success",
+          });
+        },
+        error: function () {
+          showToast({
+            message: "Could not add product to cart. Please try again.",
+            type: "error",
+          });
+        },
+        complete: function () {
+          $button.removeClass("loading").prop("disabled", false);
+          $form.data("reonetIsSubmitting", false);
+          $button.data("reonetClickLocked", false);
+        },
+      });
+    };
+
+    j(document.body)
+      .off("click.reonetAjaxAddToCart", "form.cart .single_add_to_cart_button")
+      .on("click.reonetAjaxAddToCart", "form.cart .single_add_to_cart_button", function (event) {
+        const $button = j(this);
+        const $form = $button.closest("form.cart");
+
+        if (!isAjaxEligibleForm($form) || $button.hasClass("disabled")) {
+          return;
+        }
+
+        if ($button.data("reonetClickLocked")) {
+          event.preventDefault();
+          event.stopPropagation();
+          event.stopImmediatePropagation();
+          return false;
+        }
+
+        $button.data("reonetClickLocked", true);
+
+        event.preventDefault();
+        event.stopPropagation();
+        event.stopImmediatePropagation();
+
+        submitViaAjax($form, $button);
+        return false;
+      });
+
+    // Block native submit to prevent duplicate requests/page refresh on single product forms.
+    j(document.body)
+      .off("submit.reonetAjaxAddToCart", "form.cart")
+      .on("submit.reonetAjaxAddToCart", "form.cart", function (event) {
+        const $form = j(this);
+
+        if (!isAjaxEligibleForm($form)) {
+          return;
+        }
+
+        event.preventDefault();
+        event.stopPropagation();
+        return false;
+      });
+  };
+
+  const consumeSingleProductToastIntent = function () {
+    if (!j("body").hasClass("single-product")) {
+      return false;
+    }
+
+    try {
+      const rawIntent = window.sessionStorage.getItem("reonetSingleProductToastIntent");
+
+      if (!rawIntent) {
+        return false;
+      }
+
+      window.sessionStorage.removeItem("reonetSingleProductToastIntent");
+
+      const parsedIntent = JSON.parse(rawIntent);
+      const submittedAt = Number(parsedIntent?.at || 0);
+      const maxAgeMs = 2 * 60 * 1000;
+
+      if (!submittedAt) {
+        return false;
+      }
+
+      return Date.now() - submittedAt <= maxAgeMs;
+    } catch (error) {
+      window.sessionStorage.removeItem("reonetSingleProductToastIntent");
+      return false;
+    }
+  };
+
+  let shouldConvertSingleProductNotices = consumeSingleProductToastIntent();
+
   const convertSingleProductNoticesToToasts = function () {
     if (!j("body").hasClass("single-product")) {
+      return;
+    }
+
+    if (!shouldConvertSingleProductNotices) {
       return;
     }
 
@@ -192,13 +490,12 @@ j(document).ready(function () {
 
       notice.remove();
     });
+
+    shouldConvertSingleProductNotices = false;
   };
 
   convertSingleProductNoticesToToasts();
-  j(document.body).on(
-    "added_to_cart wc_fragments_loaded wc_fragments_refreshed",
-    convertSingleProductNoticesToToasts
-  );
+  setupSingleProductAjaxAddToCart();
 
   // Loader
   window.addEventListener("load", function () {
@@ -301,6 +598,7 @@ j(document).ready(function () {
   j(".variations_form").each(function () {
     const form = j(this);
     const product = form.closest(".product");
+    const hasDefaultVariation = String(form.data("has-default-variation")) === "yes";
     const variationNotice = product.find(".reonet-variation-notice").first();
     const variationNoticeIcon = variationNotice
       .find(".reonet-variation-notice-icon")
@@ -314,6 +612,25 @@ j(document).ready(function () {
     const productPrice = product.find(".reonet-product-price").first();
     const productPriceValue = productPrice.find(".price").first();
     const variationSelects = form.find(".reonet-variation-select");
+    const initialAttributeSelections = {};
+
+    variationNotice.addClass("hidden");
+    if (variationNoticeText.length) {
+      variationNoticeText.text("");
+    } else {
+      variationNotice.text("");
+    }
+
+    variationSelects.each(function () {
+      const select = j(this);
+      const attributeName = select.data("attribute_name");
+
+      if (!attributeName) {
+        return;
+      }
+
+      initialAttributeSelections[attributeName] = select.val() || "";
+    });
 
     let defaultDescription = shortDescription.html();
     let defaultPriceHtml = productPriceValue.html() || "";
@@ -496,6 +813,31 @@ j(document).ready(function () {
       missingSelect.trigger("focus");
     };
 
+    const applyDefaultVariationSelection = function () {
+      if (!hasDefaultVariation) {
+        return;
+      }
+
+      variationSelects.each(function () {
+        const select = j(this);
+        const attributeName = select.data("attribute_name");
+
+        if (!attributeName) {
+          return;
+        }
+
+        const currentValue = select.val();
+        const defaultValue = initialAttributeSelections[attributeName] || "";
+
+        if (!currentValue && defaultValue) {
+          select.val(defaultValue);
+        }
+      });
+
+      form.trigger("check_variations");
+      form.trigger("woocommerce_variation_select_change");
+    };
+
     const formElement = form.get(0);
 
     if (formElement && !formElement.dataset.reonetVariationNoticeBound) {
@@ -513,7 +855,19 @@ j(document).ready(function () {
           const $button = j(button);
 
           if (!$button.hasClass("disabled")) {
-            showVariationNotice("");
+            clearAllVariationFieldStates();
+
+            try {
+              window.sessionStorage.setItem(
+                "reonetSingleProductToastIntent",
+                JSON.stringify({
+                  at: Date.now(),
+                })
+              );
+            } catch (error) {
+              // Ignore storage errors and keep native submission.
+            }
+
             return;
           }
 
@@ -525,10 +879,10 @@ j(document).ready(function () {
             $button.hasClass("wc-variation-selection-needed") &&
             window.wc_add_to_cart_variation_params?.i18n_make_a_selection_text
           ) {
-            showVariationNotice(
-              window.wc_add_to_cart_variation_params.i18n_make_a_selection_text,
-              "warning"
-            );
+            showToast({
+              message: window.wc_add_to_cart_variation_params.i18n_make_a_selection_text,
+              type: "error",
+            });
             focusMissingVariationField();
             return;
           }
@@ -537,10 +891,29 @@ j(document).ready(function () {
             $button.hasClass("wc-variation-is-unavailable") &&
             window.wc_add_to_cart_variation_params?.i18n_unavailable_text
           ) {
-            showVariationNotice(
-              window.wc_add_to_cart_variation_params.i18n_unavailable_text,
-              "error"
-            );
+            showToast({
+              message: window.wc_add_to_cart_variation_params.i18n_unavailable_text,
+              type: "error",
+            });
+            clearAllVariationFieldStates();
+            variationSelects.each(function () {
+              const select = j(this);
+              if (!select.val()) {
+                select.addClass("reonet-variation-select-error");
+                select.attr("aria-invalid", "true");
+                select
+                  .closest(".horizontal-field")
+                  .find("label")
+                  .addClass("variation-field-label-error");
+              }
+            });
+          }
+
+          variationNotice.addClass("hidden");
+          if (variationNoticeText.length) {
+            variationNoticeText.text("");
+          } else {
+            variationNotice.text("");
           }
         },
         true
@@ -553,6 +926,13 @@ j(document).ready(function () {
       if (select.val()) {
         clearVariationFieldState(select);
       }
+
+      variationNotice.addClass("hidden");
+      if (variationNoticeText.length) {
+        variationNoticeText.text("");
+      } else {
+        variationNotice.text("");
+      }
     });
 
     const updateVariationContent = function (variation) {
@@ -561,8 +941,13 @@ j(document).ready(function () {
       const variationPriceHtml = matchedVariation?.price_html || "";
       const variationId = matchedVariation?.variation_id;
 
-      showVariationNotice("");
       clearAllVariationFieldStates();
+      variationNotice.addClass("hidden");
+      if (variationNoticeText.length) {
+        variationNoticeText.text("");
+      } else {
+        variationNotice.text("");
+      }
 
       if (variationId) {
         form
@@ -588,11 +973,30 @@ j(document).ready(function () {
     });
 
     form.on("reset_data", function () {
-      showVariationNotice("");
+      if (hasDefaultVariation) {
+        clearAllVariationFieldStates();
+        variationNotice.addClass("hidden");
+        if (variationNoticeText.length) {
+          variationNoticeText.text("");
+        } else {
+          variationNotice.text("");
+        }
+        applyDefaultVariationSelection();
+        return;
+      }
+
       clearAllVariationFieldStates();
+      variationNotice.addClass("hidden");
+      if (variationNoticeText.length) {
+        variationNoticeText.text("");
+      } else {
+        variationNotice.text("");
+      }
       renderMainPrice(defaultPriceHtml);
       renderShortDescription(defaultDescription);
     });
+
+    applyDefaultVariationSelection();
   });
 });
 

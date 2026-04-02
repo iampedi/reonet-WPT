@@ -648,3 +648,12 @@ img.logo-img {
   background-repeat: repeat-x;
   background-position-y: center;
 }
+
+.reonet-variation-select-error {
+  border-color: #dc2626 !important;
+  box-shadow: 0 0 0 1px #dc2626 !important;
+}
+
+.variation-field-label-error {
+  color: #b91c1c !important;
+}

@@ -23,11 +23,24 @@ global $product;
 $attribute_keys  = array_keys($attributes);
 $variations_json = wp_json_encode($available_variations);
 $variations_attr = function_exists('wc_esc_json') ? wc_esc_json($variations_json) : _wp_specialchars($variations_json, ENT_QUOTES, 'UTF-8', true);
+$default_attribute_values = array();
+$has_default_variation = !empty($attributes);
+
+// Read defaults using WooCommerce API to avoid key mismatches (pa_* vs custom attributes).
+foreach (array_keys($attributes) as $attribute_name) {
+	$default_value = (string) $product->get_variation_default_attribute($attribute_name);
+	$default_value = trim($default_value);
+	$default_attribute_values[$attribute_name] = $default_value;
+
+	if ($default_value === '') {
+		$has_default_variation = false;
+	}
+}
 
 do_action('woocommerce_before_add_to_cart_form'); ?>
 
 <form class="variations_form cart" action="<?php echo esc_url(apply_filters('woocommerce_add_to_cart_form_action', $product->get_permalink())); ?>" method="post" enctype='multipart/form-data' data-product_id="<?php echo absint($product->get_id()); ?>" data-product_variations="<?php echo $variations_attr; // WPCS: XSS ok. 
-																																																																																																																																											?>">
+																																																																																																																																											?>" data-has-default-variation="<?php echo esc_attr($has_default_variation ? 'yes' : 'no'); ?>">
 	<?php do_action('woocommerce_before_variations_form'); ?>
 
 	<?php if (empty($available_variations) && false !== $available_variations) : ?>
@@ -44,21 +57,25 @@ do_action('woocommerce_before_add_to_cart_form'); ?>
 							'attribute' => $attribute_name,
 							'product'   => $product,
 							'class'     => 'reonet-variation-select block w-full min-w-40 rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20',
+							'selected'  => ($has_default_variation && !empty($default_attribute_values[$attribute_name])) ? $default_attribute_values[$attribute_name] : false,
+							'show_option_none' => $has_default_variation ? false : __('Choose an option', 'woocommerce'),
 						)
 					);
 					?>
 				</div>
 			<?php endforeach; ?>
-			<?php
-			/**
-			 * Filters the reset variation button.
-			 *
-			 * @since 2.5.0
-			 *
-			 * @param string  $button The reset variation button HTML.
-			 */
-			echo wp_kses_post(apply_filters('woocommerce_reset_variations_link', '<a class="reset_variations text-danger flex" href="#" aria-label="' . esc_attr__('Clear options', 'woocommerce') . '"><i class="ph ph-x-circle text-2xl text-muted-forground duration-300 hover:text-danger"></i></a>'));
-			?>
+			<?php if (!$has_default_variation) : ?>
+				<?php
+				/**
+				 * Filters the reset variation button.
+				 *
+				 * @since 2.5.0
+				 *
+				 * @param string  $button The reset variation button HTML.
+				 */
+				echo wp_kses_post(apply_filters('woocommerce_reset_variations_link', '<a class="reset_variations text-danger flex" href="#" aria-label="' . esc_attr__('Clear options', 'woocommerce') . '"><i class="ph ph-x-circle text-2xl text-muted-forground duration-300 hover:text-danger"></i></a>'));
+				?>
+			<?php endif; ?>
 		</div>
 		<div class="reset_variations_alert screen-reader-text" role="alert" aria-live="polite" aria-relevant="all"></div>
 		<?php do_action('woocommerce_after_variations_table'); ?>
