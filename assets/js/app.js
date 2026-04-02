@@ -418,55 +418,13 @@ j(document).ready(function () {
       });
   };
 
-  const consumeSingleProductToastIntent = function () {
-    if (!j("body").hasClass("single-product")) {
-      return false;
-    }
-
-    try {
-      const rawIntent = window.sessionStorage.getItem("reonetSingleProductToastIntent");
-
-      if (!rawIntent) {
-        return false;
-      }
-
-      window.sessionStorage.removeItem("reonetSingleProductToastIntent");
-
-      const parsedIntent = JSON.parse(rawIntent);
-      const submittedAt = Number(parsedIntent?.at || 0);
-      const maxAgeMs = 2 * 60 * 1000;
-
-      if (!submittedAt) {
-        return false;
-      }
-
-      return Date.now() - submittedAt <= maxAgeMs;
-    } catch (error) {
-      window.sessionStorage.removeItem("reonetSingleProductToastIntent");
-      return false;
-    }
-  };
-
-  let shouldConvertSingleProductNotices = consumeSingleProductToastIntent();
-
   const convertSingleProductNoticesToToasts = function () {
     if (!j("body").hasClass("single-product")) {
       return;
     }
 
-    if (!shouldConvertSingleProductNotices) {
-      return;
-    }
-
-    j(
-      ".woocommerce-notices-wrapper .woocommerce-message, .woocommerce-notices-wrapper .woocommerce-error, .woocommerce-notices-wrapper .woocommerce-info"
-    ).each(function () {
+    j(".woocommerce .woocommerce-message, .woocommerce-notices-wrapper .woocommerce-message").each(function () {
       const notice = j(this);
-      const type = notice.hasClass("woocommerce-error")
-        ? "error"
-        : notice.hasClass("woocommerce-message")
-          ? "success"
-          : "info";
 
       const messageContainer = notice.find(".woocommerce-message-content > div").first();
       const messageHtml = messageContainer.length
@@ -485,13 +443,11 @@ j(document).ready(function () {
       showToast({
         message: messageHtml,
         actionHtml,
-        type,
+        type: "success",
       });
 
       notice.remove();
     });
-
-    shouldConvertSingleProductNotices = false;
   };
 
   convertSingleProductNoticesToToasts();
@@ -856,18 +812,6 @@ j(document).ready(function () {
 
           if (!$button.hasClass("disabled")) {
             clearAllVariationFieldStates();
-
-            try {
-              window.sessionStorage.setItem(
-                "reonetSingleProductToastIntent",
-                JSON.stringify({
-                  at: Date.now(),
-                })
-              );
-            } catch (error) {
-              // Ignore storage errors and keep native submission.
-            }
-
             return;
           }
 
