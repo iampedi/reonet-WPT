@@ -91,8 +91,6 @@ $calculator_text          = '';
 			<?php echo '<p class="woocommerce-shipping-contents"><small>' . esc_html($package_details) . '</small></p>'; ?>
 		<?php endif; ?>
 
-		<?php if ($show_shipping_calculator) : ?>
-			<?php woocommerce_shipping_calculator($calculator_text); ?>
-		<?php endif; ?>
+		<?php // Shipping calculator intentionally hidden on cart page. ?>
 	</div>
 </div>

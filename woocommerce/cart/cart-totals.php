@@ -44,11 +44,6 @@ defined('ABSPATH') || exit;
 			<?php do_action('woocommerce_cart_totals_before_shipping'); ?>
 			<?php wc_cart_totals_shipping_html(); ?>
 			<?php do_action('woocommerce_cart_totals_after_shipping'); ?>
-		<?php elseif (WC()->cart->needs_shipping() && 'yes' === get_option('woocommerce_enable_shipping_calc')) : ?>
-			<div class="shipping flex items-start justify-between gap-3 p-3">
-				<div class="font-medium text-gray-700"><?php esc_html_e('Shipping', 'woocommerce'); ?></div>
-				<div class="text-right"><?php woocommerce_shipping_calculator(); ?></div>
-			</div>
 		<?php endif; ?>
 
 		<?php foreach (WC()->cart->get_fees() as $fee) : ?>
