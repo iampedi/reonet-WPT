@@ -49,7 +49,7 @@ if (! $notices) {
 	<div class="woocommerce-message mb-4 flex items-start justify-between gap-4 rounded-lg border border-green-300 bg-green-50 p-4 text-sm text-green-800" <?php echo wc_get_notice_data_attr($notice); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped 
 																																																						?> role="alert">
 		<div class="woocommerce-message-content flex items-center gap-2">
-			<i class="ph-duotone ph-basket text-green-600 text-2xl"></i>
+			<i class="ph-duotone ph-check-circle text-green-600 text-2xl"></i>
 			<div><?php echo wp_kses_post($message_text); ?></div>
 		</div>
 

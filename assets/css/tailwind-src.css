@@ -26,8 +26,7 @@
   --danger: oklch(64.5% 0.246 16.439);
 }
 
-.container,
-.reonet-woocommerce-page {
+.container {
   @apply max-w-6xl px-4 mx-auto;
 }
 
@@ -191,6 +190,10 @@ del .woocommerce-Price-amount bdi {
   @apply text-green text-lg font-semibold;
 }
 
+.cart-item-pricing .woocommerce-Price-amount bdi {
+  @apply text-green text-base font-medium;
+}
+
 .price-per-unit ins {
   @apply no-underline;
 }
@@ -237,22 +240,6 @@ del .woocommerce-Price-amount bdi {
 }
 
 /* Cart Page */
-.reonet-cart-page {
-  @apply py-8 sm:py-12;
-}
-
-.reonet-cart-page .reonet-cart-header h1 {
-  @apply text-2xl font-semibold;
-}
-
-.reonet-cart-page .reonet-cart-header p {
-  @apply text-gray-600;
-}
-
-.reonet-cart-items {
-  @apply rounded-2xl border border-gray-200 bg-white p-4 sm:p-6;
-}
-
 .reonet-cart-page .shop_table {
   @apply w-full rounded-2xl overflow-hidden border border-gray-200 bg-white;
 }
@@ -275,36 +262,11 @@ del .woocommerce-Price-amount bdi {
 }
 
 .reonet-cart-table .product-quantity .qty {
-  @apply w-full max-w-24;
+  @apply w-full max-w-20;
 }
 
 .reonet-cart-table .actions {
   @apply bg-gray-50;
-}
-
-.reonet-cart-summary .cart_totals {
-  @apply rounded-2xl border border-gray-200 bg-white p-4 sm:p-6 sticky top-4;
-}
-
-.reonet-cart-summary .cart_totals h2 {
-  @apply text-xl font-semibold mb-4;
-}
-
-.reonet-cart-summary .shop_table {
-  @apply rounded-xl border border-gray-200 overflow-hidden;
-}
-
-.reonet-cart-summary .shop_table th,
-.reonet-cart-summary .shop_table td {
-  @apply p-3;
-}
-
-.reonet-cart-summary .wc-proceed-to-checkout {
-  @apply mt-4;
-}
-
-.reonet-cart-summary .checkout-button {
-  @apply h-12 px-6 rounded-full bg-primary text-white inline-flex items-center justify-center w-full hover:bg-green duration-300;
 }
 
 .reonet-cart-cross-sells .cross-sells {
@@ -516,6 +478,3 @@ del .woocommerce-Price-amount bdi {
 .woocommerce-account .woocommerce-table--my_account_orders thead th {
   @apply bg-gray-100 text-gray-700 font-semibold;
 }
-
-
-

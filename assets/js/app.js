@@ -8,7 +8,7 @@ j(document).ready(function () {
     ) {
       return window.wc_cart_fragments_params.wc_ajax_url.replace(
         "%%endpoint%%",
-        "get_refreshed_fragments"
+        "get_refreshed_fragments",
       );
     }
 
@@ -55,15 +55,34 @@ j(document).ready(function () {
 
   j(document.body).on(
     "updated_wc_div updated_cart_totals removed_from_cart added_to_cart wc_cart_emptied",
-    refreshHeaderCartBadge
+    refreshHeaderCartBadge,
   );
+
+  const disableCartNoticeAutoScroll = function () {
+    if (!j("body").hasClass("woocommerce-cart")) {
+      return;
+    }
+
+    const disableScrollToNotices = function () {
+      if (typeof j.scroll_to_notices === "function") {
+        j.scroll_to_notices = function () {};
+      }
+    };
+
+    disableScrollToNotices();
+    window.setTimeout(disableScrollToNotices, 0);
+    window.setTimeout(disableScrollToNotices, 250);
+  };
 
   const setupCartAutoUpdateOnQuantityChange = function () {
     let updateTimer = null;
     let isUpdating = false;
 
     j(document.body)
-      .off("input.reonetCartQty change.reonetCartQty", ".woocommerce-cart-form input.qty")
+      .off(
+        "input.reonetCartQty change.reonetCartQty",
+        ".woocommerce-cart-form input.qty",
+      )
       .on(
         "input.reonetCartQty change.reonetCartQty",
         ".woocommerce-cart-form input.qty",
@@ -93,19 +112,22 @@ j(document).ready(function () {
             $updateButton.prop("disabled", false);
             $updateButton.trigger("click");
           }, 450);
-        }
+        },
       );
 
     j(document.body)
-      .off("updated_wc_div.reonetCartQty updated_cart_totals.reonetCartQty wc_cart_emptied.reonetCartQty")
+      .off(
+        "updated_wc_div.reonetCartQty updated_cart_totals.reonetCartQty wc_cart_emptied.reonetCartQty",
+      )
       .on(
         "updated_wc_div.reonetCartQty updated_cart_totals.reonetCartQty wc_cart_emptied.reonetCartQty",
         function () {
           isUpdating = false;
-        }
+        },
       );
   };
 
+  disableCartNoticeAutoScroll();
   setupCartAutoUpdateOnQuantityChange();
 
   const ensureToastContainer = function () {
@@ -113,7 +135,7 @@ j(document).ready(function () {
 
     if (!container.length) {
       j("body").append(
-        '<div id="reonet-toast-container" class="fixed bottom-4 left-4 z-[9999] flex w-[calc(100%-2rem)] max-w-sm flex-col gap-3 sm:bottom-6 sm:left-6"></div>'
+        '<div id="reonet-toast-container" class="fixed bottom-4 left-4 z-[9999] flex w-[calc(100%-2rem)] max-w-sm flex-col gap-3 sm:bottom-6 sm:left-6"></div>',
       );
       container = j("#reonet-toast-container");
     }
@@ -124,8 +146,8 @@ j(document).ready(function () {
   const getToastAppearance = function (type) {
     if (type === "error") {
       return {
-        wrapper: "border-red-300 bg-red-50 text-red-800",
-        icon: "ph-warning-octagon text-red-600",
+        wrapper: "border-red-300 bg-red-50 text-danger",
+        icon: "ph-info text-danger",
       };
     }
 
@@ -153,7 +175,7 @@ j(document).ready(function () {
     message = "",
     actionHtml = "",
     type = "info",
-    duration = 4500,
+    duration = 8000,
   }) {
     if (!message) {
       return;
@@ -172,7 +194,7 @@ j(document).ready(function () {
     const container = ensureToastContainer();
 
     const toast = j(`
-      <div id="${toastId}" class="reonet-toast pointer-events-auto flex w-full items-start gap-3 rounded-lg border p-4 text-sm shadow-lg transition-all duration-300 opacity-0 translate-y-2 translate-x-3 ${appearance.wrapper}" role="alert" aria-live="polite">
+      <div id="${toastId}" class="reonet-toast pointer-events-auto flex w-full items-center gap-3 rounded-lg border p-4 text-sm shadow-lg transition-all duration-300 opacity-0 translate-y-2 translate-x-3 ${appearance.wrapper}" role="alert" aria-live="polite">
         <i class="ph-duotone text-xl ${appearance.icon}"></i>
         <div class="min-w-0 flex-1 leading-tight">
           <div class="reonet-toast-message"></div>
@@ -197,7 +219,9 @@ j(document).ready(function () {
     }
 
     const removeToast = function () {
-      toast.removeClass("opacity-100 translate-y-0").addClass("opacity-0 translate-y-2");
+      toast
+        .removeClass("opacity-100 translate-y-0")
+        .addClass("opacity-0 translate-y-2");
       window.setTimeout(function () {
         toast.remove();
       }, 220);
@@ -220,7 +244,10 @@ j(document).ready(function () {
       typeof window.wc_add_to_cart_params !== "undefined" &&
       window.wc_add_to_cart_params.wc_ajax_url
     ) {
-      return window.wc_add_to_cart_params.wc_ajax_url.replace("%%endpoint%%", "add_to_cart");
+      return window.wc_add_to_cart_params.wc_ajax_url.replace(
+        "%%endpoint%%",
+        "add_to_cart",
+      );
     }
 
     return `${window.location.origin}/?wc-ajax=add_to_cart`;
@@ -240,7 +267,9 @@ j(document).ready(function () {
       document.addEventListener(
         "click",
         function (event) {
-          const button = event.target.closest("form.cart .single_add_to_cart_button");
+          const button = event.target.closest(
+            "form.cart .single_add_to_cart_button",
+          );
 
           if (!button || button.classList.contains("disabled")) {
             return;
@@ -248,7 +277,7 @@ j(document).ready(function () {
 
           event.preventDefault();
         },
-        true
+        true,
       );
     }
 
@@ -271,7 +300,7 @@ j(document).ready(function () {
           event.preventDefault();
           event.stopPropagation();
         },
-        true
+        true,
       );
     }
 
@@ -302,7 +331,10 @@ j(document).ready(function () {
     }
 
     const isAjaxEligibleForm = function ($form) {
-      return $form.is("form.cart") && $form.find(".single_add_to_cart_button").length > 0;
+      return (
+        $form.is("form.cart") &&
+        $form.find(".single_add_to_cart_button").length > 0
+      );
     };
 
     const submitViaAjax = function ($form, $button) {
@@ -377,30 +409,34 @@ j(document).ready(function () {
 
     j(document.body)
       .off("click.reonetAjaxAddToCart", "form.cart .single_add_to_cart_button")
-      .on("click.reonetAjaxAddToCart", "form.cart .single_add_to_cart_button", function (event) {
-        const $button = j(this);
-        const $form = $button.closest("form.cart");
+      .on(
+        "click.reonetAjaxAddToCart",
+        "form.cart .single_add_to_cart_button",
+        function (event) {
+          const $button = j(this);
+          const $form = $button.closest("form.cart");
 
-        if (!isAjaxEligibleForm($form) || $button.hasClass("disabled")) {
-          return;
-        }
+          if (!isAjaxEligibleForm($form) || $button.hasClass("disabled")) {
+            return;
+          }
 
-        if ($button.data("reonetClickLocked")) {
+          if ($button.data("reonetClickLocked")) {
+            event.preventDefault();
+            event.stopPropagation();
+            event.stopImmediatePropagation();
+            return false;
+          }
+
+          $button.data("reonetClickLocked", true);
+
           event.preventDefault();
           event.stopPropagation();
           event.stopImmediatePropagation();
+
+          submitViaAjax($form, $button);
           return false;
-        }
-
-        $button.data("reonetClickLocked", true);
-
-        event.preventDefault();
-        event.stopPropagation();
-        event.stopImmediatePropagation();
-
-        submitViaAjax($form, $button);
-        return false;
-      });
+        },
+      );
 
     // Block native submit to prevent duplicate requests/page refresh on single product forms.
     j(document.body)
@@ -423,19 +459,17 @@ j(document).ready(function () {
       return;
     }
 
-    j(".woocommerce .woocommerce-message, .woocommerce-notices-wrapper .woocommerce-message").each(function () {
+    j(
+      ".woocommerce .woocommerce-message, .woocommerce-notices-wrapper .woocommerce-message",
+    ).each(function () {
       const notice = j(this);
 
-      const messageContainer = notice.find(".woocommerce-message-content > div").first();
+      const messageContainer = notice
+        .find(".woocommerce-message-content > div")
+        .first();
       const messageHtml = messageContainer.length
         ? messageContainer.html()
-        : notice
-            .clone()
-            .find("a, i")
-            .remove()
-            .end()
-            .text()
-            .trim();
+        : notice.clone().find("a, i").remove().end().text().trim();
 
       const actionLink = notice.find("a.wc-forward, a.restore-item").first();
       const actionHtml = actionLink.length ? actionLink.prop("outerHTML") : "";
@@ -450,8 +484,71 @@ j(document).ready(function () {
     });
   };
 
+  const getNoticeToastType = function (notice) {
+    if (notice.hasClass("woocommerce-error")) {
+      return "error";
+    }
+
+    if (notice.hasClass("woocommerce-message")) {
+      return "success";
+    }
+
+    return "info";
+  };
+
+  const getNoticeToastMessageHtml = function (notice) {
+    const messageContainer = notice
+      .find(".woocommerce-message-content > div")
+      .first();
+
+    if (messageContainer.length) {
+      return messageContainer.html();
+    }
+
+    const clone = notice.clone();
+    clone.find("a, i").remove();
+
+    return clone.html() || clone.text().trim();
+  };
+
+  const convertCartNoticesToToasts = function () {
+    if (!j("body").hasClass("woocommerce-cart")) {
+      return;
+    }
+
+    j(
+      ".woocommerce-notices-wrapper .woocommerce-message, .woocommerce-notices-wrapper .woocommerce-error, .woocommerce-notices-wrapper .woocommerce-info, .woocommerce .woocommerce-message, .woocommerce .woocommerce-error, .woocommerce .woocommerce-info",
+    ).each(function () {
+      const notice = j(this);
+      const messageHtml = getNoticeToastMessageHtml(notice);
+      const actionLink = notice.find("a.wc-forward, a.restore-item").first();
+      const actionHtml = actionLink.length ? actionLink.prop("outerHTML") : "";
+
+      showToast({
+        message: messageHtml,
+        actionHtml,
+        type: getNoticeToastType(notice),
+        duration: 10000,
+      });
+
+      notice.remove();
+    });
+  };
+
   convertSingleProductNoticesToToasts();
+  convertCartNoticesToToasts();
   setupSingleProductAjaxAddToCart();
+
+  j(document.body)
+    .off(
+      "updated_wc_div.reonetCartNotices updated_cart_totals.reonetCartNotices applied_coupon.reonetCartNotices removed_coupon.reonetCartNotices wc_cart_emptied.reonetCartNotices",
+    )
+    .on(
+      "updated_wc_div.reonetCartNotices updated_cart_totals.reonetCartNotices applied_coupon.reonetCartNotices removed_coupon.reonetCartNotices wc_cart_emptied.reonetCartNotices",
+      function () {
+        convertCartNoticesToToasts();
+      },
+    );
 
   // Loader
   window.addEventListener("load", function () {
@@ -554,7 +651,8 @@ j(document).ready(function () {
   j(".variations_form").each(function () {
     const form = j(this);
     const product = form.closest(".product");
-    const hasDefaultVariation = String(form.data("has-default-variation")) === "yes";
+    const hasDefaultVariation =
+      String(form.data("has-default-variation")) === "yes";
     const variationNotice = product.find(".reonet-variation-notice").first();
     const variationNoticeIcon = variationNotice
       .find(".reonet-variation-notice-icon")
@@ -609,11 +707,11 @@ j(document).ready(function () {
         : "error";
 
       variationNotice.removeClass(
-        "border-red-300 bg-red-50 text-red-800 border-amber-300 bg-amber-50 text-amber-800 border-blue-300 bg-blue-50 text-blue-800 border-green-300 bg-green-50 text-green-800"
+        "border-red-300 bg-red-50 text-danger border-amber-300 bg-amber-50 text-amber-800 border-blue-300 bg-blue-50 text-blue-800 border-green-300 bg-green-50 text-green-800",
       );
 
       variationNoticeIcon.removeClass(
-        "ph-warning-octagon ph-warning-circle ph-info ph-check-circle text-red-600 text-amber-600 text-blue-600 text-green-600"
+        "ph-warning-circle ph-info ph-check-circle text-danger text-amber-600 text-blue-600 text-green-600",
       );
 
       if (noticeType === "warning") {
@@ -634,8 +732,8 @@ j(document).ready(function () {
         return;
       }
 
-      variationNotice.addClass("border-red-300 bg-red-50 text-red-800");
-      variationNoticeIcon.addClass("ph-warning-octagon text-red-600");
+      variationNotice.addClass("border-red-300 bg-red-50 text-danger");
+      variationNoticeIcon.addClass("ph-info text-danger");
     };
 
     const showVariationNotice = function (message, type = "error") {
@@ -725,8 +823,12 @@ j(document).ready(function () {
       }
 
       candidates.sort(function (a, b) {
-        const aSpecificity = Object.values(a?.attributes || {}).filter(Boolean).length;
-        const bSpecificity = Object.values(b?.attributes || {}).filter(Boolean).length;
+        const aSpecificity = Object.values(a?.attributes || {}).filter(
+          Boolean,
+        ).length;
+        const bSpecificity = Object.values(b?.attributes || {}).filter(
+          Boolean,
+        ).length;
 
         return bSpecificity - aSpecificity;
       });
@@ -824,7 +926,9 @@ j(document).ready(function () {
             window.wc_add_to_cart_variation_params?.i18n_make_a_selection_text
           ) {
             showToast({
-              message: window.wc_add_to_cart_variation_params.i18n_make_a_selection_text,
+              message:
+                window.wc_add_to_cart_variation_params
+                  .i18n_make_a_selection_text,
               type: "error",
             });
             focusMissingVariationField();
@@ -836,7 +940,8 @@ j(document).ready(function () {
             window.wc_add_to_cart_variation_params?.i18n_unavailable_text
           ) {
             showToast({
-              message: window.wc_add_to_cart_variation_params.i18n_unavailable_text,
+              message:
+                window.wc_add_to_cart_variation_params.i18n_unavailable_text,
               type: "error",
             });
             clearAllVariationFieldStates();
@@ -860,7 +965,7 @@ j(document).ready(function () {
             variationNotice.text("");
           }
         },
-        true
+        true,
       );
     }
 
@@ -881,7 +986,8 @@ j(document).ready(function () {
 
     const updateVariationContent = function (variation) {
       const matchedVariation = getBestMatchedVariation(variation);
-      const variationDescription = matchedVariation?.variation_description || "";
+      const variationDescription =
+        matchedVariation?.variation_description || "";
       const variationPriceHtml = matchedVariation?.price_html || "";
       const variationId = matchedVariation?.variation_id;
 

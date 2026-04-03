@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Cart item data (when outputting non-flat)
  *
@@ -14,13 +15,39 @@
  * @package     WooCommerce\Templates
  * @version     2.4.0
  */
-if ( ! defined( 'ABSPATH' ) ) {
+if (! defined('ABSPATH')) {
 	exit;
 }
 ?>
-<dl class="variation">
-	<?php foreach ( $item_data as $data ) : ?>
-		<dt class="<?php echo sanitize_html_class( 'variation-' . $data['key'] ); ?>"><?php echo wp_kses_post( $data['key'] ); ?>:</dt>
-		<dd class="<?php echo sanitize_html_class( 'variation-' . $data['key'] ); ?>"><?php echo wp_kses_post( wpautop( $data['display'] ) ); ?></dd>
+<dl class="variation flex items-center gap-4 text-gray-500">
+	<?php foreach ($item_data as $data) : ?>
+		<?php
+		$meta_key_label = isset($data['key']) ? strtolower(trim(wp_strip_all_tags((string) $data['key']))) : '';
+		$meta_key_label = str_replace(':', '', $meta_key_label);
+
+		$hidden_meta_labels = array(
+			'quantity',
+			'qty',
+			'total price',
+			'total',
+			'calculated total',
+			'calculated total price',
+			'maara',
+			'määrä',
+			'yhteensa',
+			'yhteensä',
+		);
+
+		if (in_array($meta_key_label, $hidden_meta_labels, true)) {
+			continue;
+		}
+
+		$display_value = isset($data['display']) ? (string) $data['display'] : '';
+		$display_value = preg_replace('/\bm2\b/u', 'm²', $display_value);
+		?>
+		<div class="flex items-center gap-1">
+			<dt class="<?php echo sanitize_html_class('variation-' . $data['key']); ?>"><?php echo wp_kses_post($data['key']); ?>:</dt>
+			<dd class="<?php echo sanitize_html_class('variation-' . $data['key']); ?>"><?php echo wp_kses_post(wpautop($display_value)); ?></dd>
+		</div>
 	<?php endforeach; ?>
 </dl>

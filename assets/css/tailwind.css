@@ -779,6 +779,9 @@
   .static {
     position: static;
   }
+  .sticky {
+    position: sticky;
+  }
   .inset-0 {
     inset: calc(var(--spacing) * 0);
   }
@@ -802,6 +805,9 @@
   }
   .top-3 {
     top: calc(var(--spacing) * 3);
+  }
+  .top-4 {
+    top: calc(var(--spacing) * 4);
   }
   .-right-1 {
     right: calc(var(--spacing) * -1);
@@ -1401,6 +1407,9 @@
   .h-11 {
     height: calc(var(--spacing) * 11);
   }
+  .h-12 {
+    height: calc(var(--spacing) * 12);
+  }
   .h-16 {
     height: calc(var(--spacing) * 16);
   }
@@ -1565,6 +1574,12 @@
   .max-w-3xl {
     max-width: var(--container-3xl);
   }
+  .max-w-12 {
+    max-width: calc(var(--spacing) * 12);
+  }
+  .max-w-60 {
+    max-width: calc(var(--spacing) * 60);
+  }
   .max-w-sm {
     max-width: var(--container-sm);
   }
@@ -1630,9 +1645,6 @@
   }
   .shrink-0 {
     flex-shrink: 0;
-  }
-  .flex-grow {
-    flex-grow: 1;
   }
   .border-collapse {
     border-collapse: collapse;
@@ -1778,6 +1790,13 @@
       margin-block-end: calc(calc(var(--spacing) * 1) * calc(1 - var(--tw-space-y-reverse)));
     }
   }
+  .space-y-1\.5 {
+    :where(& > :not(:last-child)) {
+      --tw-space-y-reverse: 0;
+      margin-block-start: calc(calc(var(--spacing) * 1.5) * var(--tw-space-y-reverse));
+      margin-block-end: calc(calc(var(--spacing) * 1.5) * calc(1 - var(--tw-space-y-reverse)));
+    }
+  }
   .space-y-2 {
     :where(& > :not(:last-child)) {
       --tw-space-y-reverse: 0;
@@ -1839,6 +1858,33 @@
       --tw-space-x-reverse: 0;
       margin-inline-start: calc(calc(var(--spacing) * 2) * var(--tw-space-x-reverse));
       margin-inline-end: calc(calc(var(--spacing) * 2) * calc(1 - var(--tw-space-x-reverse)));
+    }
+  }
+  .divide-y {
+    :where(& > :not(:last-child)) {
+      --tw-divide-y-reverse: 0;
+      border-bottom-style: var(--tw-border-style);
+      border-top-style: var(--tw-border-style);
+      border-top-width: calc(1px * var(--tw-divide-y-reverse));
+      border-bottom-width: calc(1px * calc(1 - var(--tw-divide-y-reverse)));
+    }
+  }
+  .divide-gray-200 {
+    :where(& > :not(:last-child)) {
+      border-color: var(--color-gray-200);
+    }
+  }
+  .divide-primary {
+    :where(& > :not(:last-child)) {
+      border-color: var(--primary);
+    }
+  }
+  .divide-primary\/20 {
+    :where(& > :not(:last-child)) {
+      border-color: var(--primary);
+      @supports (color: color-mix(in lab, red, red)) {
+        border-color: color-mix(in oklab, var(--primary) 20%, transparent);
+      }
     }
   }
   .overflow-hidden {
@@ -1925,6 +1971,10 @@
     border-style: var(--tw-border-style);
     border-width: 2px;
   }
+  .border-y {
+    border-block-style: var(--tw-border-style);
+    border-block-width: 1px;
+  }
   .border-t {
     border-top-style: var(--tw-border-style);
     border-top-width: 1px;
@@ -1936,6 +1986,10 @@
   .border-b {
     border-bottom-style: var(--tw-border-style);
     border-bottom-width: 1px;
+  }
+  .border-b-2 {
+    border-bottom-style: var(--tw-border-style);
+    border-bottom-width: 2px;
   }
   .border-dashed {
     --tw-border-style: dashed;
@@ -2037,6 +2091,18 @@
   .border-primary {
     border-color: var(--primary);
   }
+  .border-primary\/10 {
+    border-color: var(--primary);
+    @supports (color: color-mix(in lab, red, red)) {
+      border-color: color-mix(in oklab, var(--primary) 10%, transparent);
+    }
+  }
+  .border-primary\/20 {
+    border-color: var(--primary);
+    @supports (color: color-mix(in lab, red, red)) {
+      border-color: color-mix(in oklab, var(--primary) 20%, transparent);
+    }
+  }
   .border-primary\/80 {
     border-color: var(--primary);
     @supports (color: color-mix(in lab, red, red)) {
@@ -2107,6 +2173,12 @@
   .bg-blue-50 {
     background-color: var(--color-blue-50);
   }
+  .bg-blue-50\/35 {
+    background-color: color-mix(in srgb, oklch(97% 0.014 254.604) 35%, transparent);
+    @supports (color: color-mix(in lab, red, red)) {
+      background-color: color-mix(in oklab, var(--color-blue-50) 35%, transparent);
+    }
+  }
   .bg-blue-50\/50 {
     background-color: color-mix(in srgb, oklch(97% 0.014 254.604) 50%, transparent);
     @supports (color: color-mix(in lab, red, red)) {
@@ -2142,6 +2214,12 @@
   }
   .bg-primary {
     background-color: var(--primary);
+  }
+  .bg-primary\/5 {
+    background-color: var(--primary);
+    @supports (color: color-mix(in lab, red, red)) {
+      background-color: color-mix(in oklab, var(--primary) 5%, transparent);
+    }
   }
   .bg-primary\/90 {
     background-color: var(--primary);
@@ -2333,6 +2411,9 @@
   .px-5 {
     padding-inline: calc(var(--spacing) * 5);
   }
+  .px-6 {
+    padding-inline: calc(var(--spacing) * 6);
+  }
   .px-8 {
     padding-inline: calc(var(--spacing) * 8);
   }
@@ -2430,6 +2511,12 @@
   .pr-3 {
     padding-right: calc(var(--spacing) * 3);
   }
+  .pb-2 {
+    padding-bottom: calc(var(--spacing) * 2);
+  }
+  .pb-3 {
+    padding-bottom: calc(var(--spacing) * 3);
+  }
   .pb-6 {
     padding-bottom: calc(var(--spacing) * 6);
   }
@@ -2455,6 +2542,9 @@
   }
   .text-center {
     text-align: center;
+  }
+  .text-right {
+    text-align: right;
   }
   .text-2xl {
     font-size: var(--text-2xl);
@@ -2604,6 +2694,10 @@
   .font-medium {
     --tw-font-weight: var(--font-weight-medium);
     font-weight: var(--font-weight-medium);
+  }
+  .font-normal {
+    --tw-font-weight: var(--font-weight-normal);
+    font-weight: var(--font-weight-normal);
   }
   .font-semibold {
     --tw-font-weight: var(--font-weight-semibold);
@@ -2879,6 +2973,16 @@
       }
     }
   }
+  .hover\:bg-blue-50\/50 {
+    &:hover {
+      @media (hover: hover) {
+        background-color: color-mix(in srgb, oklch(97% 0.014 254.604) 50%, transparent);
+        @supports (color: color-mix(in lab, red, red)) {
+          background-color: color-mix(in oklab, var(--color-blue-50) 50%, transparent);
+        }
+      }
+    }
+  }
   .hover\:bg-blue-800 {
     &:hover {
       @media (hover: hover) {
@@ -3064,6 +3168,11 @@
       left: calc(var(--spacing) * 6);
     }
   }
+  .sm\:col-span-2 {
+    @media (width >= 40rem) {
+      grid-column: span 2 / span 2;
+    }
+  }
   .sm\:col-span-3 {
     @media (width >= 40rem) {
       grid-column: span 3 / span 3;
@@ -3175,6 +3284,11 @@
       width: calc(var(--spacing) * 24);
     }
   }
+  .sm\:w-28 {
+    @media (width >= 40rem) {
+      width: calc(var(--spacing) * 28);
+    }
+  }
   .sm\:w-90 {
     @media (width >= 40rem) {
       width: calc(var(--spacing) * 90);
@@ -3203,6 +3317,11 @@
   .sm\:grid-cols-2 {
     @media (width >= 40rem) {
       grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  .sm\:grid-cols-3 {
+    @media (width >= 40rem) {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
   }
   .sm\:grid-cols-4 {
@@ -3614,21 +3733,6 @@
       grid-template-columns: repeat(3, minmax(0, 1fr));
     }
   }
-  .lg\:col-span-1 {
-    @media (width >= 64rem) {
-      grid-column: span 1 / span 1;
-    }
-  }
-  .lg\:col-span-2 {
-    @media (width >= 64rem) {
-      grid-column: span 2 / span 2;
-    }
-  }
-  .lg\:grid-cols-3 {
-    @media (width >= 64rem) {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-  }
   .lg\:grid-cols-4 {
     @media (width >= 64rem) {
       grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -3772,6 +3876,46 @@
       }
     }
   }
+  .\[\&_\.includes_tax\]\:mt-1 {
+    & .includes tax {
+      margin-top: calc(var(--spacing) * 1);
+    }
+  }
+  .\[\&_\.includes_tax\]\:text-xs {
+    & .includes tax {
+      font-size: var(--text-xs);
+      line-height: var(--tw-leading, var(--text-xs--line-height));
+    }
+  }
+  .\[\&_\.includes_tax\]\:font-normal {
+    & .includes tax {
+      --tw-font-weight: var(--font-weight-normal);
+      font-weight: var(--font-weight-normal);
+    }
+  }
+  .\[\&_\.includes_tax\]\:text-gray-500 {
+    & .includes tax {
+      color: var(--color-gray-500);
+    }
+  }
+  .\[\&_\.woocommerce-Price-amount\]\:text-xl {
+    & .woocommerce-Price-amount {
+      font-size: var(--text-xl);
+      line-height: var(--tw-leading, var(--text-xl--line-height));
+    }
+  }
+  .\[\&_\.woocommerce-Price-amount\]\:font-normal {
+    & .woocommerce-Price-amount {
+      --tw-font-weight: var(--font-weight-normal);
+      font-weight: var(--font-weight-normal);
+    }
+  }
+  .\[\&_\.woocommerce-Price-amount\]\:font-semibold {
+    & .woocommerce-Price-amount {
+      --tw-font-weight: var(--font-weight-semibold);
+      font-weight: var(--font-weight-semibold);
+    }
+  }
   .\[\&_\.woocommerce-product-gallery__image\]\:overflow-hidden {
     & .woocommerce-product-gallery  image {
       overflow: hidden;
@@ -3825,6 +3969,39 @@
       }
     }
   }
+  .\[\&_small\]\:font-normal {
+    & small {
+      --tw-font-weight: var(--font-weight-normal);
+      font-weight: var(--font-weight-normal);
+    }
+  }
+  .\[\&_strong\]\:font-normal {
+    & strong {
+      --tw-font-weight: var(--font-weight-normal);
+      font-weight: var(--font-weight-normal);
+    }
+  }
+  .\[\&_strong\]\:font-semibold {
+    & strong {
+      --tw-font-weight: var(--font-weight-semibold);
+      font-weight: var(--font-weight-semibold);
+    }
+  }
+  .\[\&_strong\]\:text-primary {
+    & strong {
+      color: var(--primary);
+    }
+  }
+  .\[\&_td\]\:p-3 {
+    & td {
+      padding: calc(var(--spacing) * 3);
+    }
+  }
+  .\[\&_th\]\:p-3 {
+    & th {
+      padding: calc(var(--spacing) * 3);
+    }
+  }
   .\[\&_ul\]\:pl-4 {
     & ul {
       padding-left: calc(var(--spacing) * 4);
@@ -3840,7 +4017,7 @@
   --border: oklch(92.9% 0.013 255.508);
   --danger: oklch(64.5% 0.246 16.439);
 }
-.container, .reonet-woocommerce-page {
+.container {
   margin-inline: auto;
   max-width: var(--container-6xl);
   padding-inline: calc(var(--spacing) * 4);
@@ -4214,6 +4391,13 @@
   font-weight: var(--font-weight-semibold);
   color: var(--green);
 }
+.cart-item-pricing .woocommerce-Price-amount bdi {
+  font-size: var(--text-base);
+  line-height: var(--tw-leading, var(--text-base--line-height));
+  --tw-font-weight: var(--font-weight-medium);
+  font-weight: var(--font-weight-medium);
+  color: var(--green);
+}
 .price-per-unit ins {
   text-decoration-line: none;
 }
@@ -4271,32 +4455,6 @@
   align-items: center;
   gap: calc(var(--spacing) * 2);
 }
-.reonet-cart-page {
-  padding-block: calc(var(--spacing) * 8);
-  @media (width >= 40rem) {
-    padding-block: calc(var(--spacing) * 12);
-  }
-}
-.reonet-cart-page .reonet-cart-header h1 {
-  font-size: var(--text-2xl);
-  line-height: var(--tw-leading, var(--text-2xl--line-height));
-  --tw-font-weight: var(--font-weight-semibold);
-  font-weight: var(--font-weight-semibold);
-}
-.reonet-cart-page .reonet-cart-header p {
-  color: var(--color-gray-600);
-}
-.reonet-cart-items {
-  border-radius: var(--radius-2xl);
-  border-style: var(--tw-border-style);
-  border-width: 1px;
-  border-color: var(--color-gray-200);
-  background-color: var(--color-white);
-  padding: calc(var(--spacing) * 4);
-  @media (width >= 40rem) {
-    padding: calc(var(--spacing) * 6);
-  }
-}
 .reonet-cart-page .shop_table {
   width: 100%;
   overflow: hidden;
@@ -4329,61 +4487,10 @@
 }
 .reonet-cart-table .product-quantity .qty {
   width: 100%;
-  max-width: calc(var(--spacing) * 24);
+  max-width: calc(var(--spacing) * 20);
 }
 .reonet-cart-table .actions {
   background-color: var(--color-gray-50);
-}
-.reonet-cart-summary .cart_totals {
-  position: sticky;
-  top: calc(var(--spacing) * 4);
-  border-radius: var(--radius-2xl);
-  border-style: var(--tw-border-style);
-  border-width: 1px;
-  border-color: var(--color-gray-200);
-  background-color: var(--color-white);
-  padding: calc(var(--spacing) * 4);
-  @media (width >= 40rem) {
-    padding: calc(var(--spacing) * 6);
-  }
-}
-.reonet-cart-summary .cart_totals h2 {
-  margin-bottom: calc(var(--spacing) * 4);
-  font-size: var(--text-xl);
-  line-height: var(--tw-leading, var(--text-xl--line-height));
-  --tw-font-weight: var(--font-weight-semibold);
-  font-weight: var(--font-weight-semibold);
-}
-.reonet-cart-summary .shop_table {
-  overflow: hidden;
-  border-radius: var(--radius-xl);
-  border-style: var(--tw-border-style);
-  border-width: 1px;
-  border-color: var(--color-gray-200);
-}
-.reonet-cart-summary .shop_table th, .reonet-cart-summary .shop_table td {
-  padding: calc(var(--spacing) * 3);
-}
-.reonet-cart-summary .wc-proceed-to-checkout {
-  margin-top: calc(var(--spacing) * 4);
-}
-.reonet-cart-summary .checkout-button {
-  display: inline-flex;
-  height: calc(var(--spacing) * 12);
-  width: 100%;
-  align-items: center;
-  justify-content: center;
-  border-radius: calc(infinity * 1px);
-  background-color: var(--primary);
-  padding-inline: calc(var(--spacing) * 6);
-  color: var(--color-white);
-  --tw-duration: 300ms;
-  transition-duration: 300ms;
-  &:hover {
-    @media (hover: hover) {
-      background-color: var(--green);
-    }
-  }
 }
 .reonet-cart-cross-sells .cross-sells {
   :where(& > :not(:last-child)) {
@@ -5152,6 +5259,11 @@
   inherits: false;
   initial-value: 0;
 }
+@property --tw-divide-y-reverse {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0;
+}
 @property --tw-border-style {
   syntax: "*";
   inherits: false;
@@ -5347,6 +5459,7 @@
       --tw-skew-y: initial;
       --tw-space-y-reverse: 0;
       --tw-space-x-reverse: 0;
+      --tw-divide-y-reverse: 0;
       --tw-border-style: solid;
       --tw-leading: initial;
       --tw-font-weight: initial;

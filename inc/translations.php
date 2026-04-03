@@ -30,6 +30,7 @@ function reonet_register_polylang_strings()
   pll_register_string('Page not found', 'Page not found', 'Theme');
   pll_register_string('Price per m2', 'Price per m2', 'Theme');
   pll_register_string('Read more', 'Read more', 'Theme');
+  pll_register_string('Review items and continue to checkout.', 'Review items and continue to checkout.', 'Theme');
   pll_register_string('Services', 'Services', 'Theme');
   pll_register_string('The page you are looking for does not exist or may have been moved.', 'The page you are looking for does not exist or may have been moved.', 'Theme');
   pll_register_string('View services', 'View services', 'Theme');

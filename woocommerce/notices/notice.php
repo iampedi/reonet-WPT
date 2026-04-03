@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Show messages
  *
@@ -46,7 +47,7 @@ if (! $notices) {
 	?>
 
 	<div class="woocommerce-info mb-4 flex items-start justify-between gap-4 rounded-lg border border-blue-300 bg-blue-50 p-4 text-sm text-blue-800" <?php echo wc_get_notice_data_attr($notice); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped 
-																																													?> role="status">
+																																																																										?> role="status">
 		<div class="woocommerce-message-content flex items-center gap-2">
 			<i class="ph-duotone ph-info text-blue-600 text-2xl"></i>
 			<div><?php echo wp_kses_post($message_text); ?></div>

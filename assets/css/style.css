@@ -657,3 +657,17 @@ img.logo-img {
 .variation-field-label-error {
   color: #b91c1c !important;
 }
+
+.single-product .woocommerce-product-gallery .woocommerce-product-gallery__trigger {
+  display: none !important;
+}
+
+.single-product .woocommerce-product-gallery .woocommerce-product-gallery__image a {
+  display: block;
+  cursor: zoom-in;
+}
+
+.single-product .pswp .pswp__img,
+.single-product .pswp .pswp__zoom-wrap {
+  cursor: zoom-out !important;
+}

@@ -16,6 +16,8 @@ if (!defined('ABSPATH')) {
 function reonet_woocommerce_setup_theme_support()
 {
   add_theme_support('woocommerce');
+  add_theme_support('wc-product-gallery-lightbox');
+  add_theme_support('wc-product-gallery-slider');
 }
 add_action('after_setup_theme', 'reonet_woocommerce_setup_theme_support');
 
@@ -169,7 +171,9 @@ function reonet_woocommerce_cart_shortcode($atts)
     array('WC_Shortcode_Cart', 'output'),
     $atts,
     array(
-      'class' => 'woocommerce reonet-woocommerce-page reonet-woocommerce-page-cart',
+      'class'  => '',
+      'before' => '<div class="woocommerce reonet-woocommerce-page reonet-woocommerce-page-cart"><div class="container">',
+      'after'  => '</div></div>',
     )
   );
 }
@@ -348,6 +352,11 @@ add_filter('woocommerce_checkout_fields', 'reonet_woocommerce_limit_checkout_loc
 function reonet_flowbite_input_class_string()
 {
   return 'block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20';
+}
+
+function reonet_flowbite_input_small_class_string()
+{
+  return 'block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-xs text-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20';
 }
 
 function reonet_flowbite_checkbox_class_string()
