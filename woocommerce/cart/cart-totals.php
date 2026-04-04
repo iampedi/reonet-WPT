@@ -23,12 +23,12 @@ defined('ABSPATH') || exit;
 
 	<?php do_action('woocommerce_before_cart_totals'); ?>
 
-	<h2 class="text-xl px-4 py-3 font-medium text-primary border-b-2 border-primary/10">
+	<h2 class="text-xl px-5 py-3 bg-blue-50 font-medium text-primary border-b-2 border-primary/10 rounded-t-2xl">
 		<?php esc_html_e('Cart totals', 'woocommerce'); ?>
 	</h2>
 
 	<div class="shop_table shop_table_responsive overflow-hidden divide-y divide-primary/20 border-b border-primary/20">
-		<div class="cart-subtotal flex items-center justify-between gap-3 px-4 py-3">
+		<div class="cart-subtotal flex items-center justify-between gap-3 px-5 py-3">
 			<div class="font-medium text-gray-700"><?php esc_html_e('Subtotal', 'woocommerce'); ?></div>
 			<div class="text-right"><?php wc_cart_totals_subtotal_html(); ?></div>
 		</div>
@@ -76,7 +76,7 @@ defined('ABSPATH') || exit;
 			} else {
 				?>
 				<div class="tax-total flex items-start justify-between gap-3 p-3">
-					<div class="font-medium text-gray-700"><?php echo esc_html(WC()->countries->tax_or_vat()) . $estimated_text; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped 
+					<div class="font-medium text-gray-700"><?php echo esc_html(reonet_woocommerce_tax_or_vat_label()) . $estimated_text; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped 
 																									?></div>
 					<div class="text-right"><?php wc_cart_totals_taxes_total_html(); ?></div>
 				</div>
@@ -87,7 +87,7 @@ defined('ABSPATH') || exit;
 
 		<?php do_action('woocommerce_cart_totals_before_order_total'); ?>
 
-		<div class="order-total flex items-start justify-between gap-3 bg-primary/5 p-3 text-base font-semibold text-primary">
+		<div class="order-total flex items-start justify-between gap-3 bg-primary/5 py-3 px-5 text-base font-semibold text-primary">
 			<div><?php esc_html_e('Total', 'woocommerce'); ?></div>
 			<div class="text-right flex flex-col items-end leading-tight [&_small]:font-normal [&_strong]:text-primary [&_.woocommerce-Price-amount]:font-normal [&_.includes_tax]:mt-1 [&_.includes_tax]:text-xs [&_.includes_tax]:font-normal [&_.includes_tax]:text-gray-500">
 				<?php wc_cart_totals_order_total_html(); ?>

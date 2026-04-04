@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Checkout coupon form
  *
@@ -15,23 +16,18 @@
  * @version 9.8.0
  */
 
-defined( 'ABSPATH' ) || exit;
+defined('ABSPATH') || exit;
 
-if ( ! wc_coupons_enabled() ) { // @codingStandardsIgnoreLine.
+if (! wc_coupons_enabled()) { // @codingStandardsIgnoreLine.
 	return;
 }
 
 ?>
-<form class="checkout_coupon woocommerce-form-coupon reonet-checkout-coupon-form" method="post" id="woocommerce-checkout-form-coupon">
+<form class="checkout_coupon woocommerce-form-coupon reonet-checkout-coupon-form flex flex-col gap-2 sm:flex-row sm:items-center" method="post" id="woocommerce-checkout-form-coupon">
+	<div class="form-row form-row-first m-0 flex-1">
+		<label for="coupon_code" class="screen-reader-text"><?php esc_html_e('Coupon:', 'woocommerce'); ?></label>
+		<input type="text" name="coupon_code" class="text-center <?php echo esc_attr(reonet_flowbite_input_class_string()); ?>" placeholder="<?php esc_attr_e('Coupon code', 'woocommerce'); ?>" id="coupon_code" value="" />
+	</div>
 
-	<p class="form-row form-row-first">
-		<label for="coupon_code" class="screen-reader-text"><?php esc_html_e( 'Coupon:', 'woocommerce' ); ?></label>
-		<input type="text" name="coupon_code" class="<?php echo esc_attr(reonet_flowbite_input_class_string()); ?>" placeholder="<?php esc_attr_e( 'Coupon code', 'woocommerce' ); ?>" id="coupon_code" value="" />
-	</p>
-
-	<p class="form-row form-row-last">
-		<button type="submit" class="<?php echo esc_attr(reonet_flowbite_button_class_string()); ?>" name="apply_coupon" value="<?php esc_attr_e( 'Apply coupon', 'woocommerce' ); ?>"><?php esc_html_e( 'Apply coupon', 'woocommerce' ); ?></button>
-	</p>
-
-	<div class="clear"></div>
+	<button type="submit" class="<?php echo esc_attr(reonet_flowbite_button_class_string('secondary', 'icon')); ?>" name="apply_coupon" value="<?php esc_attr_e('Apply coupon', 'woocommerce'); ?>"><i class="ph-bold ph-check text-xl"></i></button>
 </form>

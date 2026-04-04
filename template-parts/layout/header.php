@@ -94,7 +94,7 @@ $cart_url = function_exists('wc_get_cart_url')
                </a>
 
                <a href="<?php echo esc_url($cart_url); ?>" class="relative inline-flex size-10 items-center justify-center rounded-full border-2 border-dashed border-gray-200 text-primary duration-200 hover:bg-gray-100" aria-label="<?php echo esc_attr__('Cart', 'reonet'); ?>" title="<?php echo esc_attr__('Cart', 'reonet'); ?>">
-                  <i class="ph-duotone ph-basket text-xl"></i>
+                  <i class="ph-duotone ph-shopping-bag text-xl"></i>
                   <span class="reonet-header-cart-count absolute -right-1 -top-1 inline-flex min-w-5 items-center justify-center rounded-full bg-primary px-1.5 text-[11px] font-medium leading-5 text-white">
                      <?php echo esc_html($cart_count); ?>
                   </span>
@@ -128,4 +128,3 @@ $cart_url = function_exists('wc_get_cart_url')
       </div>
    </div>
 </header>
-

@@ -20,9 +20,9 @@ defined('ABSPATH') || exit;
 
 do_action('woocommerce_before_cart'); ?>
 
-<div class="_reonet-cart-page mb-8 space-y-4">
-	<header class="reonet-cart-header flex items-center justify-between border-y border-dashed py-2 px-3 border-primary/20 bg-blue-50/35">
-		<h1 class="text-2xl font-medium text-primary flex items-center gap-2"><i class="ph-duotone ph-shopping-bag text-3xl text-green"></i><?php esc_html_e('Your cart', 'woocommerce'); ?></h1>
+<div class="_reonet_cart_page mb-8 space-y-6">
+	<header class="_reonet_cart_header flex items-center justify-between border-y border-dashed py-2.5 px-3 border-primary/20 bg-blue-50/35">
+		<h1 class="text-2xl font-medium text-primary flex items-center gap-3"><i class="ph-duotone ph-shopping-bag text-3xl text-green"></i><?php esc_html_e('Your cart', 'woocommerce'); ?></h1>
 		<p class="text-gray-600"><?php echo esc_html(reonet_tr('Review items and continue to checkout.')); ?></p>
 	</header>
 
@@ -160,13 +160,13 @@ do_action('woocommerce_before_cart'); ?>
 
 					<?php do_action('woocommerce_cart_contents'); ?>
 
-					<div class="actions py-4">
+					<div class="actions py-6">
 						<div class="reonet-cart-actions flex items-center gap-3 justify-between">
 							<?php if (wc_coupons_enabled()) { ?>
-								<div class="coupon flex items-center gap-3 flex-1">
+								<div class="coupon flex items-center gap-2 flex-1">
 									<label for="coupon_code" class="screen-reader-text"><?php esc_html_e('Coupon:', 'woocommerce'); ?></label>
-									<input type="text" name="coupon_code" class="max-w-60 <?php echo esc_attr(reonet_flowbite_input_class_string()); ?>" id="coupon_code" value="" placeholder="<?php esc_attr_e('Coupon code', 'woocommerce'); ?>" />
-									<button type="submit" class="shrink-0 <?php echo esc_attr(reonet_flowbite_button_class_string()); ?>" name="apply_coupon" value="<?php esc_attr_e('Apply coupon', 'woocommerce'); ?>"><?php esc_html_e('Apply coupon', 'woocommerce'); ?></button>
+									<input type="text" name="coupon_code" class="max-w-64 <?php echo esc_attr(reonet_flowbite_input_class_string()); ?> text-center" id="coupon_code" value="" placeholder="<?php esc_attr_e('Coupon code', 'woocommerce'); ?>" />
+									<button type="submit" class="shrink-0 <?php echo esc_attr(reonet_flowbite_button_class_string('secondary', 'icon')); ?>" name="apply_coupon" value="<?php esc_attr_e('Apply coupon', 'woocommerce'); ?>"><i class="ph-bold ph-check text-xl"></i></button>
 									<?php do_action('woocommerce_cart_coupon'); ?>
 								</div>
 							<?php } ?>

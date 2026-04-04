@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Checkout Payment Section
  *
@@ -15,49 +16,56 @@
  * @version 9.8.0
  */
 
-defined( 'ABSPATH' ) || exit;
+defined('ABSPATH') || exit;
 
-if ( ! wp_doing_ajax() ) {
-	do_action( 'woocommerce_review_order_before_payment' );
+if (! wp_doing_ajax()) {
+	do_action('woocommerce_review_order_before_payment');
 }
 ?>
-<div id="payment" class="woocommerce-checkout-payment">
-	<?php if ( WC()->cart && WC()->cart->needs_payment() ) : ?>
-		<ul class="wc_payment_methods payment_methods methods">
+<div id="payment" class="woocommerce-checkout-payment card">
+	<div class="card-head">
+		<h3><?php reonet_esc_html_tr_e('Payment'); ?></h3>
+		<p><?php reonet_esc_html_tr_e('Choose a payment method.'); ?></p>
+	</div>
+	<?php if (WC()->cart && WC()->cart->needs_payment()) : ?>
+		<div class="wc_payment_methods payment_methods methods card-body space-y-4">
 			<?php
-			if ( ! empty( $available_gateways ) ) {
-				foreach ( $available_gateways as $gateway ) {
-					wc_get_template( 'checkout/payment-method.php', array( 'gateway' => $gateway ) );
+			if (! empty($available_gateways)) {
+				foreach ($available_gateways as $gateway) {
+					wc_get_template('checkout/payment-method.php', array('gateway' => $gateway));
 				}
 			} else {
-				echo '<li>';
-				wc_print_notice( apply_filters( 'woocommerce_no_available_payment_methods_message', WC()->customer->get_billing_country() ? esc_html__( 'Sorry, it seems that there are no available payment methods. Please contact us if you require assistance or wish to make alternate arrangements.', 'woocommerce' ) : esc_html__( 'Please fill in your details above to see available payment methods.', 'woocommerce' ) ), 'notice' ); // phpcs:ignore WooCommerce.Commenting.CommentHooks.MissingHookComment
-				echo '</li>';
+				echo '<div>';
+				wc_print_notice(apply_filters('woocommerce_no_available_payment_methods_message', WC()->customer->get_billing_country() ? esc_html__('Sorry, it seems that there are no available payment methods. Please contact us if you require assistance or wish to make alternate arrangements.', 'woocommerce') : esc_html__('Please fill in your details above to see available payment methods.', 'woocommerce')), 'notice'); // phpcs:ignore WooCommerce.Commenting.CommentHooks.MissingHookComment
+				echo '</div>';
 			}
 			?>
-		</ul>
+		</div>
 	<?php endif; ?>
-	<div class="form-row place-order">
+	<div class="form-row">
 		<noscript>
 			<?php
 			/* translators: $1 and $2 opening and closing emphasis tags respectively */
-			printf( esc_html__( 'Since your browser does not support JavaScript, or it is disabled, please ensure you click the %1$sUpdate Totals%2$s button before placing your order. You may be charged more than the amount stated above if you fail to do so.', 'woocommerce' ), '<em>', '</em>' );
+			printf(esc_html__('Since your browser does not support JavaScript, or it is disabled, please ensure you click the %1$sUpdate Totals%2$s button before placing your order. You may be charged more than the amount stated above if you fail to do so.', 'woocommerce'), '<em>', '</em>');
 			?>
-			<br/><button type="submit" class="<?php echo esc_attr(reonet_flowbite_button_class_string('secondary')); ?>" name="woocommerce_checkout_update_totals" value="<?php esc_attr_e( 'Update totals', 'woocommerce' ); ?>"><?php esc_html_e( 'Update totals', 'woocommerce' ); ?></button>
+			<br /><button type="submit" class="<?php echo esc_attr(reonet_flowbite_button_class_string('secondary')); ?>" name="woocommerce_checkout_update_totals" value="<?php esc_attr_e('Update totals', 'woocommerce'); ?>"><?php esc_html_e('Update totals', 'woocommerce'); ?></button>
 		</noscript>
 
-		<?php wc_get_template( 'checkout/terms.php' ); ?>
+		<div class="place-order border-t border-primary/10 p-4 sm:p-5">
+			<?php wc_get_template('checkout/terms.php'); ?>
 
-		<?php do_action( 'woocommerce_review_order_before_submit' ); ?>
+			<?php do_action('woocommerce_review_order_before_submit'); ?>
 
-		<?php echo apply_filters( 'woocommerce_order_button_html', '<button type="submit" class="' . esc_attr( reonet_flowbite_button_class_string() ) . '" name="woocommerce_checkout_place_order" id="place_order" value="' . esc_attr( $order_button_text ) . '" data-value="' . esc_attr( $order_button_text ) . '">' . esc_html( $order_button_text ) . '</button>' ); // @codingStandardsIgnoreLine ?>
+			<?php echo apply_filters('woocommerce_order_button_html', '<button type="submit" class="' . esc_attr(reonet_flowbite_button_class_string('primary', 'lg')) . ' w-full" name="woocommerce_checkout_place_order" id="place_order" value="' . esc_attr($order_button_text) . '" data-value="' . esc_attr($order_button_text) . '">' . esc_html($order_button_text) . '</button>'); // @codingStandardsIgnoreLine 
+			?>
 
-		<?php do_action( 'woocommerce_review_order_after_submit' ); ?>
+			<?php do_action('woocommerce_review_order_after_submit'); ?>
 
-		<?php wp_nonce_field( 'woocommerce-process_checkout', 'woocommerce-process-checkout-nonce' ); ?>
+			<?php wp_nonce_field('woocommerce-process_checkout', 'woocommerce-process-checkout-nonce'); ?>
+		</div>
 	</div>
 </div>
 <?php
-if ( ! wp_doing_ajax() ) {
-	do_action( 'woocommerce_review_order_after_payment' );
+if (! wp_doing_ajax()) {
+	do_action('woocommerce_review_order_after_payment');
 }

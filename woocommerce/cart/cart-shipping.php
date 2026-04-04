@@ -25,7 +25,7 @@ $has_calculated_shipping  = ! empty($has_calculated_shipping);
 $show_shipping_calculator = ! empty($show_shipping_calculator);
 $calculator_text          = '';
 ?>
-<div class="woocommerce-shipping-totals shipping flex flex-col gap-3 px-4 py-3">
+<div class="woocommerce-shipping-totals shipping flex flex-col gap-2 px-5 py-3">
 	<div class="font-medium text-gray-700"><?php echo wp_kses_post($package_name); ?></div>
 	<div class="space-y-3">
 		<?php if (! empty($available_methods) && is_array($available_methods)) : ?>
@@ -45,7 +45,7 @@ $calculator_text          = '';
 				<?php endforeach; ?>
 			</ul>
 			<?php if (is_cart()) : ?>
-				<p class="woocommerce-shipping-destination text-gray-600 font-light">
+				<p class="woocommerce-shipping-destination text-gray-600">
 					<?php
 					if ($formatted_destination) {
 						// Translators: $s shipping destination.
@@ -60,14 +60,14 @@ $calculator_text          = '';
 		<?php
 		elseif (! $has_calculated_shipping || ! $formatted_destination) :
 			if (is_cart() && 'no' === get_option('woocommerce_enable_shipping_calc')) {
-				echo wp_kses_post(apply_filters('woocommerce_shipping_not_enabled_on_cart_html', __('Shipping costs are calculated during checkout.', 'woocommerce')));
+				echo '<p class="woocommerce-shipping-message text-gray-600">' . wp_kses_post(apply_filters('woocommerce_shipping_not_enabled_on_cart_html', __('Shipping costs are calculated during checkout.', 'woocommerce'))) . '</p>';
 			} else {
-				echo wp_kses_post(apply_filters('woocommerce_shipping_may_be_available_html', __('Enter your address to view shipping options.', 'woocommerce')));
+				echo '<p class="woocommerce-shipping-message text-gray-600">' . wp_kses_post(apply_filters('woocommerce_shipping_may_be_available_html', __('Enter your address to view shipping options.', 'woocommerce'))) . '</p>';
 			}
 		elseif (! is_cart()) :
-			echo wp_kses_post(apply_filters('woocommerce_no_shipping_available_html', __('There are no shipping options available. Please ensure that your address has been entered correctly, or contact us if you need any help.', 'woocommerce')));
+			echo '<p class="woocommerce-shipping-message text-gray-600">' . wp_kses_post(apply_filters('woocommerce_no_shipping_available_html', __('There are no shipping options available. Please ensure that your address has been entered correctly, or contact us if you need any help.', 'woocommerce'))) . '</p>';
 		else :
-			echo wp_kses_post(
+			echo '<p class="woocommerce-shipping-message text-gray-600">' . wp_kses_post(
 				/**
 				 * Provides a means of overriding the default 'no shipping available' HTML string.
 				 *
@@ -82,7 +82,7 @@ $calculator_text          = '';
 					sprintf(esc_html__('No shipping options were found for %s.', 'woocommerce') . ' ', '<strong>' . esc_html($formatted_destination) . '</strong>'),
 					$formatted_destination
 				)
-			);
+			) . '</p>';
 			$calculator_text = esc_html__('Enter a different address', 'woocommerce');
 		endif;
 		?>
@@ -91,6 +91,7 @@ $calculator_text          = '';
 			<?php echo '<p class="woocommerce-shipping-contents"><small>' . esc_html($package_details) . '</small></p>'; ?>
 		<?php endif; ?>
 
-		<?php // Shipping calculator intentionally hidden on cart page. ?>
+		<?php // Shipping calculator intentionally hidden on cart page. 
+		?>
 	</div>
 </div>

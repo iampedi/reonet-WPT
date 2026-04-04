@@ -26,7 +26,7 @@ do_action('woocommerce_cart_is_empty');
 if (wc_get_page_id('shop') > 0) : ?>
 	<div class="return-to-shop w-96 aspect-square mx-auto flex items-center justify-center">
 		<a class="text-xl font-medium text-green hover:text-primary duration-300 flex flex-col items-center gap-2 wc-backward<?php echo esc_attr(wc_wp_theme_get_element_class_name('button') ? ' ' . wc_wp_theme_get_element_class_name('button') : ''); ?>" href="<?php echo esc_url(apply_filters('woocommerce_return_to_shop_redirect', wc_get_page_permalink('shop'))); ?>">
-			<i class="ph-duotone ph-basket text-4xl"></i>
+			<i class="ph-duotone ph-shopping-bag text-4xl"></i>
 			<?php
 			/**
 			 * Filter "Return To Shop" text.

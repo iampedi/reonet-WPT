@@ -78,3 +78,28 @@ function reonet_tr($text)
 
     return __($text, 'reonet');
 }
+
+function reonet_tr_e($text)
+{
+    echo reonet_tr($text);
+}
+
+function reonet_esc_html_tr($text)
+{
+    return esc_html(reonet_tr($text));
+}
+
+function reonet_esc_html_tr_e($text)
+{
+    echo reonet_esc_html_tr($text);
+}
+
+function reonet_esc_attr_tr($text)
+{
+    return esc_attr(reonet_tr($text));
+}
+
+function reonet_esc_attr_tr_e($text)
+{
+    echo reonet_esc_attr_tr($text);
+}

@@ -535,8 +535,72 @@ j(document).ready(function () {
     });
   };
 
+  const convertAuthNoticesToToasts = function () {
+    const getCookieValue = function (name) {
+      const encoded = `${encodeURIComponent(name)}=`;
+      const parts = document.cookie ? document.cookie.split("; ") : [];
+
+      for (const part of parts) {
+        if (part.indexOf(encoded) === 0) {
+          return decodeURIComponent(part.substring(encoded.length));
+        }
+      }
+
+      return "";
+    };
+
+    const clearCookie = function (name) {
+      document.cookie = `${encodeURIComponent(name)}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`;
+    };
+
+    const authToastState = getCookieValue("reonet_auth_toast");
+    if (authToastState === "login") {
+      showToast({
+        message: "Successfully logged in.",
+        type: "success",
+      });
+      clearCookie("reonet_auth_toast");
+    } else if (authToastState === "logout") {
+      showToast({
+        message: "You have been logged out.",
+        type: "info",
+      });
+      clearCookie("reonet_auth_toast");
+    }
+
+    j(
+      ".woocommerce-notices-wrapper .woocommerce-message, .woocommerce-notices-wrapper .woocommerce-info, .woocommerce .woocommerce-message, .woocommerce .woocommerce-info",
+    ).each(function () {
+      const notice = j(this);
+      const text = notice.text().trim().toLowerCase();
+
+      const isLoginNotice =
+        text.includes("logged in") ||
+        text.includes("kirjaud") ||
+        text.includes("signed in");
+      const isLogoutNotice =
+        text.includes("logged out") ||
+        text.includes("uloskirj") ||
+        text.includes("signed out");
+
+      if (!isLoginNotice && !isLogoutNotice) {
+        return;
+      }
+
+      const messageHtml = getNoticeToastMessageHtml(notice);
+      showToast({
+        message: messageHtml,
+        type: isLoginNotice ? "success" : "info",
+      });
+
+      notice.remove();
+    });
+
+  };
+
   convertSingleProductNoticesToToasts();
   convertCartNoticesToToasts();
+  convertAuthNoticesToToasts();
   setupSingleProductAjaxAddToCart();
 
   j(document.body)
@@ -549,6 +613,228 @@ j(document).ready(function () {
         convertCartNoticesToToasts();
       },
     );
+
+  const setupCheckoutValidationUX = function () {
+    if (!j("body").hasClass("woocommerce-checkout")) {
+      return;
+    }
+
+    const toastMessage = "Please fill in all required fields.";
+
+    const isFieldValueEmpty = function ($field) {
+      if (!$field.length || !$field.is(":visible")) {
+        return false;
+      }
+
+      if ($field.is(":checkbox,:radio")) {
+        const name = $field.attr("name");
+        if (!name) {
+          return !$field.is(":checked");
+        }
+
+        const $group = $field
+          .closest("form.checkout")
+          .find(`[name="${name.replace(/"/g, '\\"')}"]`);
+        return !$group.is(":checked");
+      }
+
+      return String($field.val() || "").trim() === "";
+    };
+
+    const updateRequiredFieldStates = function () {
+      const $checkoutForm = j("form.checkout");
+      if (!$checkoutForm.length) {
+        return { hasEmptyRequired: false, firstInvalidField: null };
+      }
+
+      let hasEmptyRequired = false;
+      let firstInvalidField = null;
+
+      $checkoutForm
+        .find(".reonet-checkout-field-error")
+        .removeClass("reonet-checkout-field-error");
+
+      $checkoutForm.find(".validate-required").each(function () {
+        const $row = j(this);
+        const $targetField = $row
+          .find("input, select, textarea")
+          .filter(":enabled")
+          .not('[type="hidden"]')
+          .first();
+
+        if (isFieldValueEmpty($targetField)) {
+          $row.addClass("reonet-checkout-field-error");
+          hasEmptyRequired = true;
+          if (!firstInvalidField && $targetField.length) {
+            firstInvalidField = $targetField;
+          }
+        }
+      });
+
+      return { hasEmptyRequired, firstInvalidField };
+    };
+
+    const hideRequiredFieldNoticeGroups = function () {
+      j(
+        ".woocommerce-NoticeGroup-checkout, .woocommerce form.checkout .woocommerce-error, .woocommerce-notices-wrapper .woocommerce-error",
+      ).remove();
+    };
+
+    j(document.body)
+      .off("submit.reonetCheckoutValidation", "form.checkout")
+      .on("submit.reonetCheckoutValidation", "form.checkout", function () {
+        const validationState = updateRequiredFieldStates();
+        if (validationState.hasEmptyRequired) {
+          if (validationState.firstInvalidField && validationState.firstInvalidField.length) {
+            validationState.firstInvalidField.trigger("focus");
+          }
+          showToast({
+            message: toastMessage,
+            type: "error",
+          });
+        }
+      });
+
+    j(document.body)
+      .off(
+        "change.reonetCheckoutValidation input.reonetCheckoutValidation",
+        "form.checkout .validate-required input, form.checkout .validate-required select, form.checkout .validate-required textarea",
+      )
+      .on(
+        "change.reonetCheckoutValidation input.reonetCheckoutValidation",
+        "form.checkout .validate-required input, form.checkout .validate-required select, form.checkout .validate-required textarea",
+        function () {
+          const $row = j(this).closest(".validate-required");
+          const $targetField = $row
+            .find("input, select, textarea")
+            .filter(":enabled")
+            .not('[type="hidden"]')
+            .first();
+
+          if (!isFieldValueEmpty($targetField)) {
+            $row.removeClass("reonet-checkout-field-error");
+          }
+        },
+      );
+
+    j(document.body)
+      .off("checkout_error.reonetCheckoutValidation")
+      .on("checkout_error.reonetCheckoutValidation", function () {
+        window.setTimeout(function () {
+          const validationState = updateRequiredFieldStates();
+          if (!validationState.hasEmptyRequired) {
+            return;
+          }
+
+          if (validationState.firstInvalidField && validationState.firstInvalidField.length) {
+            validationState.firstInvalidField.trigger("focus");
+          }
+          hideRequiredFieldNoticeGroups();
+          showToast({
+            message: toastMessage,
+            type: "error",
+          });
+        }, 20);
+      });
+
+    const updateLoginFieldStates = function () {
+      const $loginForm = j("form.woocommerce-form-login");
+      if (!$loginForm.length) {
+        return { hasEmptyRequired: false, firstInvalidField: null };
+      }
+
+      const $username = $loginForm.find("#username, input[name='username']").first();
+      const $password = $loginForm.find("#password, input[name='password']").first();
+      let hasEmptyRequired = false;
+      let firstInvalidField = null;
+
+      $loginForm.find(".reonet-login-field-error").removeClass("reonet-login-field-error");
+
+      if ($username.length && String($username.val() || "").trim() === "") {
+        $username.closest(".form-row").addClass("reonet-login-field-error");
+        hasEmptyRequired = true;
+        if (!firstInvalidField) {
+          firstInvalidField = $username;
+        }
+      }
+
+      if ($password.length && String($password.val() || "").trim() === "") {
+        $password.closest(".form-row").addClass("reonet-login-field-error");
+        hasEmptyRequired = true;
+        if (!firstInvalidField) {
+          firstInvalidField = $password;
+        }
+      }
+
+      return { hasEmptyRequired, firstInvalidField };
+    };
+
+    const validateLoginFormAndNotify = function () {
+      const validationState = updateLoginFieldStates();
+      if (!validationState.hasEmptyRequired) {
+        return true;
+      }
+
+      if (validationState.firstInvalidField && validationState.firstInvalidField.length) {
+        validationState.firstInvalidField.trigger("focus");
+      }
+
+      showToast({
+        message: toastMessage,
+        type: "error",
+      });
+
+      return false;
+    };
+
+    // Use custom validation UX instead of browser-native required popups.
+    j("form.woocommerce-form-login").attr("novalidate", "novalidate");
+
+    j(document.body)
+      .off("submit.reonetCheckoutLoginValidation", "form.woocommerce-form-login")
+      .on("submit.reonetCheckoutLoginValidation", "form.woocommerce-form-login", function (event) {
+        if (validateLoginFormAndNotify()) {
+          return;
+        }
+
+        event.preventDefault();
+      });
+
+    j(document.body)
+      .off(
+        "click.reonetCheckoutLoginValidation",
+        "form.woocommerce-form-login button[type='submit'], form.woocommerce-form-login input[type='submit']",
+      )
+      .on(
+        "click.reonetCheckoutLoginValidation",
+        "form.woocommerce-form-login button[type='submit'], form.woocommerce-form-login input[type='submit']",
+        function (event) {
+          if (validateLoginFormAndNotify()) {
+            return;
+          }
+
+          event.preventDefault();
+        },
+      );
+
+    j(document.body)
+      .off(
+        "input.reonetCheckoutLoginValidation change.reonetCheckoutLoginValidation",
+        "form.woocommerce-form-login input[name='username'], form.woocommerce-form-login input[name='password']",
+      )
+      .on(
+        "input.reonetCheckoutLoginValidation change.reonetCheckoutLoginValidation",
+        "form.woocommerce-form-login input[name='username'], form.woocommerce-form-login input[name='password']",
+        function () {
+          const $field = j(this);
+          if (String($field.val() || "").trim() !== "") {
+            $field.closest(".form-row").removeClass("reonet-login-field-error");
+          }
+        },
+      );
+  };
+
+  setupCheckoutValidationUX();
 
   // Loader
   window.addEventListener("load", function () {

@@ -30,28 +30,24 @@
   @apply max-w-6xl px-4 mx-auto;
 }
 
-.btn {
-  @apply font-medium px-9 h-14 text-xl rounded-full duration-300 flex items-center justify-center cursor-pointer;
+.card {
+  @apply rounded-2xl border border-primary/20 border-dashed overflow-hidden;
 }
 
-.btn-md {
-  @apply px-6 h-12 text-lg font-normal gap-2 has-[i]:pr-2 [&_i]:text-lg;
+.card .card-head {
+  @apply px-5 py-3.5 bg-blue-50;
 }
 
-.btn-sm {
-  @apply px-4 h-8 text-base font-normal gap-2 has-[i]:pr-2 [&_i]:text-lg;
+.card .card-head h3 {
+  @apply text-xl font-medium text-primary;
 }
 
-.btn-primary {
-  @apply bg-primary text-white hover:bg-green duration-300;
+.card .card-head p {
+  @apply text-[15px] text-gray-600;
 }
 
-.btn-primary.btn-ghost {
-  @apply sm:bg-transparent sm:text-primary sm:hover:text-white sm:group-hover:text-white sm:hover:bg-primary sm:group-hover:bg-primary;
-}
-
-.btn-secondary {
-  @apply bg-green text-white;
+.card .card-body {
+  @apply p-4 sm:p-5 border-t-2 border-primary/10;
 }
 
 .navbar .main-menu {
@@ -321,15 +317,15 @@ del .woocommerce-Price-amount bdi {
 }
 
 .reonet-checkout-login {
-  @apply mb-6 rounded-2xl border border-blue-200 bg-blue-50/70 p-4 sm:p-6;
+  @apply mb-0;
 }
 
 .reonet-checkout-form .reonet-checkout-panel {
-  @apply rounded-2xl border border-gray-200 bg-white p-4 sm:p-6;
+  @apply rounded-none border-0 bg-transparent p-0;
 }
 
 .reonet-checkout-form #customer_details {
-  @apply grid grid-cols-1 gap-6;
+  @apply grid grid-cols-1 gap-4;
 }
 
 .reonet-checkout-form #customer_details .col-1,
@@ -339,59 +335,135 @@ del .woocommerce-Price-amount bdi {
 }
 
 .reonet-checkout-form #customer_details h3 {
-  @apply text-xl font-semibold mb-4;
+  @apply mb-0;
 }
 
 .reonet-checkout-form .woocommerce-billing-fields__field-wrapper,
-.reonet-checkout-form .woocommerce-shipping-fields__field-wrapper,
+.reonet-checkout-form .woocommerce-shipping-fields__field-wrapper {
+  @apply grid grid-cols-1 gap-2.5 sm:grid-cols-12;
+}
+
 .reonet-checkout-form .woocommerce-additional-fields__field-wrapper {
-  @apply grid grid-cols-1 gap-3;
+  @apply grid grid-cols-1 gap-4;
 }
 
 .reonet-checkout-form .form-row {
-  @apply mb-3;
+  @apply mb-0;
+}
+
+.reonet-checkout-form .woocommerce-billing-fields__field-wrapper > .form-row,
+.reonet-checkout-form .woocommerce-shipping-fields__field-wrapper > .form-row {
+  @apply sm:col-span-4;
+}
+
+.reonet-checkout-form #billing_first_name_field,
+.reonet-checkout-form #billing_last_name_field,
+.reonet-checkout-form #shipping_first_name_field,
+.reonet-checkout-form #shipping_last_name_field {
+  @apply sm:col-span-6;
+}
+
+.reonet-checkout-form .form-row-wide {
+  @apply sm:col-span-12;
+}
+
+.reonet-checkout-form .reonet-checkout-field-error > label,
+.reonet-checkout-form .reonet-checkout-field-error .woocommerce-form__label {
+  @apply text-red-700;
+}
+
+.reonet-checkout-form
+  .reonet-checkout-field-error
+  input:not([type="checkbox"]):not([type="radio"]),
+.reonet-checkout-form .reonet-checkout-field-error select,
+.reonet-checkout-form .reonet-checkout-field-error textarea {
+  @apply border-red-500 bg-red-50 focus:border-red-500 focus:ring-red-500/20;
+}
+
+.woocommerce-checkout
+  .woocommerce-form-login
+  .reonet-login-field-error
+  > label {
+  @apply text-red-700;
+}
+
+.woocommerce-checkout
+  .woocommerce-form-login
+  .reonet-login-field-error
+  input:not([type="checkbox"]):not([type="radio"]) {
+  @apply border-red-500 bg-red-50 focus:border-red-500 focus:ring-red-500/20;
 }
 
 .reonet-checkout-form .woocommerce-checkout-review-order-table {
-  @apply w-full rounded-2xl overflow-hidden border border-gray-200 bg-white;
+  @apply w-full;
 }
 
 .reonet-checkout-form .woocommerce-checkout-review-order-table th {
   @apply text-left;
 }
 
-.reonet-checkout-form .woocommerce-checkout-review-order-table thead th {
-  @apply bg-gray-100 text-gray-700 font-semibold;
+.reonet-checkout-form
+  .woocommerce-checkout-review-order-table
+  .woocommerce-shipping-methods
+  input[type="radio"] {
+  @apply h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500/30;
 }
 
-.reonet-checkout-form .woocommerce-checkout-review-order-table td,
-.reonet-checkout-form .woocommerce-checkout-review-order-table th {
-  @apply p-3 sm:p-4 align-top;
+.reonet-checkout-form
+  .woocommerce-checkout-review-order-table
+  .woocommerce-shipping-methods
+  label {
+  @apply text-sm text-gray-700;
 }
 
 .reonet-checkout-form .woocommerce-checkout-payment {
-  @apply mt-4 rounded-2xl border border-gray-200 bg-white p-4 sm:p-5;
+  @apply mt-4;
 }
 
-.reonet-checkout-form .wc_payment_methods {
-  @apply space-y-3 mb-4;
+.reonet-checkout-form .reonet-payment-method-label {
+  @apply min-h-14 px-3 py-3;
 }
 
-.reonet-checkout-form .wc_payment_method {
-  @apply rounded-xl border border-gray-200 p-3;
+.reonet-checkout-form .reonet-payment-method-brand-icons img {
+  @apply h-5 w-auto;
 }
 
-.reonet-checkout-form .payment_box {
-  @apply mt-2 text-sm text-gray-600;
-}
-
-.reonet-checkout-form .place-order {
-  @apply flex flex-col gap-3;
+.reonet-checkout-form .woocommerce-checkout-payment .about_paypal,
+.reonet-checkout-form
+  .woocommerce-checkout-payment
+  .payment_method_paypal
+  label
+  img,
+.reonet-checkout-form
+  .woocommerce-checkout-payment
+  .payment_method_paypal
+  label
+  .about_paypal {
+  @apply inline-flex align-middle;
 }
 
 .reonet-checkout-form .woocommerce-privacy-policy-text,
 .reonet-checkout-form .woocommerce-terms-and-conditions-wrapper {
   @apply text-sm text-gray-600;
+}
+
+.reonet-checkout-login .woocommerce-form-login {
+  @apply grid grid-cols-1 gap-4 sm:grid-cols-2;
+}
+
+.reonet-checkout-login .woocommerce-form-login .lost_password,
+.reonet-checkout-login .woocommerce-form-login .clear,
+.reonet-checkout-login .woocommerce-form-login .show-password-input,
+.reonet-checkout-login
+  .woocommerce-form-login
+  .woocommerce-form-login__rememberme,
+.reonet-checkout-login .woocommerce-form-login .form-row-wide {
+  @apply sm:col-span-2;
+}
+
+#billing_country_field,
+#shipping_country_field {
+  @apply hidden;
 }
 
 /* Order Received Page */

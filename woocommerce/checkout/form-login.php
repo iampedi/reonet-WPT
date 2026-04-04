@@ -26,15 +26,21 @@ if (is_user_logged_in()) {
 }
 
 if ($registration_at_checkout || $login_reminder_at_checkout) : ?>
-	<div class="reonet-checkout-login card">
-		<?php
-		woocommerce_login_form(
-			array(
-				'message'  => esc_html__('If you have shopped with us before, please enter your details below. If you are a new customer, please proceed to the Billing section.', 'woocommerce'),
-				'redirect' => wc_get_checkout_url(),
-				'hidden'   => false,
-			)
-		);
-		?>
+	<div class="_reonet_checkout_login card">
+		<div class="card-head">
+			<h3><?php reonet_esc_html_tr_e('Returning customer'); ?></h3>
+			<p><?php reonet_esc_html_tr_e('Sign in to speed up checkout and reuse saved details.'); ?></p>
+		</div>
+		<div class="card-body space-y-2.5">
+			<?php
+			woocommerce_login_form(
+				array(
+					'message'  => esc_html__('If you have shopped with us before, please enter your details below. If you are a new customer, please proceed to the Billing section.', 'woocommerce'),
+					'redirect' => wc_get_checkout_url(),
+					'hidden'   => false,
+				)
+			);
+			?>
+		</div>
 	</div>
 <?php endif; ?>

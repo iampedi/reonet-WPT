@@ -1379,6 +1379,14 @@
     width: calc(var(--spacing) * 10);
     height: calc(var(--spacing) * 10);
   }
+  .size-11 {
+    width: calc(var(--spacing) * 11);
+    height: calc(var(--spacing) * 11);
+  }
+  .size-11\.5 {
+    width: calc(var(--spacing) * 11.5);
+    height: calc(var(--spacing) * 11.5);
+  }
   .size-36 {
     width: calc(var(--spacing) * 36);
     height: calc(var(--spacing) * 36);
@@ -1407,8 +1415,8 @@
   .h-11 {
     height: calc(var(--spacing) * 11);
   }
-  .h-12 {
-    height: calc(var(--spacing) * 12);
+  .h-11\.5 {
+    height: calc(var(--spacing) * 11.5);
   }
   .h-16 {
     height: calc(var(--spacing) * 16);
@@ -1436,6 +1444,9 @@
   }
   .max-h-full {
     max-height: 100%;
+  }
+  .min-h-32 {
+    min-height: calc(var(--spacing) * 32);
   }
   .datatable-table {
     .datatable-wrapper & {
@@ -1577,8 +1588,8 @@
   .max-w-12 {
     max-width: calc(var(--spacing) * 12);
   }
-  .max-w-60 {
-    max-width: calc(var(--spacing) * 60);
+  .max-w-64 {
+    max-width: calc(var(--spacing) * 64);
   }
   .max-w-sm {
     max-width: var(--container-sm);
@@ -1804,6 +1815,13 @@
       margin-block-end: calc(calc(var(--spacing) * 2) * calc(1 - var(--tw-space-y-reverse)));
     }
   }
+  .space-y-2\.5 {
+    :where(& > :not(:last-child)) {
+      --tw-space-y-reverse: 0;
+      margin-block-start: calc(calc(var(--spacing) * 2.5) * var(--tw-space-y-reverse));
+      margin-block-end: calc(calc(var(--spacing) * 2.5) * calc(1 - var(--tw-space-y-reverse)));
+    }
+  }
   .space-y-3 {
     :where(& > :not(:last-child)) {
       --tw-space-y-reverse: 0;
@@ -1830,13 +1848,6 @@
       --tw-space-y-reverse: 0;
       margin-block-start: calc(calc(var(--spacing) * 6) * var(--tw-space-y-reverse));
       margin-block-end: calc(calc(var(--spacing) * 6) * calc(1 - var(--tw-space-y-reverse)));
-    }
-  }
-  .space-y-8 {
-    :where(& > :not(:last-child)) {
-      --tw-space-y-reverse: 0;
-      margin-block-start: calc(calc(var(--spacing) * 8) * var(--tw-space-y-reverse));
-      margin-block-end: calc(calc(var(--spacing) * 8) * calc(1 - var(--tw-space-y-reverse)));
     }
   }
   .space-y-10 {
@@ -1869,14 +1880,17 @@
       border-bottom-width: calc(1px * calc(1 - var(--tw-divide-y-reverse)));
     }
   }
-  .divide-gray-200 {
-    :where(& > :not(:last-child)) {
-      border-color: var(--color-gray-200);
-    }
-  }
   .divide-primary {
     :where(& > :not(:last-child)) {
       border-color: var(--primary);
+    }
+  }
+  .divide-primary\/10 {
+    :where(& > :not(:last-child)) {
+      border-color: var(--primary);
+      @supports (color: color-mix(in lab, red, red)) {
+        border-color: color-mix(in oklab, var(--primary) 10%, transparent);
+      }
     }
   }
   .divide-primary\/20 {
@@ -1886,6 +1900,11 @@
         border-color: color-mix(in oklab, var(--primary) 20%, transparent);
       }
     }
+  }
+  .truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   .overflow-hidden {
     overflow: hidden;
@@ -1936,6 +1955,10 @@
   .rounded-t {
     border-top-left-radius: 0.25rem;
     border-top-right-radius: 0.25rem;
+  }
+  .rounded-t-2xl {
+    border-top-left-radius: var(--radius-2xl);
+    border-top-right-radius: var(--radius-2xl);
   }
   .rounded-tl-3xl {
     border-top-left-radius: var(--radius-3xl);
@@ -2101,6 +2124,12 @@
     border-color: var(--primary);
     @supports (color: color-mix(in lab, red, red)) {
       border-color: color-mix(in oklab, var(--primary) 20%, transparent);
+    }
+  }
+  .border-primary\/50 {
+    border-color: var(--primary);
+    @supports (color: color-mix(in lab, red, red)) {
+      border-color: color-mix(in oklab, var(--primary) 50%, transparent);
     }
   }
   .border-primary\/80 {
@@ -2360,6 +2389,9 @@
   .p-0 {
     padding: calc(var(--spacing) * 0);
   }
+  .p-0\! {
+    padding: calc(var(--spacing) * 0) !important;
+  }
   .p-1 {
     padding: calc(var(--spacing) * 1);
   }
@@ -2434,6 +2466,9 @@
   }
   .py-5 {
     padding-block: calc(var(--spacing) * 5);
+  }
+  .py-6 {
+    padding-block: calc(var(--spacing) * 6);
   }
   .py-8 {
     padding-block: calc(var(--spacing) * 8);
@@ -2513,9 +2548,6 @@
   }
   .pb-2 {
     padding-bottom: calc(var(--spacing) * 2);
-  }
-  .pb-3 {
-    padding-bottom: calc(var(--spacing) * 3);
   }
   .pb-6 {
     padding-bottom: calc(var(--spacing) * 6);
@@ -2694,10 +2726,6 @@
   .font-medium {
     --tw-font-weight: var(--font-weight-medium);
     font-weight: var(--font-weight-medium);
-  }
-  .font-normal {
-    --tw-font-weight: var(--font-weight-normal);
-    font-weight: var(--font-weight-normal);
   }
   .font-semibold {
     --tw-font-weight: var(--font-weight-semibold);
@@ -3008,6 +3036,16 @@
     &:hover {
       @media (hover: hover) {
         background-color: var(--green);
+      }
+    }
+  }
+  .hover\:bg-primary\/5 {
+    &:hover {
+      @media (hover: hover) {
+        background-color: var(--primary);
+        @supports (color: color-mix(in lab, red, red)) {
+          background-color: color-mix(in oklab, var(--primary) 5%, transparent);
+        }
       }
     }
   }
@@ -3418,15 +3456,6 @@
       }
     }
   }
-  .sm\:space-y-10 {
-    @media (width >= 40rem) {
-      :where(& > :not(:last-child)) {
-        --tw-space-y-reverse: 0;
-        margin-block-start: calc(calc(var(--spacing) * 10) * var(--tw-space-y-reverse));
-        margin-block-end: calc(calc(var(--spacing) * 10) * calc(1 - var(--tw-space-y-reverse)));
-      }
-    }
-  }
   .sm\:space-y-12 {
     @media (width >= 40rem) {
       :where(& > :not(:last-child)) {
@@ -3493,6 +3522,11 @@
   .sm\:bg-\[url\(\'\.\.\/images\/footer-pattern\.png\'\)\] {
     @media (width >= 40rem) {
       background-image: url('../images/footer-pattern.png');
+    }
+  }
+  .sm\:p-5 {
+    @media (width >= 40rem) {
+      padding: calc(var(--spacing) * 5);
     }
   }
   .sm\:p-6 {
@@ -3733,9 +3767,24 @@
       grid-template-columns: repeat(3, minmax(0, 1fr));
     }
   }
+  .lg\:col-span-4 {
+    @media (width >= 64rem) {
+      grid-column: span 4 / span 4;
+    }
+  }
+  .lg\:col-span-8 {
+    @media (width >= 64rem) {
+      grid-column: span 8 / span 8;
+    }
+  }
   .lg\:grid-cols-4 {
     @media (width >= 64rem) {
       grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+  .lg\:grid-cols-12 {
+    @media (width >= 64rem) {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
     }
   }
   .lg\:grid-cols-\[260px_minmax\(0\,1fr\)\] {
@@ -3898,22 +3947,10 @@
       color: var(--color-gray-500);
     }
   }
-  .\[\&_\.woocommerce-Price-amount\]\:text-xl {
-    & .woocommerce-Price-amount {
-      font-size: var(--text-xl);
-      line-height: var(--tw-leading, var(--text-xl--line-height));
-    }
-  }
   .\[\&_\.woocommerce-Price-amount\]\:font-normal {
     & .woocommerce-Price-amount {
       --tw-font-weight: var(--font-weight-normal);
       font-weight: var(--font-weight-normal);
-    }
-  }
-  .\[\&_\.woocommerce-Price-amount\]\:font-semibold {
-    & .woocommerce-Price-amount {
-      --tw-font-weight: var(--font-weight-semibold);
-      font-weight: var(--font-weight-semibold);
     }
   }
   .\[\&_\.woocommerce-product-gallery__image\]\:overflow-hidden {
@@ -3929,6 +3966,31 @@
   .\[\&_a\]\:underline {
     & a {
       text-decoration-line: underline;
+    }
+  }
+  .\[\&_a\]\:underline-offset-4 {
+    & a {
+      text-underline-offset: 4px;
+    }
+  }
+  .\[\&_a\]\:hover\:text-primary {
+    & a {
+      &:hover {
+        @media (hover: hover) {
+          color: var(--primary);
+        }
+      }
+    }
+  }
+  .\[\&_bdi\]\:text-\[15px\]\! {
+    & bdi {
+      font-size: 15px !important;
+    }
+  }
+  .\[\&_bdi\]\:font-medium\! {
+    & bdi {
+      --tw-font-weight: var(--font-weight-medium) !important;
+      font-weight: var(--font-weight-medium) !important;
     }
   }
   .\[\&_img\]\:rounded-3xl {
@@ -3975,36 +4037,19 @@
       font-weight: var(--font-weight-normal);
     }
   }
-  .\[\&_strong\]\:font-normal {
-    & strong {
-      --tw-font-weight: var(--font-weight-normal);
-      font-weight: var(--font-weight-normal);
-    }
-  }
-  .\[\&_strong\]\:font-semibold {
-    & strong {
-      --tw-font-weight: var(--font-weight-semibold);
-      font-weight: var(--font-weight-semibold);
-    }
-  }
   .\[\&_strong\]\:text-primary {
     & strong {
       color: var(--primary);
     }
   }
-  .\[\&_td\]\:p-3 {
-    & td {
-      padding: calc(var(--spacing) * 3);
-    }
-  }
-  .\[\&_th\]\:p-3 {
-    & th {
-      padding: calc(var(--spacing) * 3);
-    }
-  }
   .\[\&_ul\]\:pl-4 {
     & ul {
       padding-left: calc(var(--spacing) * 4);
+    }
+  }
+  .\[\&\>a\]\:underline {
+    &>a {
+      text-decoration-line: underline;
     }
   }
 }
@@ -4022,103 +4067,45 @@
   max-width: var(--container-6xl);
   padding-inline: calc(var(--spacing) * 4);
 }
-.btn {
-  display: flex;
-  height: calc(var(--spacing) * 14);
-  cursor: pointer;
-  align-items: center;
-  justify-content: center;
-  border-radius: calc(infinity * 1px);
-  padding-inline: calc(var(--spacing) * 9);
+.card {
+  overflow: hidden;
+  border-radius: var(--radius-2xl);
+  border-style: var(--tw-border-style);
+  border-width: 1px;
+  --tw-border-style: dashed;
+  border-style: dashed;
+  border-color: var(--primary);
+  @supports (color: color-mix(in lab, red, red)) {
+    border-color: color-mix(in oklab, var(--primary) 20%, transparent);
+  }
+}
+.card .card-head {
+  background-color: var(--color-blue-50);
+  padding-inline: calc(var(--spacing) * 5);
+  padding-block: calc(var(--spacing) * 3.5);
+}
+.card .card-head h3 {
   font-size: var(--text-xl);
   line-height: var(--tw-leading, var(--text-xl--line-height));
   --tw-font-weight: var(--font-weight-medium);
   font-weight: var(--font-weight-medium);
-  --tw-duration: 300ms;
-  transition-duration: 300ms;
+  color: var(--primary);
 }
-.btn-md {
-  height: calc(var(--spacing) * 12);
-  gap: calc(var(--spacing) * 2);
-  padding-inline: calc(var(--spacing) * 6);
-  font-size: var(--text-lg);
-  line-height: var(--tw-leading, var(--text-lg--line-height));
-  --tw-font-weight: var(--font-weight-normal);
-  font-weight: var(--font-weight-normal);
-  &:has(*:is(i)) {
-    padding-right: calc(var(--spacing) * 2);
-  }
-  & i {
-    font-size: var(--text-lg);
-    line-height: var(--tw-leading, var(--text-lg--line-height));
-  }
+.card .card-head p {
+  font-size: 15px;
+  color: var(--color-gray-600);
 }
-.btn-sm {
-  height: calc(var(--spacing) * 8);
-  gap: calc(var(--spacing) * 2);
-  padding-inline: calc(var(--spacing) * 4);
-  font-size: var(--text-base);
-  line-height: var(--tw-leading, var(--text-base--line-height));
-  --tw-font-weight: var(--font-weight-normal);
-  font-weight: var(--font-weight-normal);
-  &:has(*:is(i)) {
-    padding-right: calc(var(--spacing) * 2);
+.card .card-body {
+  border-top-style: var(--tw-border-style);
+  border-top-width: 2px;
+  border-color: var(--primary);
+  @supports (color: color-mix(in lab, red, red)) {
+    border-color: color-mix(in oklab, var(--primary) 10%, transparent);
   }
-  & i {
-    font-size: var(--text-lg);
-    line-height: var(--tw-leading, var(--text-lg--line-height));
-  }
-}
-.btn-primary {
-  background-color: var(--primary);
-  color: var(--color-white);
-  --tw-duration: 300ms;
-  transition-duration: 300ms;
-  &:hover {
-    @media (hover: hover) {
-      background-color: var(--green);
-    }
-  }
-}
-.btn-primary.btn-ghost {
+  padding: calc(var(--spacing) * 4);
   @media (width >= 40rem) {
-    background-color: transparent;
+    padding: calc(var(--spacing) * 5);
   }
-  @media (width >= 40rem) {
-    color: var(--primary);
-  }
-  @media (width >= 40rem) {
-    &:is(:where(.group):hover *) {
-      @media (hover: hover) {
-        background-color: var(--primary);
-      }
-    }
-  }
-  @media (width >= 40rem) {
-    &:is(:where(.group):hover *) {
-      @media (hover: hover) {
-        color: var(--color-white);
-      }
-    }
-  }
-  @media (width >= 40rem) {
-    &:hover {
-      @media (hover: hover) {
-        background-color: var(--primary);
-      }
-    }
-  }
-  @media (width >= 40rem) {
-    &:hover {
-      @media (hover: hover) {
-        color: var(--color-white);
-      }
-    }
-  }
-}
-.btn-secondary {
-  background-color: var(--green);
-  color: var(--color-white);
 }
 .navbar .main-menu {
   display: flex;
@@ -4573,122 +4560,155 @@
   }
 }
 .reonet-checkout-login {
-  margin-bottom: calc(var(--spacing) * 6);
-  border-radius: var(--radius-2xl);
-  border-style: var(--tw-border-style);
-  border-width: 1px;
-  border-color: var(--color-blue-200);
-  background-color: color-mix(in srgb, oklch(97% 0.014 254.604) 70%, transparent);
-  @supports (color: color-mix(in lab, red, red)) {
-    background-color: color-mix(in oklab, var(--color-blue-50) 70%, transparent);
-  }
-  padding: calc(var(--spacing) * 4);
-  @media (width >= 40rem) {
-    padding: calc(var(--spacing) * 6);
-  }
+  margin-bottom: calc(var(--spacing) * 0);
 }
 .reonet-checkout-form .reonet-checkout-panel {
-  border-radius: var(--radius-2xl);
+  border-radius: 0;
   border-style: var(--tw-border-style);
-  border-width: 1px;
-  border-color: var(--color-gray-200);
-  background-color: var(--color-white);
-  padding: calc(var(--spacing) * 4);
-  @media (width >= 40rem) {
-    padding: calc(var(--spacing) * 6);
-  }
+  border-width: 0px;
+  background-color: transparent;
+  padding: calc(var(--spacing) * 0);
 }
 .reonet-checkout-form #customer_details {
   display: grid;
   grid-template-columns: repeat(1, minmax(0, 1fr));
-  gap: calc(var(--spacing) * 6);
+  gap: calc(var(--spacing) * 4);
 }
 .reonet-checkout-form #customer_details .col-1, .reonet-checkout-form #customer_details .col-2 {
   width: 100%;
   float: none;
 }
 .reonet-checkout-form #customer_details h3 {
-  margin-bottom: calc(var(--spacing) * 4);
-  font-size: var(--text-xl);
-  line-height: var(--tw-leading, var(--text-xl--line-height));
-  --tw-font-weight: var(--font-weight-semibold);
-  font-weight: var(--font-weight-semibold);
+  margin-bottom: calc(var(--spacing) * 0);
 }
-.reonet-checkout-form .woocommerce-billing-fields__field-wrapper, .reonet-checkout-form .woocommerce-shipping-fields__field-wrapper, .reonet-checkout-form .woocommerce-additional-fields__field-wrapper {
+.reonet-checkout-form .woocommerce-billing-fields__field-wrapper, .reonet-checkout-form .woocommerce-shipping-fields__field-wrapper {
   display: grid;
   grid-template-columns: repeat(1, minmax(0, 1fr));
-  gap: calc(var(--spacing) * 3);
+  gap: calc(var(--spacing) * 2.5);
+  @media (width >= 40rem) {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+  }
+}
+.reonet-checkout-form .woocommerce-additional-fields__field-wrapper {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: calc(var(--spacing) * 4);
 }
 .reonet-checkout-form .form-row {
-  margin-bottom: calc(var(--spacing) * 3);
+  margin-bottom: calc(var(--spacing) * 0);
+}
+.reonet-checkout-form .woocommerce-billing-fields__field-wrapper > .form-row, .reonet-checkout-form .woocommerce-shipping-fields__field-wrapper > .form-row {
+  @media (width >= 40rem) {
+    grid-column: span 4 / span 4;
+  }
+}
+.reonet-checkout-form #billing_first_name_field, .reonet-checkout-form #billing_last_name_field, .reonet-checkout-form #shipping_first_name_field, .reonet-checkout-form #shipping_last_name_field {
+  @media (width >= 40rem) {
+    grid-column: span 6 / span 6;
+  }
+}
+.reonet-checkout-form .form-row-wide {
+  @media (width >= 40rem) {
+    grid-column: span 12 / span 12;
+  }
+}
+.reonet-checkout-form .reonet-checkout-field-error > label, .reonet-checkout-form .reonet-checkout-field-error .woocommerce-form__label {
+  color: var(--color-red-700);
+}
+.reonet-checkout-form .reonet-checkout-field-error input:not([type="checkbox"]):not([type="radio"]), .reonet-checkout-form .reonet-checkout-field-error select, .reonet-checkout-form .reonet-checkout-field-error textarea {
+  border-color: var(--color-red-500);
+  background-color: var(--color-red-50);
+  &:focus {
+    border-color: var(--color-red-500);
+  }
+  &:focus {
+    --tw-ring-color: color-mix(in srgb, oklch(63.7% 0.237 25.331) 20%, transparent);
+    @supports (color: color-mix(in lab, red, red)) {
+      --tw-ring-color: color-mix(in oklab, var(--color-red-500) 20%, transparent);
+    }
+  }
+}
+.woocommerce-checkout .woocommerce-form-login .reonet-login-field-error > label {
+  color: var(--color-red-700);
+}
+.woocommerce-checkout .woocommerce-form-login .reonet-login-field-error input:not([type="checkbox"]):not([type="radio"]) {
+  border-color: var(--color-red-500);
+  background-color: var(--color-red-50);
+  &:focus {
+    border-color: var(--color-red-500);
+  }
+  &:focus {
+    --tw-ring-color: color-mix(in srgb, oklch(63.7% 0.237 25.331) 20%, transparent);
+    @supports (color: color-mix(in lab, red, red)) {
+      --tw-ring-color: color-mix(in oklab, var(--color-red-500) 20%, transparent);
+    }
+  }
 }
 .reonet-checkout-form .woocommerce-checkout-review-order-table {
   width: 100%;
-  overflow: hidden;
-  border-radius: var(--radius-2xl);
-  border-style: var(--tw-border-style);
-  border-width: 1px;
-  border-color: var(--color-gray-200);
-  background-color: var(--color-white);
 }
 .reonet-checkout-form .woocommerce-checkout-review-order-table th {
   text-align: left;
 }
-.reonet-checkout-form .woocommerce-checkout-review-order-table thead th {
+.reonet-checkout-form .woocommerce-checkout-review-order-table .woocommerce-shipping-methods input[type="radio"] {
+  height: calc(var(--spacing) * 4);
+  width: calc(var(--spacing) * 4);
+  border-radius: 0.25rem;
+  border-color: var(--color-gray-300);
   background-color: var(--color-gray-100);
-  --tw-font-weight: var(--font-weight-semibold);
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-gray-700);
-}
-.reonet-checkout-form .woocommerce-checkout-review-order-table td, .reonet-checkout-form .woocommerce-checkout-review-order-table th {
-  padding: calc(var(--spacing) * 3);
-  vertical-align: top;
-  @media (width >= 40rem) {
-    padding: calc(var(--spacing) * 4);
+  color: var(--color-blue-600);
+  &:focus {
+    --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
+    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
   }
+  &:focus {
+    --tw-ring-color: color-mix(in srgb, oklch(62.3% 0.214 259.815) 30%, transparent);
+    @supports (color: color-mix(in lab, red, red)) {
+      --tw-ring-color: color-mix(in oklab, var(--color-blue-500) 30%, transparent);
+    }
+  }
+}
+.reonet-checkout-form .woocommerce-checkout-review-order-table .woocommerce-shipping-methods label {
+  font-size: var(--text-sm);
+  line-height: var(--tw-leading, var(--text-sm--line-height));
+  color: var(--color-gray-700);
 }
 .reonet-checkout-form .woocommerce-checkout-payment {
   margin-top: calc(var(--spacing) * 4);
-  border-radius: var(--radius-2xl);
-  border-style: var(--tw-border-style);
-  border-width: 1px;
-  border-color: var(--color-gray-200);
-  background-color: var(--color-white);
-  padding: calc(var(--spacing) * 4);
-  @media (width >= 40rem) {
-    padding: calc(var(--spacing) * 5);
-  }
 }
-.reonet-checkout-form .wc_payment_methods {
-  margin-bottom: calc(var(--spacing) * 4);
-  :where(& > :not(:last-child)) {
-    --tw-space-y-reverse: 0;
-    margin-block-start: calc(calc(var(--spacing) * 3) * var(--tw-space-y-reverse));
-    margin-block-end: calc(calc(var(--spacing) * 3) * calc(1 - var(--tw-space-y-reverse)));
-  }
+.reonet-checkout-form .reonet-payment-method-label {
+  min-height: calc(var(--spacing) * 14);
+  padding-inline: calc(var(--spacing) * 3);
+  padding-block: calc(var(--spacing) * 3);
 }
-.reonet-checkout-form .wc_payment_method {
-  border-radius: var(--radius-xl);
-  border-style: var(--tw-border-style);
-  border-width: 1px;
-  border-color: var(--color-gray-200);
-  padding: calc(var(--spacing) * 3);
+.reonet-checkout-form .reonet-payment-method-brand-icons img {
+  height: calc(var(--spacing) * 5);
+  width: auto;
 }
-.reonet-checkout-form .payment_box {
-  margin-top: calc(var(--spacing) * 2);
-  font-size: var(--text-sm);
-  line-height: var(--tw-leading, var(--text-sm--line-height));
-  color: var(--color-gray-600);
-}
-.reonet-checkout-form .place-order {
-  display: flex;
-  flex-direction: column;
-  gap: calc(var(--spacing) * 3);
+.reonet-checkout-form .woocommerce-checkout-payment .about_paypal, .reonet-checkout-form .woocommerce-checkout-payment .payment_method_paypal label img, .reonet-checkout-form .woocommerce-checkout-payment .payment_method_paypal label .about_paypal {
+  display: inline-flex;
+  vertical-align: middle;
 }
 .reonet-checkout-form .woocommerce-privacy-policy-text, .reonet-checkout-form .woocommerce-terms-and-conditions-wrapper {
   font-size: var(--text-sm);
   line-height: var(--tw-leading, var(--text-sm--line-height));
   color: var(--color-gray-600);
+}
+.reonet-checkout-login .woocommerce-form-login {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: calc(var(--spacing) * 4);
+  @media (width >= 40rem) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.reonet-checkout-login .woocommerce-form-login .lost_password, .reonet-checkout-login .woocommerce-form-login .clear, .reonet-checkout-login .woocommerce-form-login .show-password-input, .reonet-checkout-login .woocommerce-form-login .woocommerce-form-login__rememberme, .reonet-checkout-login .woocommerce-form-login .form-row-wide {
+  @media (width >= 40rem) {
+    grid-column: span 2 / span 2;
+  }
+}
+#billing_country_field, #shipping_country_field {
+  display: none;
 }
 .reonet-order-received-page .woocommerce-order-details, .reonet-order-received-page .woocommerce-customer-details {
   margin-top: calc(var(--spacing) * 6);

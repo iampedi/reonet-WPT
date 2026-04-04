@@ -110,7 +110,7 @@ $query = new WP_Query($args);
       <div class="flex items-center justify-between mb-4">
          <?php if ($title) : ?>
             <h2 class="text-2xl sm:text-2xl font-semibold text-center uppercase text-primary flex items-center gap-2">
-               <i class=" ph-duotone ph-basket text-3xl"></i>
+               <i class=" ph-duotone ph-shopping-bag text-3xl"></i>
                <?php echo esc_html($title); ?>
             </h2>
          <?php endif; ?>

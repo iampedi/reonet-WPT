@@ -260,10 +260,11 @@ function reonet_woocommerce_replace_empty_notice_wrapper_output()
 add_action('init', 'reonet_woocommerce_replace_empty_notice_wrapper_output', 30);
 
 /**
- * Remove default checkout coupon placement.
+ * Remove default checkout login and coupon placement.
  */
 function reonet_woocommerce_reposition_checkout_coupon_form()
 {
+  remove_action('woocommerce_before_checkout_form', 'woocommerce_checkout_login_form', 10);
   remove_action('woocommerce_before_checkout_form', 'woocommerce_checkout_coupon_form', 10);
 }
 add_action('init', 'reonet_woocommerce_reposition_checkout_coupon_form', 30);
@@ -298,11 +299,24 @@ function reonet_woocommerce_checkout_city_options()
  */
 function reonet_woocommerce_limit_checkout_location_fields($fields)
 {
+  foreach (array('billing', 'shipping', 'order', 'account') as $section) {
+    if (! isset($fields[$section]) || ! is_array($fields[$section])) {
+      continue;
+    }
+
+    foreach ($fields[$section] as $key => $field) {
+      $fields[$section][$key]['placeholder'] = '';
+    }
+  }
+
   if (isset($fields['billing']['billing_country'])) {
     $fields['billing']['billing_country']['type'] = 'hidden';
     $fields['billing']['billing_country']['default'] = 'FI';
     $fields['billing']['billing_country']['required'] = false;
     $fields['billing']['billing_country']['priority'] = 1;
+    $fields['billing']['billing_country']['class'] = array('hidden');
+    $fields['billing']['billing_country']['label_class'] = array('hidden');
+    $fields['billing']['billing_country']['input_class'] = array('hidden');
   }
 
   if (isset($fields['shipping']['shipping_country'])) {
@@ -310,6 +324,9 @@ function reonet_woocommerce_limit_checkout_location_fields($fields)
     $fields['shipping']['shipping_country']['default'] = 'FI';
     $fields['shipping']['shipping_country']['required'] = false;
     $fields['shipping']['shipping_country']['priority'] = 1;
+    $fields['shipping']['shipping_country']['class'] = array('hidden');
+    $fields['shipping']['shipping_country']['label_class'] = array('hidden');
+    $fields['shipping']['shipping_country']['input_class'] = array('hidden');
   }
 
   if (isset($fields['billing']['billing_city'])) {
@@ -342,6 +359,24 @@ function reonet_woocommerce_limit_checkout_location_fields($fields)
     $fields['shipping']['shipping_address_1']['priority'] = 60;
   }
 
+  if (isset($fields['billing']['billing_phone'])) {
+    $fields['billing']['billing_phone']['required'] = true;
+  }
+
+  if (isset($fields['order']['order_comments'])) {
+    $fields['order']['order_comments']['custom_attributes']['rows'] = 4;
+  }
+
+  if (isset($fields['billing']['billing_address_2'])) {
+    $fields['billing']['billing_address_2']['label'] = reonet_tr('Apartment, unit, etc.');
+    $fields['billing']['billing_address_2']['label_class'] = array();
+  }
+
+  if (isset($fields['shipping']['shipping_address_2'])) {
+    $fields['shipping']['shipping_address_2']['label'] = reonet_tr('Apartment, unit, etc.');
+    $fields['shipping']['shipping_address_2']['label_class'] = array();
+  }
+
   return $fields;
 }
 add_filter('woocommerce_checkout_fields', 'reonet_woocommerce_limit_checkout_location_fields', 20);
@@ -351,7 +386,12 @@ add_filter('woocommerce_checkout_fields', 'reonet_woocommerce_limit_checkout_loc
  */
 function reonet_flowbite_input_class_string()
 {
-  return 'block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20';
+  return 'block w-full rounded-lg border border-gray-300 bg-gray-50 px-3 h-11.5 text-[15px] text-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20';
+}
+
+function reonet_flowbite_textarea_class_string()
+{
+  return 'block w-full rounded-lg border border-gray-300 bg-gray-50 px-3 py-3 min-h-32 text-[15px] text-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20';
 }
 
 function reonet_flowbite_input_small_class_string()
@@ -364,14 +404,83 @@ function reonet_flowbite_checkbox_class_string()
   return 'h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500/30';
 }
 
-function reonet_flowbite_button_class_string($variant = 'primary')
+function reonet_flowbite_button_class_string($variant = 'primary', $size = 'md')
 {
-  if ($variant === 'secondary') {
-    return 'inline-flex items-center justify-center rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-100';
+  $initial_classes = 'inline-flex items-center justify-center rounded-full duration-300 focus:outline-none';
+  $size_classes = 'px-6 h-11.5 text-[15px]';
+
+
+  if ($size === 'sm') {
+    $size_classes = 'px-4 py-2 text-xs';
+  } elseif ($size === 'lg') {
+    $size_classes = 'px-6 py-3 text-base';
+  } elseif ($size === 'icon') {
+    $size_classes = 'size-11.5 rounded-lg';
   }
 
-  return 'inline-flex items-center justify-center rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300';
+  if ($variant === 'secondary') {
+    return "{$initial_classes} border border-primary/50 bg-white {$size_classes} font-medium text-gray-900 hover:bg-primary/5 focus:ring-4 focus:ring-gray-100";
+  }
+
+  return "{$initial_classes} bg-primary {$size_classes} font-medium text-white hover:bg-green focus:ring-4 focus:ring-blue-300";
 }
+
+/**
+ * Return a checkout payment-method icon class by gateway id.
+ *
+ * @param string $gateway_id WooCommerce gateway id.
+ * @return string
+ */
+function reonet_woocommerce_payment_method_icon_class($gateway_id)
+{
+  $gateway_id = strtolower((string) $gateway_id);
+
+  $map = array(
+    'stripe' => 'ph-stripe-logo',
+    'pediland_stripe_checkout' => 'ph-stripe-logo',
+    'paypal' => 'ph-paypal-logo',
+    'bacs' => 'ph-bank',
+    'cod' => 'ph-money',
+    'cheque' => 'ph-receipt',
+  );
+
+  return isset($map[$gateway_id]) ? $map[$gateway_id] : 'ph-wallet';
+}
+
+/**
+ * Return tax/VAT label with VAT token routed through theme translation.
+ *
+ * @return string
+ */
+function reonet_woocommerce_tax_or_vat_label()
+{
+  if (!function_exists('WC') || !WC() || !WC()->countries) {
+    return reonet_tr('VAT');
+  }
+
+  $label = (string) WC()->countries->tax_or_vat();
+  if ($label === '') {
+    return reonet_tr('VAT');
+  }
+
+  return preg_replace('/\bVAT\b/u', reonet_tr('VAT'), $label);
+}
+
+/**
+ * Translate VAT token inside order-total HTML (includes_tax text) for cart and checkout.
+ *
+ * @param string $value WooCommerce order total HTML.
+ * @return string
+ */
+function reonet_woocommerce_translate_vat_in_order_total_html($value)
+{
+  if (!is_string($value) || $value === '') {
+    return $value;
+  }
+
+  return preg_replace('/\bVAT\b/ui', reonet_tr('VAT'), $value);
+}
+add_filter('woocommerce_cart_totals_order_total_html', 'reonet_woocommerce_translate_vat_in_order_total_html', 10);
 
 /**
  * Apply Flowbite-like classes to WooCommerce generated form fields.
@@ -379,10 +488,13 @@ function reonet_flowbite_button_class_string($variant = 'primary')
 function reonet_woocommerce_apply_flowbite_field_classes($args, $key, $value)
 {
   $input_base_classes = explode(' ', reonet_flowbite_input_class_string());
+  $textarea_base_classes = explode(' ', reonet_flowbite_textarea_class_string());
   $checkbox_radio_classes = explode(' ', reonet_flowbite_checkbox_class_string());
 
   if (in_array($args['type'], array('checkbox', 'radio'), true)) {
     $args['input_class'] = array_values(array_unique(array_merge((array) $args['input_class'], $checkbox_radio_classes)));
+  } elseif ($args['type'] === 'textarea') {
+    $args['input_class'] = array_values(array_unique(array_merge((array) $args['input_class'], $textarea_base_classes)));
   } else {
     $args['input_class'] = array_values(array_unique(array_merge((array) $args['input_class'], $input_base_classes)));
   }
@@ -410,6 +522,30 @@ function reonet_woocommerce_ship_to_different_address_unchecked_by_default()
   return false;
 }
 add_filter('woocommerce_ship_to_different_address_checked', 'reonet_woocommerce_ship_to_different_address_unchecked_by_default');
+
+/**
+ * Translate cart/checkout shipping package name via theme translation layer.
+ *
+ * @param string $package_name Original package name.
+ * @param int    $index        Package index.
+ * @param array  $package      Shipping package data.
+ * @return string
+ */
+function reonet_woocommerce_translate_shipping_package_name($package_name, $index, $package)
+{
+  if (!is_string($package_name) || $package_name === '') {
+    return $package_name;
+  }
+
+  if (preg_match('/^Shipping(\s+\d+)?$/i', trim($package_name), $matches)) {
+    $translated_base = reonet_tr('Shipping');
+    $suffix = isset($matches[1]) ? $matches[1] : '';
+    return $translated_base . $suffix;
+  }
+
+  return reonet_tr($package_name);
+}
+add_filter('woocommerce_shipping_package_name', 'reonet_woocommerce_translate_shipping_package_name', 10, 3);
 
 /**
  * Replace default <p> wrappers with <div> wrappers for checkout form fields.
@@ -669,3 +805,51 @@ function reonet_woocommerce_add_to_cart_prg_redirect($url)
   );
 }
 add_filter('woocommerce_add_to_cart_redirect', 'reonet_woocommerce_add_to_cart_prg_redirect', 10);
+
+/**
+ * Store short-lived auth toast intent in a cookie after login/logout.
+ *
+ * @param string $state Either "login" or "logout".
+ * @return void
+ */
+function reonet_set_auth_toast_cookie($state)
+{
+  if (!in_array($state, array('login', 'logout'), true)) {
+    return;
+  }
+
+  $secure   = is_ssl();
+  $httponly = false; // JS must read this cookie to render toast.
+  $expires  = time() + 120;
+  $path     = defined('COOKIEPATH') && COOKIEPATH ? COOKIEPATH : '/';
+  $domain   = defined('COOKIE_DOMAIN') ? COOKIE_DOMAIN : '';
+
+  setcookie('reonet_auth_toast', $state, $expires, $path, $domain, $secure, $httponly);
+  $_COOKIE['reonet_auth_toast'] = $state;
+}
+
+/**
+ * Mark successful frontend login with a toast cookie.
+ *
+ * @return void
+ */
+function reonet_mark_login_for_toast($user_login, $user)
+{
+  if (is_admin()) {
+    return;
+  }
+
+  reonet_set_auth_toast_cookie('login');
+}
+add_action('wp_login', 'reonet_mark_login_for_toast', 10, 2);
+
+/**
+ * Mark logout with a toast cookie.
+ *
+ * @return void
+ */
+function reonet_mark_logout_for_toast()
+{
+  reonet_set_auth_toast_cookie('logout');
+}
+add_action('wp_logout', 'reonet_mark_logout_for_toast');
