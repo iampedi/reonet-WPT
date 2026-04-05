@@ -20,23 +20,26 @@
 defined( 'ABSPATH' ) || exit;
 ?>
 
-<p class="woocommerce-notice woocommerce-notice--success woocommerce-thankyou-order-received m-0 rounded-lg border border-green-300 bg-green-50 p-4 text-sm font-medium text-green-800 sm:text-base">
-	<?php
-	/**
-	 * Filter the message shown after a checkout is complete.
-	 *
-	 * @since 2.2.0
-	 *
-	 * @param string         $message The message.
-	 * @param WC_Order|false $order   The order created during checkout, or false if order data is not available.
-	 */
-	$message = apply_filters(
-		'woocommerce_thankyou_order_received_text',
-		esc_html( __( 'Thank you. Your order has been received.', 'woocommerce' ) ),
-		$order
-	);
+<div class="woocommerce-notice woocommerce-notice--success woocommerce-thankyou-order-received m-0 flex items-start gap-3 rounded-xl border border-green-300 bg-green-50 p-4 text-sm text-green-800 sm:text-base">
+	<i class="ph-duotone ph-seal-check pt-0.5 text-2xl text-green-700" aria-hidden="true"></i>
+	<p class="m-0 font-medium">
+		<?php
+		/**
+		 * Filter the message shown after a checkout is complete.
+		 *
+		 * @since 2.2.0
+		 *
+		 * @param string         $message The message.
+		 * @param WC_Order|false $order   The order created during checkout, or false if order data is not available.
+		 */
+		$message = apply_filters(
+			'woocommerce_thankyou_order_received_text',
+			esc_html( __( 'Thank you. Your order has been received.', 'woocommerce' ) ),
+			$order
+		);
 
-	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-	echo $message;
-	?>
-</p>
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo $message;
+		?>
+	</p>
+</div>

@@ -45,7 +45,7 @@ defined('ABSPATH') || exit;
 									<?php echo apply_filters('woocommerce_checkout_cart_item_quantity', '<span class="product-quantity">' . sprintf('&times;&nbsp;%s', $cart_item['quantity']) . '</span>', $cart_item, $cart_item_key); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped 
 									?>
 								</div>
-								<div class="product-total [&_bdi]:font-medium! [&_bdi]:text-[15px]! ">
+								<div class="product-total [&_bdi]:font-medium! [&_bdi]:text-[15px]! min-w-15 ">
 									<?php echo apply_filters('woocommerce_cart_item_subtotal', WC()->cart->get_product_subtotal($_product, $cart_item['quantity']), $cart_item, $cart_item_key); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped 
 									?>
 								</div>

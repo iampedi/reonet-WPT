@@ -65,9 +65,9 @@ $calculator_text          = '';
 				echo '<p class="woocommerce-shipping-message text-gray-600">' . wp_kses_post(apply_filters('woocommerce_shipping_may_be_available_html', __('Enter your address to view shipping options.', 'woocommerce'))) . '</p>';
 			}
 		elseif (! is_cart()) :
-			echo '<p class="woocommerce-shipping-message text-gray-600">' . wp_kses_post(apply_filters('woocommerce_no_shipping_available_html', __('There are no shipping options available. Please ensure that your address has been entered correctly, or contact us if you need any help.', 'woocommerce'))) . '</p>';
+			echo '<p class="woocommerce-shipping-message text-danger leading-tight">' . wp_kses_post(apply_filters('woocommerce_no_shipping_available_html', __('There are no shipping options available. Please ensure that your address has been entered correctly, or contact us if you need any help.', 'woocommerce'))) . '</p>';
 		else :
-			echo '<p class="woocommerce-shipping-message text-gray-600">' . wp_kses_post(
+			echo '<p class="woocommerce-shipping-message text-danger leading-tight">' . wp_kses_post(
 				/**
 				 * Provides a means of overriding the default 'no shipping available' HTML string.
 				 *

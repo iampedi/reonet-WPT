@@ -38,6 +38,7 @@
   @apply px-5 py-3.5 bg-blue-50;
 }
 
+.card .card-head h2,
 .card .card-head h3 {
   @apply text-xl font-medium text-primary;
 }
@@ -467,12 +468,6 @@ del .woocommerce-Price-amount bdi {
 }
 
 /* Order Received Page */
-.reonet-order-received-page .woocommerce-order-details,
-.reonet-order-received-page .woocommerce-customer-details {
-  @apply rounded-2xl border border-gray-200 bg-white p-4 sm:p-6 mt-6;
-}
-
-.reonet-order-received-page .woocommerce-order-details__title,
 .reonet-order-received-page .woocommerce-column__title {
   @apply text-xl font-semibold mb-4;
 }

@@ -175,7 +175,7 @@ j(document).ready(function () {
     message = "",
     actionHtml = "",
     type = "info",
-    duration = 8000,
+    duration = 5000,
   }) {
     if (!message) {
       return;
@@ -528,7 +528,31 @@ j(document).ready(function () {
         message: messageHtml,
         actionHtml,
         type: getNoticeToastType(notice),
-        duration: 10000,
+        duration: 5000,
+      });
+
+      notice.remove();
+    });
+  };
+
+  const convertOrderReceivedNoticeToToast = function () {
+    if (
+      !j("body").hasClass("woocommerce-order-received") &&
+      !j(".reonet-order-received-page").length
+    ) {
+      return;
+    }
+
+    j(
+      ".woocommerce-thankyou-order-received.woocommerce-notice--success, .woocommerce-order .woocommerce-notice--success.woocommerce-thankyou-order-received",
+    ).each(function () {
+      const notice = j(this);
+      const messageHtml = getNoticeToastMessageHtml(notice);
+
+      showToast({
+        message: messageHtml,
+        type: "success",
+        duration: 5000,
       });
 
       notice.remove();
@@ -595,11 +619,11 @@ j(document).ready(function () {
 
       notice.remove();
     });
-
   };
 
   convertSingleProductNoticesToToasts();
   convertCartNoticesToToasts();
+  convertOrderReceivedNoticeToToast();
   convertAuthNoticesToToasts();
   setupSingleProductAjaxAddToCart();
 
@@ -680,12 +704,29 @@ j(document).ready(function () {
       ).remove();
     };
 
+    const getPostcodeRows = function () {
+      return j(
+        "#billing_postcode_field, #shipping_postcode_field, .woocommerce-billing-fields #billing_postcode_field, .woocommerce-shipping-fields #shipping_postcode_field",
+      );
+    };
+
+    const markPostcodeFieldDanger = function () {
+      getPostcodeRows().addClass("reonet-checkout-field-error");
+    };
+
+    const clearPostcodeFieldDanger = function () {
+      getPostcodeRows().removeClass("reonet-checkout-field-error");
+    };
+
     j(document.body)
       .off("submit.reonetCheckoutValidation", "form.checkout")
       .on("submit.reonetCheckoutValidation", "form.checkout", function () {
         const validationState = updateRequiredFieldStates();
         if (validationState.hasEmptyRequired) {
-          if (validationState.firstInvalidField && validationState.firstInvalidField.length) {
+          if (
+            validationState.firstInvalidField &&
+            validationState.firstInvalidField.length
+          ) {
             validationState.firstInvalidField.trigger("focus");
           }
           showToast({
@@ -722,11 +763,68 @@ j(document).ready(function () {
       .on("checkout_error.reonetCheckoutValidation", function () {
         window.setTimeout(function () {
           const validationState = updateRequiredFieldStates();
+          const errorMessages = [];
+          const seenMessages = {};
+
+          j(
+            ".woocommerce-NoticeGroup-checkout .woocommerce-error li, .woocommerce form.checkout .woocommerce-error li, .woocommerce-notices-wrapper .woocommerce-error li",
+          ).each(function () {
+            const message = j(this).text().trim();
+            if (!message || seenMessages[message]) {
+              return;
+            }
+
+            seenMessages[message] = true;
+            errorMessages.push(message);
+          });
+
+          if (!errorMessages.length) {
+            j(
+              ".woocommerce-NoticeGroup-checkout .woocommerce-error, .woocommerce form.checkout .woocommerce-error, .woocommerce-notices-wrapper .woocommerce-error",
+            ).each(function () {
+              const message = j(this).text().trim();
+              if (!message || seenMessages[message]) {
+                return;
+              }
+
+              seenMessages[message] = true;
+              errorMessages.push(message);
+            });
+          }
+
           if (!validationState.hasEmptyRequired) {
+            const hasShippingMethodError = errorMessages.some(
+              function (message) {
+                const normalized = String(message || "").toLowerCase();
+                return (
+                  normalized.includes("shipping method") ||
+                  normalized.includes("shipping options") ||
+                  normalized.includes("toimitustapa")
+                );
+              },
+            );
+
+            if (hasShippingMethodError) {
+              markPostcodeFieldDanger();
+            }
+
+            errorMessages.forEach(function (message) {
+              showToast({
+                message,
+                type: "error",
+              });
+            });
+
+            if (errorMessages.length) {
+              hideRequiredFieldNoticeGroups();
+            }
             return;
           }
 
-          if (validationState.firstInvalidField && validationState.firstInvalidField.length) {
+          if (
+            validationState.firstInvalidField &&
+            validationState.firstInvalidField.length
+          ) {
             validationState.firstInvalidField.trigger("focus");
           }
           hideRequiredFieldNoticeGroups();
@@ -737,18 +835,37 @@ j(document).ready(function () {
         }, 20);
       });
 
+    j(document.body)
+      .off(
+        "input.reonetCheckoutPostcodeDanger change.reonetCheckoutPostcodeDanger",
+        "form.checkout #billing_postcode, form.checkout #shipping_postcode",
+      )
+      .on(
+        "input.reonetCheckoutPostcodeDanger change.reonetCheckoutPostcodeDanger",
+        "form.checkout #billing_postcode, form.checkout #shipping_postcode",
+        function () {
+          clearPostcodeFieldDanger();
+        },
+      );
+
     const updateLoginFieldStates = function () {
       const $loginForm = j("form.woocommerce-form-login");
       if (!$loginForm.length) {
         return { hasEmptyRequired: false, firstInvalidField: null };
       }
 
-      const $username = $loginForm.find("#username, input[name='username']").first();
-      const $password = $loginForm.find("#password, input[name='password']").first();
+      const $username = $loginForm
+        .find("#username, input[name='username']")
+        .first();
+      const $password = $loginForm
+        .find("#password, input[name='password']")
+        .first();
       let hasEmptyRequired = false;
       let firstInvalidField = null;
 
-      $loginForm.find(".reonet-login-field-error").removeClass("reonet-login-field-error");
+      $loginForm
+        .find(".reonet-login-field-error")
+        .removeClass("reonet-login-field-error");
 
       if ($username.length && String($username.val() || "").trim() === "") {
         $username.closest(".form-row").addClass("reonet-login-field-error");
@@ -775,7 +892,10 @@ j(document).ready(function () {
         return true;
       }
 
-      if (validationState.firstInvalidField && validationState.firstInvalidField.length) {
+      if (
+        validationState.firstInvalidField &&
+        validationState.firstInvalidField.length
+      ) {
         validationState.firstInvalidField.trigger("focus");
       }
 
@@ -791,14 +911,21 @@ j(document).ready(function () {
     j("form.woocommerce-form-login").attr("novalidate", "novalidate");
 
     j(document.body)
-      .off("submit.reonetCheckoutLoginValidation", "form.woocommerce-form-login")
-      .on("submit.reonetCheckoutLoginValidation", "form.woocommerce-form-login", function (event) {
-        if (validateLoginFormAndNotify()) {
-          return;
-        }
+      .off(
+        "submit.reonetCheckoutLoginValidation",
+        "form.woocommerce-form-login",
+      )
+      .on(
+        "submit.reonetCheckoutLoginValidation",
+        "form.woocommerce-form-login",
+        function (event) {
+          if (validateLoginFormAndNotify()) {
+            return;
+          }
 
-        event.preventDefault();
-      });
+          event.preventDefault();
+        },
+      );
 
     j(document.body)
       .off(
