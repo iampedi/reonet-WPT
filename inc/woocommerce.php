@@ -63,16 +63,151 @@ function reonet_woocommerce_adjust_single_product_hooks()
 add_action('init', 'reonet_woocommerce_adjust_single_product_hooks');
 
 /**
+ * Replace WooCommerce default related-products output with theme-controlled output.
+ */
+function reonet_woocommerce_override_related_products_output()
+{
+  remove_action('woocommerce_after_single_product_summary', 'woocommerce_output_related_products', 20);
+  add_action('woocommerce_after_single_product_summary', 'reonet_woocommerce_render_related_products', 20);
+}
+add_action('init', 'reonet_woocommerce_override_related_products_output', 30);
+
+/**
+ * Render related-products section via theme template for full markup control.
+ */
+function reonet_woocommerce_render_related_products()
+{
+  global $product;
+
+  if (!$product instanceof WC_Product) {
+    return;
+  }
+
+  $limit = (int) apply_filters('reonet_related_products_limit', 4, $product);
+  if ($limit <= 0) {
+    return;
+  }
+
+  $exclude_ids = array_unique(
+    array_filter(
+      array_merge(array($product->get_id()), (array) $product->get_upsell_ids())
+    )
+  );
+
+  $related_ids = wc_get_related_products($product->get_id(), $limit, $exclude_ids);
+  if (empty($related_ids)) {
+    return;
+  }
+
+  $related_products = wc_get_products(
+    array(
+      'include' => $related_ids,
+      'status'  => 'publish',
+      'limit'   => count($related_ids),
+      'orderby' => 'include',
+    )
+  );
+
+  if (empty($related_products)) {
+    return;
+  }
+
+  wc_get_template(
+    'single-product/related.php',
+    array(
+      'related_products' => $related_products,
+      'section_title'    => function_exists('reonet_tr') ? reonet_tr('Related products') : __('Related products', 'woocommerce'),
+    )
+  );
+}
+
+/**
  * Render title + sale badge in one custom row.
  */
 function reonet_woocommerce_render_sale_and_title()
 {
-  echo '<div class="reonet-product-sale-title flex items-center justify-between gap-3">';
+  echo '<div class="_product-sale-title flex items-center justify-between gap-3">';
   woocommerce_template_single_title();
   woocommerce_show_product_sale_flash();
   echo '</div>';
 }
 add_action('woocommerce_single_product_summary', 'reonet_woocommerce_render_sale_and_title', 4);
+
+/**
+ * Check whether Reonet measurement pricing is enabled for a product.
+ *
+ * Supports direct meta and backward-compatible pricing model meta.
+ */
+function reonet_is_measurement_pricing_enabled_for_product($product)
+{
+  if (!$product instanceof WC_Product) {
+    return false;
+  }
+
+  $product_id = $product->get_id();
+  if (!$product_id) {
+    return false;
+  }
+
+  $enabled = get_post_meta($product_id, '_reonet_measurement_enabled', true);
+  if ($enabled === 'yes') {
+    return true;
+  }
+
+  $pricing_model = get_post_meta($product_id, '_reonet_pricing_model', true);
+  if ($pricing_model === 'measurement') {
+    return true;
+  }
+
+  return false;
+}
+
+/**
+ * Render single-product price for non-variable products.
+ */
+function reonet_woocommerce_render_single_product_price_default_position()
+{
+  global $product;
+
+  if (!$product instanceof WC_Product) {
+    return;
+  }
+
+  if ($product->is_type('variable')) {
+    return;
+  }
+
+  if (reonet_is_measurement_pricing_enabled_for_product($product)) {
+    return;
+  }
+
+  woocommerce_template_single_price();
+}
+add_action('woocommerce_single_product_summary', 'reonet_woocommerce_render_single_product_price_default_position', 10);
+
+/**
+ * Render variable-product range/selected price under variation dropdowns.
+ */
+function reonet_woocommerce_render_variable_price_below_dropdowns()
+{
+  global $product;
+
+  if (!$product instanceof WC_Product || !$product->is_type('variable')) {
+    return;
+  }
+
+  if (reonet_is_measurement_pricing_enabled_for_product($product)) {
+    return;
+  }
+
+  echo '<div class="_variable-range-price price-fileds">';
+  echo '<div class="price-per-unit">';
+  echo '<span class="label">' . reonet_esc_html_tr('Price range') . '</span>';
+  woocommerce_template_single_price();
+  echo '</div>';
+  echo '</div>';
+}
+add_action('woocommerce_after_variations_table', 'reonet_woocommerce_render_variable_price_below_dropdowns', 20);
 
 /**
  * Render product categories before the short description.
@@ -88,7 +223,7 @@ function reonet_woocommerce_render_categories_before_excerpt()
   $categories = wc_get_product_category_list(
     $product->get_id(),
     ', ',
-    '<div class="posted_in reonet-product-categories">' . _n('Category:', 'Categories:', count($product->get_category_ids()), 'woocommerce') . ' ',
+    '<div class="posted_in _product-categories">' . _n('Category:', 'Categories:', count($product->get_category_ids()), 'woocommerce') . ' ',
     '</div>'
   );
 
@@ -112,6 +247,37 @@ function reonet_woocommerce_price_state_class($price_html, $product)
   return '<span class="' . esc_attr($state_class) . '">' . $price_html . '</span>';
 }
 add_filter('woocommerce_get_price_html', 'reonet_woocommerce_price_state_class', 100, 2);
+
+/**
+ * Ensure variation payload always contains price_html for frontend rendering.
+ *
+ * Some WooCommerce configurations can return empty price_html for a selected
+ * variation; this guarantees the single-product JS can always render a price.
+ */
+function reonet_woocommerce_ensure_available_variation_price_html($data, $product, $variation)
+{
+  if (!is_array($data) || !$variation instanceof WC_Product_Variation) {
+    return $data;
+  }
+
+  $existing_price_html = isset($data['price_html']) ? trim((string) $data['price_html']) : '';
+  if ($existing_price_html !== '') {
+    return $data;
+  }
+
+  $variation_price_html = (string) $variation->get_price_html();
+
+  if ($variation_price_html === '' && array_key_exists('display_price', $data)) {
+    $variation_price_html = wc_price((float) $data['display_price']);
+  }
+
+  if ($variation_price_html !== '') {
+    $data['price_html'] = '<span class="price">' . $variation_price_html . '</span>';
+  }
+
+  return $data;
+}
+add_filter('woocommerce_available_variation', 'reonet_woocommerce_ensure_available_variation_price_html', 20, 3);
 
 /**
  * Remove wrapping quote characters from variation option labels.
@@ -172,7 +338,7 @@ function reonet_woocommerce_cart_shortcode($atts)
     $atts,
     array(
       'class'  => '',
-      'before' => '<div class="woocommerce reonet-woocommerce-page reonet-woocommerce-page-cart"><div class="container">',
+      'before' => '<div class="woocommerce _woocommerce-page _woocommerce-page-cart"><div class="container">',
       'after'  => '</div></div>',
     )
   );
@@ -188,7 +354,7 @@ function reonet_woocommerce_checkout_shortcode($atts)
     $atts,
     array(
       'class'  => '',
-      'before' => '<div class="woocommerce reonet-woocommerce-page reonet-woocommerce-page-checkout reonet-checkout-wrapper"><div class="container space-y-6">',
+      'before' => '<div class="woocommerce _woocommerce-page _woocommerce-page-checkout _checkout-wrapper"><div class="container space-y-6">',
       'after'  => '</div></div>',
     )
   );
@@ -203,7 +369,7 @@ function reonet_woocommerce_my_account_shortcode($atts)
     array('WC_Shortcode_My_Account', 'output'),
     $atts,
     array(
-      'class' => 'woocommerce reonet-woocommerce-page reonet-woocommerce-page-my-account',
+      'class' => 'woocommerce _reonet_woocommerce_page _reonet_woocommerce_page_my_account py-8 sm:py-16',
     )
   );
 }
@@ -217,10 +383,55 @@ function reonet_woocommerce_order_tracking_shortcode($atts)
     array('WC_Shortcode_Order_Tracking', 'output'),
     $atts,
     array(
-      'class' => 'woocommerce reonet-woocommerce-page reonet-woocommerce-page-order-tracking',
+      'class' => 'woocommerce _woocommerce-page _woocommerce-page-order-tracking',
     )
   );
 }
+
+/**
+ * Hide "Downloads" endpoint item from My Account navigation.
+ *
+ * @param array $items My Account menu items.
+ * @return array
+ */
+function reonet_woocommerce_hide_downloads_menu_item($items)
+{
+  if (isset($items['downloads'])) {
+    unset($items['downloads']);
+  }
+
+  return $items;
+}
+add_filter('woocommerce_account_menu_items', 'reonet_woocommerce_hide_downloads_menu_item', 99);
+
+/**
+ * Redirect direct access to /my-account/downloads/ back to My Account dashboard.
+ *
+ * @return void
+ */
+function reonet_woocommerce_redirect_downloads_endpoint()
+{
+  if (is_admin() || wp_doing_ajax()) {
+    return;
+  }
+
+  if (!function_exists('is_account_page') || !is_account_page()) {
+    return;
+  }
+
+  if (!function_exists('is_wc_endpoint_url') || !is_wc_endpoint_url('downloads')) {
+    return;
+  }
+
+  $target_url = wc_get_page_permalink('myaccount');
+  if (!$target_url) {
+    $target_url = home_url('/');
+  }
+
+  wp_safe_redirect($target_url);
+  exit;
+}
+add_action('template_redirect', 'reonet_woocommerce_redirect_downloads_endpoint', 20);
 
 /**
  * Count all WooCommerce notice types.
@@ -380,50 +591,6 @@ function reonet_woocommerce_limit_checkout_location_fields($fields)
   return $fields;
 }
 add_filter('woocommerce_checkout_fields', 'reonet_woocommerce_limit_checkout_location_fields', 20);
-
-/**
- * Flowbite class helpers used across WooCommerce templates.
- */
-function reonet_flowbite_input_class_string()
-{
-  return 'block w-full rounded-lg border border-gray-300 bg-gray-50 px-3 h-11.5 text-[15px] text-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20';
-}
-
-function reonet_flowbite_textarea_class_string()
-{
-  return 'block w-full rounded-lg border border-gray-300 bg-gray-50 px-3 py-3 min-h-32 text-[15px] text-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20';
-}
-
-function reonet_flowbite_input_small_class_string()
-{
-  return 'block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-xs text-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20';
-}
-
-function reonet_flowbite_checkbox_class_string()
-{
-  return 'h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500/30';
-}
-
-function reonet_flowbite_button_class_string($variant = 'primary', $size = 'md')
-{
-  $initial_classes = 'inline-flex items-center justify-center rounded-full duration-300 focus:outline-none';
-  $size_classes = 'px-6 h-11.5 text-[15px]';
-
-
-  if ($size === 'sm') {
-    $size_classes = 'px-4 py-2 text-xs';
-  } elseif ($size === 'lg') {
-    $size_classes = 'px-6 py-3 text-base';
-  } elseif ($size === 'icon') {
-    $size_classes = 'size-11.5 rounded-lg';
-  }
-
-  if ($variant === 'secondary') {
-    return "{$initial_classes} border border-primary/50 bg-white {$size_classes} font-medium text-gray-900 hover:bg-primary/5 focus:ring-4 focus:ring-gray-100";
-  }
-
-  return "{$initial_classes} bg-primary {$size_classes} font-medium text-white hover:bg-green focus:ring-4 focus:ring-blue-300";
-}
 
 /**
  * Return a checkout payment-method icon class by gateway id.
@@ -594,7 +761,7 @@ function reonet_woocommerce_get_cart_item_count()
  */
 function reonet_woocommerce_get_header_cart_count_badge_html()
 {
-  return '<span class="reonet-header-cart-count absolute -right-1 -top-1 inline-flex min-w-5 items-center justify-center rounded-full bg-primary px-1.5 text-[11px] font-medium leading-5 text-white">' . esc_html(reonet_woocommerce_get_cart_item_count()) . '</span>';
+  return '<span class="_header-cart-count absolute -right-1 -top-1 inline-flex min-w-5 items-center justify-center rounded-full bg-primary px-1.5 text-[11px] font-medium leading-5 text-white">' . esc_html(reonet_woocommerce_get_cart_item_count()) . '</span>';
 }
 
 /**
@@ -605,7 +772,7 @@ function reonet_woocommerce_get_header_cart_count_badge_html()
  */
 function reonet_woocommerce_update_header_cart_badge_fragment($fragments)
 {
-  $fragments['.reonet-header-cart-count'] = reonet_woocommerce_get_header_cart_count_badge_html();
+  $fragments['._header-cart-count'] = reonet_woocommerce_get_header_cart_count_badge_html();
   return $fragments;
 }
 add_filter('woocommerce_add_to_cart_fragments', 'reonet_woocommerce_update_header_cart_badge_fragment');

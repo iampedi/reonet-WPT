@@ -20,9 +20,9 @@ j(document).ready(function () {
       url: getWooFragmentsEndpoint(),
       type: "POST",
       success: function (response) {
-        const badgeHtml = response?.fragments?.[".reonet-header-cart-count"];
+        const badgeHtml = response?.fragments?.["._header-cart-count"];
         if (badgeHtml) {
-          j(".reonet-header-cart-count").replaceWith(badgeHtml);
+          j("._header-cart-count").replaceWith(badgeHtml);
         }
       },
     });
@@ -35,7 +35,7 @@ j(document).ready(function () {
       refreshHeaderCartBadgeFromServer();
     }
 
-    const badge = j(".reonet-header-cart-count");
+    const badge = j("._header-cart-count");
     const qtyInputs = j(".woocommerce-cart-form .qty");
 
     if (!badge.length || !qtyInputs.length) {
@@ -131,13 +131,13 @@ j(document).ready(function () {
   setupCartAutoUpdateOnQuantityChange();
 
   const ensureToastContainer = function () {
-    let container = j("#reonet-toast-container");
+    let container = j("#_toast-container");
 
     if (!container.length) {
       j("body").append(
-        '<div id="reonet-toast-container" class="fixed bottom-4 left-4 z-[9999] flex w-[calc(100%-2rem)] max-w-sm flex-col gap-3 sm:bottom-6 sm:left-6"></div>',
+        '<div id="_toast-container" class="fixed bottom-4 left-4 z-[9999] flex w-[calc(100%-2rem)] max-w-sm flex-col gap-3 sm:bottom-6 sm:left-6"></div>',
       );
-      container = j("#reonet-toast-container");
+      container = j("#_toast-container");
     }
 
     return container;
@@ -190,32 +190,32 @@ j(document).ready(function () {
     window.reonetLastToastMeta = { signature, at: now };
 
     const appearance = getToastAppearance(type);
-    const toastId = `reonet-toast-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+    const toastId = `_toast-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
     const container = ensureToastContainer();
 
     const toast = j(`
-      <div id="${toastId}" class="reonet-toast pointer-events-auto flex w-full items-center gap-3 rounded-lg border p-4 text-sm shadow-lg transition-all duration-300 opacity-0 translate-y-2 translate-x-3 ${appearance.wrapper}" role="alert" aria-live="polite">
+      <div id="${toastId}" class="_toast pointer-events-auto flex w-full items-center gap-3 rounded-lg border p-4 text-sm shadow-lg transition-all duration-300 opacity-0 translate-y-2 translate-x-3 ${appearance.wrapper}" role="alert" aria-live="polite">
         <i class="ph-duotone text-xl ${appearance.icon}"></i>
         <div class="min-w-0 flex-1 leading-tight">
-          <div class="reonet-toast-message"></div>
-          <div class="reonet-toast-action mt-2"></div>
+          <div class="_toast-message"></div>
+          <div class="_toast-action mt-2"></div>
         </div>
-        <button type="button" class="reonet-toast-close inline-flex h-6 w-6 items-center justify-center rounded-md text-current/70 hover:bg-black/5 hover:text-current" aria-label="Close notification">
+        <button type="button" class="_toast-close inline-flex h-6 w-6 items-center justify-center rounded-md text-current/70 hover:bg-black/5 hover:text-current focus:outline-none focus:ring-0" aria-label="Close notification">
           <i class="ph ph-x text-base"></i>
         </button>
       </div>
     `);
 
-    toast.find(".reonet-toast-message").html(message);
+    toast.find("._toast-message").html(message);
 
     if (actionHtml) {
       toast
-        .find(".reonet-toast-action")
+        .find("._toast-action")
         .html(actionHtml)
         .find("a")
         .addClass("font-medium underline underline-offset-4");
     } else {
-      toast.find(".reonet-toast-action").remove();
+      toast.find("._toast-action").remove();
     }
 
     const removeToast = function () {
@@ -227,7 +227,7 @@ j(document).ready(function () {
       }, 220);
     };
 
-    toast.on("click", ".reonet-toast-close", removeToast);
+    toast.on("click", "._toast-close", removeToast);
 
     container.append(toast);
     window.requestAnimationFrame(function () {
@@ -538,7 +538,7 @@ j(document).ready(function () {
   const convertOrderReceivedNoticeToToast = function () {
     if (
       !j("body").hasClass("woocommerce-order-received") &&
-      !j(".reonet-order-received-page").length
+      !j("._order-received-page").length
     ) {
       return;
     }
@@ -621,10 +621,49 @@ j(document).ready(function () {
     });
   };
 
+  const convertMyAccountNoticesToToasts = function () {
+    if (!j("body").hasClass("woocommerce-account")) {
+      return;
+    }
+
+    j(
+      ".woocommerce-notices-wrapper .woocommerce-message, .woocommerce-notices-wrapper .woocommerce-error, .woocommerce-notices-wrapper .woocommerce-info, .woocommerce .woocommerce-message, .woocommerce .woocommerce-error, .woocommerce .woocommerce-info",
+    ).each(function () {
+      const notice = j(this);
+      const text = notice.text().trim().toLowerCase();
+
+      const isAuthNotice =
+        text.includes("logged in") ||
+        text.includes("kirjaud") ||
+        text.includes("signed in") ||
+        text.includes("logged out") ||
+        text.includes("uloskirj") ||
+        text.includes("signed out");
+
+      if (isAuthNotice) {
+        return;
+      }
+
+      const messageHtml = getNoticeToastMessageHtml(notice);
+      const actionLink = notice.find("a.wc-forward, a.restore-item").first();
+      const actionHtml = actionLink.length ? actionLink.prop("outerHTML") : "";
+
+      showToast({
+        message: messageHtml,
+        actionHtml,
+        type: getNoticeToastType(notice),
+        duration: 5000,
+      });
+
+      notice.remove();
+    });
+  };
+
   convertSingleProductNoticesToToasts();
   convertCartNoticesToToasts();
   convertOrderReceivedNoticeToToast();
   convertAuthNoticesToToasts();
+  convertMyAccountNoticesToToasts();
   setupSingleProductAjaxAddToCart();
 
   j(document.body)
@@ -675,8 +714,8 @@ j(document).ready(function () {
       let firstInvalidField = null;
 
       $checkoutForm
-        .find(".reonet-checkout-field-error")
-        .removeClass("reonet-checkout-field-error");
+        .find("._checkout-field-error")
+        .removeClass("_checkout-field-error");
 
       $checkoutForm.find(".validate-required").each(function () {
         const $row = j(this);
@@ -687,7 +726,7 @@ j(document).ready(function () {
           .first();
 
         if (isFieldValueEmpty($targetField)) {
-          $row.addClass("reonet-checkout-field-error");
+          $row.addClass("_checkout-field-error");
           hasEmptyRequired = true;
           if (!firstInvalidField && $targetField.length) {
             firstInvalidField = $targetField;
@@ -711,11 +750,11 @@ j(document).ready(function () {
     };
 
     const markPostcodeFieldDanger = function () {
-      getPostcodeRows().addClass("reonet-checkout-field-error");
+      getPostcodeRows().addClass("_checkout-field-error");
     };
 
     const clearPostcodeFieldDanger = function () {
-      getPostcodeRows().removeClass("reonet-checkout-field-error");
+      getPostcodeRows().removeClass("_checkout-field-error");
     };
 
     j(document.body)
@@ -753,7 +792,7 @@ j(document).ready(function () {
             .first();
 
           if (!isFieldValueEmpty($targetField)) {
-            $row.removeClass("reonet-checkout-field-error");
+            $row.removeClass("_checkout-field-error");
           }
         },
       );
@@ -864,11 +903,11 @@ j(document).ready(function () {
       let firstInvalidField = null;
 
       $loginForm
-        .find(".reonet-login-field-error")
-        .removeClass("reonet-login-field-error");
+        .find("._login-field-error")
+        .removeClass("_login-field-error");
 
       if ($username.length && String($username.val() || "").trim() === "") {
-        $username.closest(".form-row").addClass("reonet-login-field-error");
+        $username.closest(".form-row").addClass("_login-field-error");
         hasEmptyRequired = true;
         if (!firstInvalidField) {
           firstInvalidField = $username;
@@ -876,7 +915,7 @@ j(document).ready(function () {
       }
 
       if ($password.length && String($password.val() || "").trim() === "") {
-        $password.closest(".form-row").addClass("reonet-login-field-error");
+        $password.closest(".form-row").addClass("_login-field-error");
         hasEmptyRequired = true;
         if (!firstInvalidField) {
           firstInvalidField = $password;
@@ -955,7 +994,7 @@ j(document).ready(function () {
         function () {
           const $field = j(this);
           if (String($field.val() || "").trim() !== "") {
-            $field.closest(".form-row").removeClass("reonet-login-field-error");
+            $field.closest(".form-row").removeClass("_login-field-error");
           }
         },
       );
@@ -964,13 +1003,23 @@ j(document).ready(function () {
   setupCheckoutValidationUX();
 
   // Loader
-  window.addEventListener("load", function () {
+  const hideSiteLoader = function () {
     const loader = document.getElementById("site-loader");
-
-    if (loader) {
-      loader.classList.add("is-hidden");
+    if (!loader) {
+      return;
     }
-  });
+
+    loader.classList.add("opacity-0", "pointer-events-none");
+    window.setTimeout(function () {
+      loader.classList.add("hidden");
+    }, 320);
+  };
+
+  if (document.readyState === "complete") {
+    hideSiteLoader();
+  } else {
+    window.addEventListener("load", hideSiteLoader, { once: true });
+  }
 
   // Carousel Initialization
   if (j(".owl-carousel").length) {
@@ -1066,20 +1115,26 @@ j(document).ready(function () {
     const product = form.closest(".product");
     const hasDefaultVariation =
       String(form.data("has-default-variation")) === "yes";
-    const variationNotice = product.find(".reonet-variation-notice").first();
+    const variationNotice = product.find("._variation-notice").first();
     const variationNoticeIcon = variationNotice
-      .find(".reonet-variation-notice-icon")
+      .find("._variation-notice-icon")
       .first();
     const variationNoticeText = variationNotice
-      .find(".reonet-variation-notice-text")
+      .find("._variation-notice-text")
       .first();
     const shortDescription = product
       .find(".woocommerce-product-details__short-description")
       .first();
-    const productPrice = product.find(".reonet-product-price").first();
+    const productPrice = product.find("._product-price").first();
     const productPriceValue = productPrice.find(".price").first();
-    const variationSelects = form.find(".reonet-variation-select");
+    const calculatedPriceValue = form
+      .find("._variable-calculated-price")
+      .first();
+    const variationSelects = form.find("._variation-select");
     const initialAttributeSelections = {};
+    const variationSelectErrorClasses =
+      "border-red-500 ring-1 ring-red-500 focus:border-red-500 focus:ring-red-500/20";
+    const variationLabelErrorClasses = "text-red-700";
 
     variationNotice.addClass("hidden");
     if (variationNoticeText.length) {
@@ -1101,6 +1156,7 @@ j(document).ready(function () {
 
     let defaultDescription = shortDescription.html();
     let defaultPriceHtml = productPriceValue.html() || "";
+    let activeVariationDisplayPrice = null;
 
     if (productPrice.length) {
       const defaultPriceHtmlRaw = productPrice.attr("data-default-price");
@@ -1179,6 +1235,71 @@ j(document).ready(function () {
       productPriceValue.html(html);
     };
 
+    const renderCalculatedPrice = function (html) {
+      if (!calculatedPriceValue.length || typeof html !== "string") {
+        return;
+      }
+
+      calculatedPriceValue.html(html);
+    };
+
+    const escapeHtml = function (value) {
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/\"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    };
+
+    const buildFormattedPriceHtml = function (amount) {
+      const safeAmount = Number.isFinite(amount) ? amount : 0;
+
+      const currencySymbol =
+        calculatedPriceValue.attr("data-currency-symbol") || "";
+      const decimalsRaw = parseInt(
+        calculatedPriceValue.attr("data-price-decimals"),
+        10,
+      );
+      const decimals = Number.isFinite(decimalsRaw) ? decimalsRaw : 2;
+      const formattedAmount = safeAmount.toLocaleString(undefined, {
+        minimumFractionDigits: decimals,
+        maximumFractionDigits: decimals,
+      });
+
+      return (
+        '<span class="woocommerce-Price-amount amount"><bdi>' +
+        '<span class="woocommerce-Price-currencySymbol">' +
+        escapeHtml(currencySymbol) +
+        "</span>" +
+        formattedAmount +
+        "</bdi></span>"
+      );
+    };
+
+    const updateCalculatedPrice = function () {
+      if (!calculatedPriceValue.length) {
+        return;
+      }
+
+      const qtyInput = form.find("input.qty").first();
+      const qtyValue = qtyInput.length ? parseFloat(qtyInput.val()) : 1;
+      const quantity =
+        Number.isFinite(qtyValue) && qtyValue > 0 ? qtyValue : 1;
+
+      if (
+        typeof activeVariationDisplayPrice === "number" &&
+        Number.isFinite(activeVariationDisplayPrice)
+      ) {
+        renderCalculatedPrice(
+          buildFormattedPriceHtml(activeVariationDisplayPrice * quantity),
+        );
+        return;
+      }
+
+      renderCalculatedPrice(buildFormattedPriceHtml(0));
+    };
+
     const renderShortDescription = function (html) {
       if (!shortDescription.length) {
         return;
@@ -1252,9 +1373,9 @@ j(document).ready(function () {
     const clearVariationFieldState = function ($select) {
       const field = $select.closest(".horizontal-field");
 
-      $select.removeClass("reonet-variation-select-error");
+      $select.removeClass(variationSelectErrorClasses);
       $select.removeAttr("aria-invalid");
-      field.find("label").removeClass("variation-field-label-error");
+      field.find("label").removeClass(variationLabelErrorClasses);
     };
 
     const clearAllVariationFieldStates = function () {
@@ -1275,12 +1396,12 @@ j(document).ready(function () {
       }
 
       clearAllVariationFieldStates();
-      missingSelect.addClass("reonet-variation-select-error");
+      missingSelect.addClass(variationSelectErrorClasses);
       missingSelect.attr("aria-invalid", "true");
       missingSelect
         .closest(".horizontal-field")
         .find("label")
-        .addClass("variation-field-label-error");
+        .addClass(variationLabelErrorClasses);
       missingSelect.trigger("focus");
     };
 
@@ -1361,12 +1482,12 @@ j(document).ready(function () {
             variationSelects.each(function () {
               const select = j(this);
               if (!select.val()) {
-                select.addClass("reonet-variation-select-error");
+                select.addClass(variationSelectErrorClasses);
                 select.attr("aria-invalid", "true");
                 select
                   .closest(".horizontal-field")
                   .find("label")
-                  .addClass("variation-field-label-error");
+                  .addClass(variationLabelErrorClasses);
               }
             });
           }
@@ -1397,12 +1518,17 @@ j(document).ready(function () {
       }
     });
 
+    form.on("input change", "input.qty", function () {
+      updateCalculatedPrice();
+    });
+
     const updateVariationContent = function (variation) {
       const matchedVariation = getBestMatchedVariation(variation);
       const variationDescription =
         matchedVariation?.variation_description || "";
       const variationPriceHtml = matchedVariation?.price_html || "";
       const variationId = matchedVariation?.variation_id;
+      const variationDisplayPrice = matchedVariation?.display_price;
 
       clearAllVariationFieldStates();
       variationNotice.addClass("hidden");
@@ -1424,6 +1550,21 @@ j(document).ready(function () {
         renderMainPrice(defaultPriceHtml);
       }
 
+      if (
+        typeof variationDisplayPrice !== "undefined" &&
+        variationDisplayPrice !== null &&
+        variationDisplayPrice !== ""
+      ) {
+        const parsedDisplayPrice = parseFloat(variationDisplayPrice);
+        activeVariationDisplayPrice = Number.isFinite(parsedDisplayPrice)
+          ? parsedDisplayPrice
+          : null;
+      } else {
+        activeVariationDisplayPrice = null;
+      }
+
+      updateCalculatedPrice();
+
       if (variationDescription) {
         renderShortDescription(variationDescription);
       } else {
@@ -1437,6 +1578,7 @@ j(document).ready(function () {
 
     form.on("reset_data", function () {
       if (hasDefaultVariation) {
+        activeVariationDisplayPrice = null;
         clearAllVariationFieldStates();
         variationNotice.addClass("hidden");
         if (variationNoticeText.length) {
@@ -1445,9 +1587,11 @@ j(document).ready(function () {
           variationNotice.text("");
         }
         applyDefaultVariationSelection();
+        updateCalculatedPrice();
         return;
       }
 
+      activeVariationDisplayPrice = null;
       clearAllVariationFieldStates();
       variationNotice.addClass("hidden");
       if (variationNoticeText.length) {
@@ -1457,8 +1601,10 @@ j(document).ready(function () {
       }
       renderMainPrice(defaultPriceHtml);
       renderShortDescription(defaultDescription);
+      updateCalculatedPrice();
     });
 
+    updateCalculatedPrice();
     applyDefaultVariationSelection();
   });
 });

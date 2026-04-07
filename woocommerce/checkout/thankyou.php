@@ -21,7 +21,7 @@
 defined('ABSPATH') || exit;
 ?>
 
-<div class="woocommerce-order reonet-order-received-page space-y-6">
+<div class="woocommerce-order _order-received-page space-y-6">
 	<header class="_reonet_checkout_header flex flex-wrap items-center justify-between gap-3 border-y border-dashed border-primary/20 bg-blue-50/35 px-3 py-2.5">
 		<h1 class="flex items-center gap-3 text-2xl font-medium text-primary">
 			<i class="ph-duotone ph-check-circle text-3xl text-green"></i>

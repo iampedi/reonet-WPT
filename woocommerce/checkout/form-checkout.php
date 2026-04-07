@@ -41,15 +41,15 @@ if (! $checkout->is_registration_enabled() && $checkout->is_registration_require
 		<?php woocommerce_checkout_login_form(); ?>
 	</section>
 
-	<form name="checkout" method="post" class="checkout woocommerce-checkout reonet-checkout-form" action="<?php echo esc_url(wc_get_checkout_url()); ?>" enctype="multipart/form-data" aria-label="<?php echo reonet_esc_attr_tr('Checkout'); ?>">
-		<div class="_reonet-checkout-content-layout grid grid-cols-1 items-start gap-6 lg:grid-cols-12">
+	<form name="checkout" method="post" class="checkout woocommerce-checkout _checkout-form" action="<?php echo esc_url(wc_get_checkout_url()); ?>" enctype="multipart/form-data" aria-label="<?php echo reonet_esc_attr_tr('Checkout'); ?>">
+		<div class="__checkout-content-layout grid grid-cols-1 items-start gap-6 lg:grid-cols-12">
 			<section class="_reonet_checkout_details space-y-4 lg:col-span-8">
 				<?php if ($checkout->get_checkout_fields()) : ?>
 
 					<?php do_action('woocommerce_checkout_before_customer_details'); ?>
 
 					<div id="customer_details">
-						<section class="reonet-checkout-panel reonet-checkout-billing">
+						<section class="_checkout-panel _checkout-billing">
 							<?php do_action('woocommerce_checkout_billing'); ?>
 						</section>
 
@@ -63,7 +63,7 @@ if (! $checkout->is_registration_enabled() && $checkout->is_registration_require
 				<?php endif; ?>
 			</section>
 
-			<aside class="reonet-checkout-summary space-y-4 lg:col-span-4">
+			<aside class="_checkout-summary space-y-4 lg:col-span-4">
 				<?php do_action('woocommerce_checkout_before_order_review_heading'); ?>
 
 				<?php do_action('woocommerce_checkout_before_order_review'); ?>

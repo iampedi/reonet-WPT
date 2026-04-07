@@ -30,9 +30,9 @@ if (! $short_description) {
 
 ?>
 
-<div class="reonet-variation-notice hidden mb-4 flex items-center gap-2 rounded-lg border border-red-300 bg-red-50 p-3 text-sm text-red-800" role="alert" aria-live="polite">
-	<i class="reonet-variation-notice-icon ph-duotone ph-warning-octagon text-xl text-red-600"></i>
-	<span class="reonet-variation-notice-text"></span>
+<div class="_variation-notice hidden mb-4 flex items-center gap-2 rounded-lg border border-red-300 bg-red-50 p-3 text-sm text-red-800" role="alert" aria-live="polite">
+	<i class="_variation-notice-icon ph-duotone ph-warning-octagon text-xl text-red-600"></i>
+	<span class="_variation-notice-text"></span>
 </div>
 
 <div class="woocommerce-product-details__short-description text-gray-600 leading-tight">

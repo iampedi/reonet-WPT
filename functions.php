@@ -11,6 +11,7 @@ $base = get_template_directory();
 
 $modules = [
   '/inc/setup.php',
+  '/inc/flowbite-components.php',
   '/inc/woocommerce.php',
   '/inc/menu-walker.php',
   '/inc/translations.php',

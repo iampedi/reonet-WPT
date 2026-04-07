@@ -23,7 +23,7 @@ if (! wc_coupons_enabled()) { // @codingStandardsIgnoreLine.
 }
 
 ?>
-<form class="checkout_coupon woocommerce-form-coupon reonet-checkout-coupon-form flex flex-col gap-2 sm:flex-row sm:items-center" method="post" id="woocommerce-checkout-form-coupon">
+<form class="checkout_coupon woocommerce-form-coupon _checkout-coupon-form flex flex-col gap-2 sm:flex-row sm:items-center" method="post" id="woocommerce-checkout-form-coupon">
 	<div class="form-row form-row-first m-0 flex-1">
 		<label for="coupon_code" class="screen-reader-text"><?php esc_html_e('Coupon:', 'woocommerce'); ?></label>
 		<input type="text" name="coupon_code" class="text-center <?php echo esc_attr(reonet_flowbite_input_class_string()); ?>" placeholder="<?php esc_attr_e('Coupon code', 'woocommerce'); ?>" id="coupon_code" value="" />

@@ -24,7 +24,7 @@ defined('ABSPATH') || exit;
 		<p><?php reonet_esc_html_tr_e('A final look at your items before payment.'); ?></p>
 	</div>
 
-	<div class="reonet-checkout-review-items card-body p-0! divide-y divide-primary/10">
+	<div class="_checkout-review-items card-body p-0! divide-y divide-primary/10">
 		<?php
 		do_action('woocommerce_review_order_before_cart_contents');
 
@@ -62,7 +62,7 @@ defined('ABSPATH') || exit;
 		?>
 	</div>
 
-	<div class="reonet-checkout-review-totals divide-y divide-primary/20 border-t border-primary/20">
+	<div class="_checkout-review-totals divide-y divide-primary/20 border-t border-primary/20">
 		<div class="cart-subtotal flex items-center justify-between gap-3 px-5 py-3">
 			<div class="font-medium text-gray-700"><?php reonet_esc_html_tr_e('Subtotal'); ?></div>
 			<div class="text-right"><?php wc_cart_totals_subtotal_html(); ?></div>
@@ -106,7 +106,7 @@ defined('ABSPATH') || exit;
 		<?php endif; ?>
 
 		<?php if (wc_coupons_enabled()) : ?>
-			<div class="reonet-checkout-coupon-row p-3">
+			<div class="_checkout-coupon-row p-3">
 				<?php wc_get_template('checkout/form-coupon.php'); ?>
 			</div>
 		<?php endif; ?>

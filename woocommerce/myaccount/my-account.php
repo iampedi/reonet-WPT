@@ -1,4 +1,5 @@
 <?php
+
 /**
  * My Account page
  *
@@ -12,12 +13,12 @@
 defined('ABSPATH') || exit;
 
 ?>
-<div class="container py-8 sm:py-12">
-	<div class="grid grid-cols-1 lg:grid-cols-[260px_minmax(0,1fr)] gap-6">
-	<?php do_action('woocommerce_account_navigation'); ?>
+<div class="container">
+	<div class="grid grid-cols-1 items-start lg:grid-cols-[260px_minmax(0,1fr)] gap-6">
+		<?php do_action('woocommerce_account_navigation'); ?>
 
-	<div class="woocommerce-MyAccount-content space-y-5 rounded-2xl border border-gray-200 bg-white p-4 sm:p-6">
-		<?php do_action('woocommerce_account_content'); ?>
-	</div>
+		<div class="woocommerce-my-account-content rounded-2xl border border-gray-200 bg-white">
+			<?php do_action('woocommerce_account_content'); ?>
+		</div>
 	</div>
 </div>

@@ -42,10 +42,6 @@ add_action('wp_enqueue_scripts', function () {
         wp_enqueue_style('reonet-tailwind', $tw_url, [], filemtime($tw_path));
     }
 
-    // Legacy CSS
-    wp_enqueue_style('reonet-style', get_template_directory_uri() . '/assets/css/style.css', [], null);
-    wp_enqueue_style('reonet-responsive', get_template_directory_uri() . '/assets/css/responsive.css', [], null);
-
     // JS files
     $flowbite_js_path = get_template_directory() . '/node_modules/flowbite/dist/flowbite.min.js';
     $flowbite_js_url  = get_template_directory_uri() . '/node_modules/flowbite/dist/flowbite.min.js';

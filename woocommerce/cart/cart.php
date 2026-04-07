@@ -26,12 +26,12 @@ do_action('woocommerce_before_cart'); ?>
 		<p class="text-gray-600"><?php echo esc_html(reonet_tr('Review items and continue to checkout.')); ?></p>
 	</header>
 
-	<div class="_reonet-cart-layout grid grid-cols-1 sm:grid-cols-3 gap-4 items-start">
-		<section class="reonet-cart-items sm:col-span-2">
+	<div class="__cart-layout grid grid-cols-1 sm:grid-cols-3 gap-4 items-start">
+		<section class="_cart-items sm:col-span-2">
 			<form class="woocommerce-cart-form" action="<?php echo esc_url(wc_get_cart_url()); ?>" method="post">
 				<?php do_action('woocommerce_before_cart_table'); ?>
 
-				<div class="cart woocommerce-cart-form__contents reonet-cart-list space-y-2">
+				<div class="cart woocommerce-cart-form__contents _cart-list space-y-2">
 					<?php do_action('woocommerce_before_cart_contents'); ?>
 
 					<?php
@@ -161,7 +161,7 @@ do_action('woocommerce_before_cart'); ?>
 					<?php do_action('woocommerce_cart_contents'); ?>
 
 					<div class="actions py-6">
-						<div class="reonet-cart-actions flex items-center gap-3 justify-between">
+						<div class="_cart-actions flex items-center gap-3 justify-between">
 							<?php if (wc_coupons_enabled()) { ?>
 								<div class="coupon flex items-center gap-2 flex-1">
 									<label for="coupon_code" class="screen-reader-text"><?php esc_html_e('Coupon:', 'woocommerce'); ?></label>
@@ -192,7 +192,7 @@ do_action('woocommerce_before_cart'); ?>
 			</form>
 		</section>
 
-		<aside class="reonet-cart-summary">
+		<aside class="_cart-summary">
 			<?php do_action('woocommerce_before_cart_collaterals'); ?>
 			<div class="cart-collaterals">
 				<?php woocommerce_cart_totals(); ?>
@@ -201,7 +201,7 @@ do_action('woocommerce_before_cart'); ?>
 	</div>
 
 	<?php if (! WC()->cart->is_empty()) : ?>
-		<section class="reonet-cart-cross-sells">
+		<section class="_cart-cross-sells">
 			<?php woocommerce_cross_sell_display(); ?>
 		</section>
 	<?php endif; ?>

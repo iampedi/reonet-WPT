@@ -12,18 +12,18 @@ defined('ABSPATH') || exit;
 
 $show_shipping = ! wc_ship_to_billing_address_only() && $order->needs_shipping_address();
 ?>
-<section class="woocommerce-customer-details sm:col-span-3">
+<section class="woocommerce_customer_details sm:col-span-3">
 	<?php if ($show_shipping) : ?>
-		<div class="woocommerce-columns woocommerce-columns--2 woocommerce-columns--addresses grid sm:grid-cols-2 gap-6">
-			<div class="woocommerce-column woocommerce-column--1 woocommerce-column--billing-address col-1 overflow-hidden card">
+		<div class="woocommerce-columns_addresses grid sm:grid-cols-2 gap-6">
+			<div class="card woocommerce_column_billing_address overflow-hidden">
 			<?php else : ?>
-				<div class="woocommerce-column woocommerce-column--1 woocommerce-column--billing-address col-1 overflow-hidden card">
+				<div class="card wa-inline-card woocommerce-column_billing_address overflow-hidden">
 				<?php endif; ?>
 
 				<div class="card-head">
 					<h2 class="woocommerce-column__title"><?php esc_html_e('Billing address', 'woocommerce'); ?></h2>
 				</div>
-				<address class="card-body space-y-2 text-sm leading-relaxed not-italic text-gray-700">
+				<address class="card-body space-y-2 leading-relaxed not-italic text-gray-700">
 					<?php echo wp_kses_post($order->get_formatted_billing_address(esc_html__('N/A', 'woocommerce'))); ?>
 
 					<?php if ($order->get_billing_phone()) : ?>

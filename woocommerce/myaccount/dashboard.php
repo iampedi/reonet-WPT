@@ -1,4 +1,5 @@
 <?php
+
 /**
  * My Account Dashboard
  *
@@ -20,10 +21,10 @@ $allowed_html = array(
 );
 ?>
 
-<div class="space-y-4">
-	<h2 class="text-2xl font-semibold"><?php esc_html_e('My account', 'woocommerce'); ?></h2>
+<div class="space-y-4 p-5">
+	<h2 class="text-xl font-semibold text-primary"><?php esc_html_e('My account', 'woocommerce'); ?></h2>
 
-	<p class="leading-relaxed text-gray-700 [&_a]:text-primary [&_a]:underline">
+	<p class="_after-notices-p mt-3 rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-sm leading-relaxed text-gray-700 [&_a]:font-medium [&_a]:text-primary [&_a]:underline [&_a]:underline-offset-4">
 		<?php
 		printf(
 			wp_kses(__('Hello %1$s (not %1$s? <a href="%2$s">Log out</a>)', 'woocommerce'), $allowed_html),

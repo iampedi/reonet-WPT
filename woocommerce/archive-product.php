@@ -15,7 +15,7 @@ defined('ABSPATH') || exit;
 get_header('shop');
 ?>
 
-<main class="reonet-shop-page pb-8 sm:pb-12">
+<main class="_shop-page pb-8 sm:pb-12">
 	<div class="container">
 		<div
 			class="_page-header flex flex-col items-center justify-center bg-no-repeat bg-center bg-contain h-40"
@@ -33,7 +33,7 @@ get_header('shop');
 		</div> -->
 
 		<?php if (woocommerce_product_loop()) : ?>
-			<div class="_reonet-shop-toolbar pt-14 mb-4">
+			<div class="__shop-toolbar pt-14 mb-4">
 				<?php
 				/**
 				 * Theme-level extension point before toolbar content.
@@ -41,12 +41,12 @@ get_header('shop');
 				do_action('reonet_before_shop_toolbar');
 				?>
 
-				<div class="reonet-shop-notices">
+				<div class="_shop-notices">
 					<?php woocommerce_output_all_notices(); ?>
 				</div>
 
-				<div class="reonet-shop-toolbar__row flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-					<div class="reonet-shop-toolbar__left flex items-center gap-3">
+				<div class="_shop-toolbar__row flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+					<div class="_shop-toolbar__left flex items-center gap-3">
 						<?php
 						do_action('reonet_shop_toolbar_right_before_ordering');
 						woocommerce_catalog_ordering();
@@ -54,7 +54,7 @@ get_header('shop');
 						?>
 					</div>
 
-					<div class="reonet-shop-toolbar__right flex items-center gap-3">
+					<div class="_shop-toolbar__right flex items-center gap-3">
 						<?php
 						woocommerce_result_count();
 						do_action('reonet_shop_toolbar_left');
@@ -87,7 +87,7 @@ get_header('shop');
 
 			<?php woocommerce_product_loop_end(); ?>
 
-			<div class="reonet-shop-pagination">
+			<div class="_shop-pagination">
 				<?php
 				/**
 				 * Hook: woocommerce_after_shop_loop.

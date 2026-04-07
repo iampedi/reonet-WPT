@@ -56,7 +56,7 @@ do_action('woocommerce_before_add_to_cart_form'); ?>
 							'options'   => $options,
 							'attribute' => $attribute_name,
 							'product'   => $product,
-							'class'     => 'reonet-variation-select block w-full min-w-40 rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20',
+							'class'     => '_variation-select block w-full min-w-40 rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20',
 							'selected'  => ($has_default_variation && !empty($default_attribute_values[$attribute_name])) ? $default_attribute_values[$attribute_name] : false,
 							'show_option_none' => $has_default_variation ? false : __('Choose an option', 'woocommerce'),
 						)
