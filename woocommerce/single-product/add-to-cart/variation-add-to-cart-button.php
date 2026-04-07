@@ -56,7 +56,7 @@ $is_measurement_pricing = function_exists('reonet_is_measurement_pricing_enabled
 		</div>
 	<?php endif; ?>
 
-	<div class="pt-4">
+	<div class="pt-6">
 		<button type="submit" class="single_add_to_cart_button <?php echo esc_attr(reonet_flowbite_button_class_string()); ?>"><?php echo esc_html($product->single_add_to_cart_text()); ?></button>
 	</div>
 

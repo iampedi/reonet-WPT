@@ -77,12 +77,12 @@ if ($acf_available) {
       </div>
     <?php endif; ?>
 
-    <?php if (function_exists('have_rows') && have_rows('page_builder')) : ?>
-      <?php while (have_rows('page_builder')) : the_row(); ?>
-        <?php get_template_part('page-builder/content', get_row_layout()); ?>
-      <?php endwhile; ?>
-    <?php endif; ?>
   </div>
+  <?php if (function_exists('have_rows') && have_rows('page_builder')) : ?>
+    <?php while (have_rows('page_builder')) : the_row(); ?>
+      <?php get_template_part('page-builder/content', get_row_layout()); ?>
+    <?php endwhile; ?>
+  <?php endif; ?>
 </main>
 
 <?php get_footer(); ?>

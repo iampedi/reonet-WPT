@@ -45,24 +45,6 @@ get_header('shop');
 					<?php woocommerce_output_all_notices(); ?>
 				</div>
 
-				<div class="_shop-toolbar__row flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-					<div class="_shop-toolbar__left flex items-center gap-3">
-						<?php
-						do_action('reonet_shop_toolbar_right_before_ordering');
-						woocommerce_catalog_ordering();
-						do_action('reonet_shop_toolbar_right');
-						?>
-					</div>
-
-					<div class="_shop-toolbar__right flex items-center gap-3">
-						<?php
-						woocommerce_result_count();
-						do_action('reonet_shop_toolbar_left');
-						?>
-
-					</div>
-				</div>
-
 				<?php
 				/**
 				 * Theme-level extension point after toolbar content.

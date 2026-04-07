@@ -22,6 +22,26 @@ function reonet_woocommerce_setup_theme_support()
 add_action('after_setup_theme', 'reonet_woocommerce_setup_theme_support');
 
 /**
+ * Stabilize WooCommerce single-product carousel behavior across RTL/LTR.
+ *
+ * @param array $options Flexslider options.
+ * @return array
+ */
+function reonet_woocommerce_single_product_carousel_options($options)
+{
+  if (!is_array($options)) {
+    return $options;
+  }
+
+  $options['rtl'] = false;
+  $options['animationLoop'] = false;
+  $options['smoothHeight'] = false;
+
+  return $options;
+}
+add_filter('woocommerce_single_product_carousel_options', 'reonet_woocommerce_single_product_carousel_options', 20);
+
+/**
  * Disable WooCommerce default stylesheet registration.
  */
 add_filter('woocommerce_enqueue_styles', '__return_empty_array');
@@ -296,6 +316,111 @@ function reonet_woocommerce_clean_variation_option_name($name)
   return $name;
 }
 add_filter('woocommerce_variation_option_name', 'reonet_woocommerce_clean_variation_option_name');
+
+/**
+ * Append classes to a DOM element without duplicating existing classes.
+ *
+ * @param DOMElement $element DOM element to update.
+ * @param string     $classes Space-separated class list.
+ * @return void
+ */
+function reonet_woocommerce_append_dom_element_classes($element, $classes)
+{
+  if (!$element instanceof DOMElement || !is_string($classes) || trim($classes) === '') {
+    return;
+  }
+
+  $existing_classes = preg_split('/\s+/', trim((string) $element->getAttribute('class')));
+  $new_classes = preg_split('/\s+/', trim($classes));
+  $merged_classes = array_values(
+    array_unique(
+      array_filter(
+        array_merge($existing_classes, $new_classes)
+      )
+    )
+  );
+
+  if (!empty($merged_classes)) {
+    $element->setAttribute('class', implode(' ', $merged_classes));
+  }
+}
+
+/**
+ * Enrich WooCommerce gallery item HTML with direct utility classes.
+ *
+ * @param string $html Gallery item HTML from wc_get_gallery_image_html().
+ * @param bool   $is_thumbnail True when item is a gallery thumbnail item.
+ * @return string
+ */
+function reonet_woocommerce_prepare_gallery_image_html($html, $is_thumbnail = false)
+{
+  if (!is_string($html) || trim($html) === '' || !class_exists('DOMDocument')) {
+    return $html;
+  }
+
+  $internal_errors_previous = libxml_use_internal_errors(true);
+
+  $dom = new DOMDocument('1.0', 'UTF-8');
+  $wrapped_html = '<!DOCTYPE html><html><body><div id="_reonet_gallery_root">' . $html . '</div></body></html>';
+  $loaded = $dom->loadHTML($wrapped_html, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+
+  if (!$loaded) {
+    libxml_clear_errors();
+    libxml_use_internal_errors($internal_errors_previous);
+    return $html;
+  }
+
+  $root = $dom->getElementById('_reonet_gallery_root');
+  if (!$root instanceof DOMElement) {
+    libxml_clear_errors();
+    libxml_use_internal_errors($internal_errors_previous);
+    return $html;
+  }
+
+  $xpath = new DOMXPath($dom);
+  $wrapper_nodes = $xpath->query('.//*[contains(concat(" ", normalize-space(@class), " "), " woocommerce-product-gallery__image ")]', $root);
+
+  if ($wrapper_nodes) {
+    foreach ($wrapper_nodes as $wrapper_node) {
+      if (!$wrapper_node instanceof DOMElement) {
+        continue;
+      }
+
+      reonet_woocommerce_append_dom_element_classes($wrapper_node, 'box-border relative w-full aspect-square overflow-hidden rounded-3xl bg-white');
+      if ($is_thumbnail) {
+        reonet_woocommerce_append_dom_element_classes($wrapper_node, '_product-gallery-thumb');
+      }
+    }
+  }
+
+  $anchor_nodes = $xpath->query('.//a', $root);
+  if ($anchor_nodes) {
+    foreach ($anchor_nodes as $anchor_node) {
+      if ($anchor_node instanceof DOMElement) {
+        reonet_woocommerce_append_dom_element_classes($anchor_node, 'flex w-full h-full items-center justify-center cursor-zoom-in');
+      }
+    }
+  }
+
+  $image_nodes = $xpath->query('.//img', $root);
+  if ($image_nodes) {
+    foreach ($image_nodes as $image_node) {
+      if ($image_node instanceof DOMElement) {
+        reonet_woocommerce_append_dom_element_classes($image_node, 'block w-full rounded-3xl h-full object-cover object-center');
+      }
+    }
+  }
+
+  $prepared_html = '';
+  foreach ($root->childNodes as $child_node) {
+    $prepared_html .= $dom->saveHTML($child_node);
+  }
+
+  libxml_clear_errors();
+  libxml_use_internal_errors($internal_errors_previous);
+
+  return $prepared_html !== '' ? $prepared_html : $html;
+}
 
 /**
  * --------------------------------------------------------------------------
@@ -1020,3 +1145,199 @@ function reonet_mark_logout_for_toast()
   reonet_set_auth_toast_cookie('logout');
 }
 add_action('wp_logout', 'reonet_mark_logout_for_toast');
+
+/**
+ * --------------------------------------------------------------------------
+ * WooCommerce: Variation Gallery Images (Admin)
+ * --------------------------------------------------------------------------
+ */
+
+/**
+ * Normalize and return stored variation gallery image IDs.
+ *
+ * @param int $variation_id Variation post ID.
+ * @return int[]
+ */
+function reonet_woocommerce_get_variation_gallery_image_ids($variation_id)
+{
+  $raw_value = get_post_meta($variation_id, '_reonet_variation_gallery_ids', true);
+
+  if (is_array($raw_value)) {
+    $raw_ids = $raw_value;
+  } else {
+    $raw_string = is_string($raw_value) ? $raw_value : '';
+    $raw_ids = $raw_string === '' ? array() : explode(',', $raw_string);
+  }
+
+  $image_ids = array_values(
+    array_unique(
+      array_filter(
+        array_map('absint', $raw_ids)
+      )
+    )
+  );
+
+  return $image_ids;
+}
+
+/**
+ * Render variation gallery picker field in variable product admin panel.
+ *
+ * @param int     $loop           Variation loop index.
+ * @param array   $variation_data Variation data from WooCommerce.
+ * @param WP_Post $variation      Variation post object.
+ * @return void
+ */
+function reonet_woocommerce_render_variation_gallery_admin_field($loop, $variation_data, $variation)
+{
+  if (!$variation instanceof WP_Post) {
+    return;
+  }
+
+  $variation_id = (int) $variation->ID;
+  $image_ids = reonet_woocommerce_get_variation_gallery_image_ids($variation_id);
+  $ids_value = implode(',', $image_ids);
+
+  echo '<div class="form-row form-row-full _variation-gallery-admin-field">';
+  echo '<label>' . esc_html__('Variation Gallery', 'reonet') . '</label>';
+  echo '<input type="hidden" class="_variation-gallery-ids" name="reonet_variation_gallery_ids[' . esc_attr($variation_id) . ']" value="' . esc_attr($ids_value) . '" />';
+  echo '<div class="_variation-gallery-preview">';
+
+  foreach ($image_ids as $image_id) {
+    $thumb_html = wp_get_attachment_image($image_id, 'thumbnail', false, array('class' => '_variation-gallery-preview-image'));
+    if ($thumb_html) {
+      echo $thumb_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+    }
+  }
+
+  echo '</div>';
+  echo '<p class="description">' . esc_html__('Upload additional gallery images for this specific variation.', 'reonet') . '</p>';
+  echo '<p>';
+  echo '<button type="button" class="button _variation-gallery-upload">' . esc_html__('Add / Edit Gallery Images', 'reonet') . '</button> ';
+  echo '<button type="button" class="button-link-delete _variation-gallery-clear">' . esc_html__('Clear Gallery', 'reonet') . '</button>';
+  echo '</p>';
+  echo '</div>';
+}
+add_action('woocommerce_product_after_variable_attributes', 'reonet_woocommerce_render_variation_gallery_admin_field', 30, 3);
+
+/**
+ * Persist variation gallery field value.
+ *
+ * @param int $variation_id Variation post ID.
+ * @param int $loop         Variation loop index.
+ * @return void
+ */
+function reonet_woocommerce_save_variation_gallery_admin_field($variation_id, $loop)
+{
+  if (!current_user_can('edit_post', $variation_id)) {
+    return;
+  }
+
+  $posted_ids = isset($_POST['reonet_variation_gallery_ids']) && is_array($_POST['reonet_variation_gallery_ids'])
+    ? wp_unslash($_POST['reonet_variation_gallery_ids'])
+    : array();
+
+  $raw_value = isset($posted_ids[$variation_id]) ? (string) $posted_ids[$variation_id] : '';
+  $image_ids = array_values(
+    array_unique(
+      array_filter(
+        array_map('absint', explode(',', $raw_value))
+      )
+    )
+  );
+
+  if (empty($image_ids)) {
+    delete_post_meta($variation_id, '_reonet_variation_gallery_ids');
+    return;
+  }
+
+  update_post_meta($variation_id, '_reonet_variation_gallery_ids', implode(',', $image_ids));
+}
+add_action('woocommerce_save_product_variation', 'reonet_woocommerce_save_variation_gallery_admin_field', 10, 2);
+
+/**
+ * Expose variation gallery image IDs in variation JSON payload.
+ *
+ * @param array                $data      Variation payload.
+ * @param WC_Product_Variable  $product   Parent variable product.
+ * @param WC_Product_Variation $variation Variation object.
+ * @return array
+ */
+function reonet_woocommerce_add_variation_gallery_data($data, $product, $variation)
+{
+  if (!is_array($data) || !$variation instanceof WC_Product_Variation) {
+    return $data;
+  }
+
+  $variation_gallery_ids = reonet_woocommerce_get_variation_gallery_image_ids($variation->get_id());
+  $data['reonet_variation_gallery_image_ids'] = $variation_gallery_ids;
+
+  $variation_image_id = $variation->get_image_id();
+  $all_gallery_ids = array_values(
+    array_unique(
+      array_filter(
+        array_map(
+          'absint',
+          array_merge(array($variation_image_id), $variation_gallery_ids)
+        )
+      )
+    )
+  );
+
+  $gallery_items_html = '';
+
+  if (function_exists('wc_get_gallery_image_html') && !empty($all_gallery_ids)) {
+    foreach ($all_gallery_ids as $index => $image_id) {
+      $gallery_image_html = wc_get_gallery_image_html($image_id, 0 === $index, $index);
+
+      if (!$gallery_image_html) {
+        continue;
+      }
+
+      if (function_exists('reonet_woocommerce_prepare_gallery_image_html')) {
+        $gallery_image_html = reonet_woocommerce_prepare_gallery_image_html($gallery_image_html, $index > 0);
+      }
+
+      $gallery_items_html .= $gallery_image_html;
+    }
+  }
+
+  if ($gallery_items_html !== '') {
+    $data['reonet_variation_gallery_html'] = $gallery_items_html;
+  }
+
+  return $data;
+}
+add_filter('woocommerce_available_variation', 'reonet_woocommerce_add_variation_gallery_data', 30, 3);
+
+/**
+ * Load variation gallery media picker script in product edit admin screens.
+ *
+ * @param string $hook_suffix Current WP admin page hook.
+ * @return void
+ */
+function reonet_woocommerce_enqueue_variation_gallery_admin_assets($hook_suffix)
+{
+  if (!in_array($hook_suffix, array('post.php', 'post-new.php'), true)) {
+    return;
+  }
+
+  $screen = function_exists('get_current_screen') ? get_current_screen() : null;
+  if (!$screen || $screen->id !== 'product') {
+    return;
+  }
+
+  wp_enqueue_media();
+
+  $script_path = get_template_directory() . '/assets/js/admin-variation-gallery.js';
+  $script_url = get_template_directory_uri() . '/assets/js/admin-variation-gallery.js';
+
+  wp_enqueue_script(
+    'reonet-admin-variation-gallery',
+    $script_url,
+    array('jquery'),
+    file_exists($script_path) ? filemtime($script_path) : null,
+    true
+  );
+}
+add_action('admin_enqueue_scripts', 'reonet_woocommerce_enqueue_variation_gallery_admin_assets');

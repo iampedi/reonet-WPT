@@ -56,8 +56,6 @@ add_action('wp_enqueue_scripts', function () {
         );
     }
 
-    wp_enqueue_script('reonet-owl-carousel', get_template_directory_uri() . '/assets/js/owl.carousel.js', ['jquery'], '2.3.4', true);
-    wp_enqueue_script('reonet-owl-nav', get_template_directory_uri() . '/assets/js/owl.navigation.js', ['jquery'], null, true);
     $app_js_path = get_template_directory() . '/assets/js/app.js';
     $app_js_url  = get_template_directory_uri() . '/assets/js/app.js';
 

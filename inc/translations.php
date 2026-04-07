@@ -58,6 +58,7 @@ function reonet_register_polylang_strings()
   pll_register_string('Subtotal', 'Subtotal', 'Theme');
   pll_register_string('Thank you page subtitle', 'Thank you for your purchase. Your order details are below.', 'Theme');
   pll_register_string('Total', 'Total', 'Theme');
+  pll_register_string('Up', 'Up', 'Theme');
   pll_register_string('Update totals', 'Update totals', 'Theme');
   pll_register_string('Update totals browser notice', 'Since your browser does not support JavaScript, or it is disabled, please ensure you click the %1$sUpdate Totals%2$s button before placing your order. You may be charged more than the amount stated above if you fail to do so.', 'Theme');
   pll_register_string('VAT', 'VAT', 'Theme');

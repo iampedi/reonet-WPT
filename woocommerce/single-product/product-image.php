@@ -16,8 +16,6 @@
  * @version 10.5.0
  */
 
-use Automattic\WooCommerce\Enums\ProductType;
-
 defined('ABSPATH') || exit;
 
 // Note: `wc_get_gallery_image_html` was added in WC 3.3.2 and did not exist prior. This check protects against theme overrides being used on older versions of WC.
@@ -39,21 +37,20 @@ $wrapper_classes   = apply_filters(
 	)
 );
 ?>
-<div class="<?php echo esc_attr(implode(' ', array_map('sanitize_html_class', $wrapper_classes))); ?> sm:col-span-3 [&_.woocommerce-product-gallery__image]:overflow-hidden [&_img]:rounded-3xl" data-columns="<?php echo esc_attr($columns); ?>" style="opacity: 0; transition: opacity .25s ease-in-out;">
-	<div class="woocommerce-product-gallery__wrapper">
+<div class="<?php echo esc_attr(implode(' ', array_map('sanitize_html_class', $wrapper_classes))); ?> _product-gallery sm:col-span-3 [&_.woocommerce-product-gallery__trigger]:hidden [&_.flex-control-thumbs]:mt-3 [&_.flex-control-thumbs]:grid [&_.flex-control-thumbs]:grid-cols-4 [&_.flex-control-thumbs]:gap-2 [&_.flex-control-thumbs_li]:overflow-hidden [&_.flex-control-thumbs_li]:rounded-xl [&_.flex-control-thumbs_img]:aspect-square [&_.flex-control-thumbs_img]:w-full [&_.flex-control-thumbs_img]:rounded-xl [&_.flex-control-thumbs_img]:border-[3px] [&_.flex-control-thumbs_img]:border-gray-200 [&_.flex-control-thumbs_img]:hover:border-green [&_.flex-control-thumbs_img]:object-cover [&_.flex-control-thumbs_img]:cursor-pointer [&_.flex-control-thumbs_img]:duration-200 [&_.flex-control-thumbs_.flex-active]:border-green" dir="ltr" data-columns="<?php echo esc_attr($columns); ?>" style="opacity: 0; transition: opacity .25s ease-in-out;">
+	<div class="woocommerce-product-gallery__wrapper _product-gallery-wrapper rounded-3xl overflow-hidden">
 		<?php
 		if ($post_thumbnail_id) {
 			$html = wc_get_gallery_image_html($post_thumbnail_id, true);
 		} else {
-			// Check for visible children with prices to determine if variation image swapping is possible.
-			// Using get_visible_children() + get_price() is more efficient than get_available_variations()
-			// as it uses cached IDs and synced price data rather than loading all variation objects.
-			$wrapper_classname = $product->is_type(ProductType::VARIABLE) && ! empty($product->get_visible_children()) && '' !== $product->get_price() ?
-				'woocommerce-product-gallery__image woocommerce-product-gallery__image--placeholder' :
-				'woocommerce-product-gallery__image--placeholder';
+			$wrapper_classname = 'woocommerce-product-gallery__image woocommerce-product-gallery__image--placeholder overflow-hidden rounded-2xl';
 			$html              = sprintf('<div class="%s">', esc_attr($wrapper_classname));
-			$html             .= sprintf('<img src="%s" alt="%s" class="wp-post-image" />', esc_url(wc_placeholder_img_src('woocommerce_single')), esc_html__('Awaiting product image', 'woocommerce'));
+			$html             .= sprintf('<img src="%s" alt="%s" class="wp-post-image w-full h-full object-cover object-center" />', esc_url(wc_placeholder_img_src('woocommerce_single')), esc_html__('Awaiting product image', 'woocommerce'));
 			$html             .= '</div>';
+		}
+
+		if (function_exists('reonet_woocommerce_prepare_gallery_image_html')) {
+			$html = reonet_woocommerce_prepare_gallery_image_html($html, false);
 		}
 
 		echo apply_filters('woocommerce_single_product_image_thumbnail_html', $html, $post_thumbnail_id); // phpcs:disable WordPress.XSS.EscapeOutput.OutputNotEscaped

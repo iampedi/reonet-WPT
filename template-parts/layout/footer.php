@@ -201,8 +201,8 @@ $hours            = $get_option_field('opening_hours', '');
       </div>
    </div>
 
-   <button class="to-top">
-      <span><?php echo esc_html(reonet_tr('Up')); ?></span>
+   <button class="to-top relative hidden fixed z-[99] h-[65px] w-[70px] cursor-pointer bg-[url('../images/icon/totop.png')] bg-contain bg-no-repeat text-white right-[62px] bottom-4 leading-[30px]" type="button" aria-label="<?php echo esc_attr(reonet_tr('Back to top')); ?>">
+      <span class="absolute left-0 right-0 top-4 text-center text-sm font-medium"><?php echo esc_html(reonet_tr('Up')); ?></span>
    </button>
 </footer>
 </div>

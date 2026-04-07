@@ -109,19 +109,19 @@ $query = new WP_Query($args);
    <div class="container">
       <div class="flex items-center justify-between mb-4">
          <?php if ($title) : ?>
-            <h2 class="text-2xl sm:text-2xl font-semibold text-center uppercase text-primary flex items-center gap-2">
-               <i class=" ph-duotone ph-shopping-bag text-3xl"></i>
+            <h2 class="text-xl sm:text-2xl font-semibold text-center uppercase text-primary flex items-center gap-2">
+               <i class=" ph-duotone ph-shopping-bag text-2xl sm:text-3xl"></i>
                <?php echo esc_html($title); ?>
             </h2>
          <?php endif; ?>
 
-         <a class="text-primary text-lg font-medium underline underline-offset-4 hover:text-green duration-300" href="<?php echo esc_url($all_products_url); ?>">
+         <a class="text-primary sm:text-lg font-medium underline underline-offset-4 hover:text-green duration-300" href="<?php echo esc_url($all_products_url); ?>">
             <?php echo esc_html(reonet_tr('All products')); ?>
          </a>
       </div>
 
       <?php if ($query->have_posts()) : ?>
-         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+         <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
             <?php while ($query->have_posts()) : $query->the_post(); ?>
                <?php wc_get_template_part('content', 'product'); ?>
             <?php endwhile; ?>
