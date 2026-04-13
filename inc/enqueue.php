@@ -43,26 +43,42 @@ add_action('wp_enqueue_scripts', function () {
     }
 
     // JS files
-    $flowbite_js_path = get_template_directory() . '/node_modules/flowbite/dist/flowbite.min.js';
-    $flowbite_js_url  = get_template_directory_uri() . '/node_modules/flowbite/dist/flowbite.min.js';
+    $flowbite_js_url = '';
+    $flowbite_js_ver = null;
+    $flowbite_candidates = [
+        '/assets/vendor/flowbite.min.js',
+        '/assets/js/vendor/flowbite.min.js',
+        '/node_modules/flowbite/dist/flowbite.min.js',
+    ];
 
-    if (file_exists($flowbite_js_path)) {
-        wp_enqueue_script(
-            'reonet-flowbite',
-            $flowbite_js_url,
-            [],
-            filemtime($flowbite_js_path),
-            true
-        );
+    foreach ($flowbite_candidates as $relative_path) {
+        $absolute_path = get_template_directory() . $relative_path;
+        if (!file_exists($absolute_path)) {
+            continue;
+        }
+
+        $flowbite_js_url = get_template_directory_uri() . $relative_path;
+        $flowbite_js_ver = filemtime($absolute_path);
+        break;
     }
+
+    if ($flowbite_js_url === '') {
+        $flowbite_js_url = 'https://cdn.jsdelivr.net/npm/flowbite@4.0.1/dist/flowbite.min.js';
+        $flowbite_js_ver = '4.0.1';
+    }
+
+    wp_enqueue_script(
+        'reonet-flowbite',
+        $flowbite_js_url,
+        [],
+        $flowbite_js_ver,
+        true
+    );
 
     $app_js_path = get_template_directory() . '/assets/js/app.js';
     $app_js_url  = get_template_directory_uri() . '/assets/js/app.js';
 
-    $app_deps = ['jquery'];
-    if (wp_script_is('reonet-flowbite', 'enqueued')) {
-        $app_deps[] = 'reonet-flowbite';
-    }
+    $app_deps = ['jquery', 'reonet-flowbite'];
     if (wp_script_is('wc-cart-fragments', 'registered')) {
         $app_deps[] = 'wc-cart-fragments';
     }
