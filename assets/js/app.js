@@ -1418,21 +1418,38 @@ j(document).ready(function () {
         );
     };
 
+    const resolveGalleryTarget = function ($gallery) {
+      const hasUsableGallery =
+        $gallery.length > 0 && j.contains(document, $gallery.get(0));
+
+      if (hasUsableGallery) {
+        return $gallery;
+      }
+
+      const $currentGallery = product.find(".woocommerce-product-gallery").first();
+      if ($currentGallery.length) {
+        productGallery = $currentGallery;
+      }
+
+      return $currentGallery;
+    };
+
     const ensureGalleryLoader = function ($gallery) {
-      if (!$gallery.length) {
+      const $targetGallery = resolveGalleryTarget($gallery);
+      if (!$targetGallery.length) {
         return j();
       }
 
-      $gallery.addClass("relative");
+      $targetGallery.addClass("relative");
 
-      let loader = $gallery.children("._product-gallery-loader").first();
+      let loader = $targetGallery.children("._product-gallery-loader").first();
       if (!loader.length) {
         loader = j(
           '<div class="_product-gallery-loader absolute inset-0 z-20 hidden items-center justify-center rounded-2xl bg-white/75">' +
             '<span class="inline-flex h-10 w-10 animate-spin rounded-full border-[3px] border-gray-200 border-t-green"></span>' +
           "</div>",
         );
-        $gallery.append(loader);
+        $targetGallery.append(loader);
       }
 
       return loader;
@@ -1560,6 +1577,7 @@ j(document).ready(function () {
     };
 
     const lockGalleryHeight = function ($gallery, forcedHeight = 0) {
+      $gallery = resolveGalleryTarget($gallery);
       if (!$gallery.length) {
         return 0;
       }
@@ -1589,6 +1607,7 @@ j(document).ready(function () {
     };
 
     const unlockGalleryHeight = function ($gallery, delay = 260) {
+      $gallery = resolveGalleryTarget($gallery);
       if (!$gallery.length) {
         return;
       }
@@ -1612,6 +1631,7 @@ j(document).ready(function () {
     };
 
     const hideGalleryLoader = function ($gallery, delay = 0) {
+      $gallery = resolveGalleryTarget($gallery);
       if (!$gallery.length) {
         return;
       }
@@ -1633,6 +1653,7 @@ j(document).ready(function () {
     };
 
     const stabilizeGalleryViewport = function ($gallery, onReady = null) {
+      $gallery = resolveGalleryTarget($gallery);
       if (!$gallery.length) {
         return;
       }
@@ -1689,6 +1710,7 @@ j(document).ready(function () {
     };
 
     const reinitializeWooProductGallery = function ($gallery, onReady = null) {
+      $gallery = resolveGalleryTarget($gallery);
       if (
         !$gallery.length ||
         typeof j.fn.wc_product_gallery !== "function"
@@ -1728,9 +1750,7 @@ j(document).ready(function () {
         return false;
       }
 
-      if (!productGallery.length) {
-        productGallery = product.find(".woocommerce-product-gallery").first();
-      }
+      productGallery = resolveGalleryTarget(productGallery);
 
       if (!productGallery.length) {
         return false;
@@ -1800,8 +1820,12 @@ j(document).ready(function () {
       return true;
     };
 
-    const restoreDefaultProductGallery = function () {
-      if (!isUsingCustomVariationGallery || !defaultGalleryItemsHtml) {
+    const restoreDefaultProductGallery = function (force = false) {
+      if (!defaultGalleryItemsHtml) {
+        return false;
+      }
+
+      if (!force && !isUsingCustomVariationGallery) {
         return false;
       }
 
@@ -2044,6 +2068,7 @@ j(document).ready(function () {
       });
 
       if (hasMissingSelections) {
+        restoreDefaultProductGallery(true);
         hideGalleryLoader(productGallery);
         unlockGalleryHeight(productGallery, 0);
         return;
@@ -2056,6 +2081,12 @@ j(document).ready(function () {
     });
 
     form.on("hide_variation", function () {
+      hideGalleryLoader(productGallery, 60);
+      unlockGalleryHeight(productGallery, 240);
+    });
+
+    form.on("woocommerce_no_matching_variations", function () {
+      restoreDefaultProductGallery(true);
       hideGalleryLoader(productGallery, 60);
       unlockGalleryHeight(productGallery, 240);
     });
@@ -2106,11 +2137,23 @@ j(document).ready(function () {
       }
 
       updateCalculatedPrice();
-      const galleryWasUpdated = renderVariationGallery(matchedVariation);
+      let galleryWasUpdated = false;
+      try {
+        galleryWasUpdated = renderVariationGallery(matchedVariation);
+      } catch (error) {
+        galleryWasUpdated = false;
+      }
+
       if (!galleryWasUpdated) {
         hideGalleryLoader(productGallery, 80);
         unlockGalleryHeight(productGallery, 260);
       }
+
+      // Safety net: never leave the gallery loader visible indefinitely.
+      window.setTimeout(function () {
+        hideGalleryLoader(productGallery);
+        unlockGalleryHeight(productGallery, 0);
+      }, 1800);
 
       if (variationDescription) {
         renderShortDescription(variationDescription);
@@ -2133,7 +2176,7 @@ j(document).ready(function () {
         } else {
           variationNotice.text("");
         }
-        restoreDefaultProductGallery();
+        restoreDefaultProductGallery(true);
         hideGalleryLoader(productGallery, 80);
         unlockGalleryHeight(productGallery, 260);
         applyDefaultVariationSelection();
@@ -2149,7 +2192,7 @@ j(document).ready(function () {
       } else {
         variationNotice.text("");
       }
-      restoreDefaultProductGallery();
+      restoreDefaultProductGallery(true);
       hideGalleryLoader(productGallery, 80);
       unlockGalleryHeight(productGallery, 260);
       renderMainPrice(defaultPriceHtml);

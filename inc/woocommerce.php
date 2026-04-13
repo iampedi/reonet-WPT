@@ -1205,13 +1205,18 @@ function reonet_woocommerce_render_variation_gallery_admin_field($loop, $variati
 
   foreach ($image_ids as $image_id) {
     $thumb_html = wp_get_attachment_image($image_id, 'thumbnail', false, array('class' => '_variation-gallery-preview-image'));
-    if ($thumb_html) {
-      echo $thumb_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+    if (!$thumb_html) {
+      continue;
     }
+
+    echo '<div class="_variation-gallery-preview-item" data-attachment-id="' . esc_attr((string) $image_id) . '">';
+    echo $thumb_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+    echo '<button type="button" class="button-link-delete _variation-gallery-remove" aria-label="' . esc_attr__('Remove image', 'reonet') . '" title="' . esc_attr__('Remove image', 'reonet') . '">X</button>';
+    echo '</div>';
   }
 
   echo '</div>';
-  echo '<p class="description">' . esc_html__('Upload additional gallery images for this specific variation.', 'reonet') . '</p>';
+  echo '<p class="description">' . esc_html__('Upload additional gallery images for this specific variation. Drag to reorder or remove one by one.', 'reonet') . '</p>';
   echo '<p>';
   echo '<button type="button" class="button _variation-gallery-upload">' . esc_html__('Add / Edit Gallery Images', 'reonet') . '</button> ';
   echo '<button type="button" class="button-link-delete _variation-gallery-clear">' . esc_html__('Clear Gallery', 'reonet') . '</button>';
@@ -1335,7 +1340,7 @@ function reonet_woocommerce_enqueue_variation_gallery_admin_assets($hook_suffix)
   wp_enqueue_script(
     'reonet-admin-variation-gallery',
     $script_url,
-    array('jquery'),
+    array('jquery', 'jquery-ui-sortable'),
     file_exists($script_path) ? filemtime($script_path) : null,
     true
   );
