@@ -1025,7 +1025,7 @@ add_action('template_redirect', 'reonet_redirect_product_cat_to_service');
 /**
  * Disable SKU output site-wide.
  */
-add_filter('wc_product_sku_enabled', '__return_false');
+// add_filter('wc_product_sku_enabled', '__return_false');
 
 /**
  * Remove frontend "Additional information" tab (attributes/product type details).
