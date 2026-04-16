@@ -87,6 +87,11 @@ if ($show_downloads) {
 									<?php echo wc_display_item_meta($item); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped 
 									?>
 								</div>
+								<?php if ($item->get_meta('_reonet_admin_item_updated', true)) : ?>
+									<p class="text-sm font-medium text-red-600">
+										<?php echo reonet_esc_html_tr('After a careful review of your item\'s material and dimensions, your order has been updated.'); ?>
+									</p>
+								<?php endif; ?>
 
 
 								<?php if ($show_purchase_note && $product && $product->get_purchase_note()) : ?>

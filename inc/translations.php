@@ -42,6 +42,7 @@ function reonet_register_polylang_strings()
   pll_register_string('On Sale', 'On Sale', 'Theme');
   pll_register_string('Opening Hours', 'Opening Hours', 'Theme');
   pll_register_string('Order summary', 'Order summary', 'Theme');
+  pll_register_string('Order updated notice', 'After a careful review of your item\'s material and dimensions, your order has been updated.', 'Theme');
   pll_register_string('Other Services', 'Other Services', 'Theme');
   pll_register_string('Page not found', 'Page not found', 'Theme');
   pll_register_string('Payment', 'Payment', 'Theme');
