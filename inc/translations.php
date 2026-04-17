@@ -36,6 +36,7 @@ function reonet_register_polylang_strings()
   pll_register_string('Enter product dimensions', 'Enter product dimensions', 'Theme');
   pll_register_string('Follow Us', 'Follow Us', 'Theme');
   pll_register_string('Information', 'Information', 'Theme');
+  pll_register_string('Length (cm)', 'Length (cm)', 'Theme');
   pll_register_string('Length (m)', 'Length (m)', 'Theme');
   pll_register_string('Login helper text', 'If you have shopped with us before, please enter your details below. If you are a new customer, please proceed to the Billing section.', 'Theme');
   pll_register_string('No payment methods', 'Sorry, it seems that there are no available payment methods. Please contact us if you require assistance or wish to make alternate arrangements.', 'Theme');
@@ -64,6 +65,25 @@ function reonet_register_polylang_strings()
   pll_register_string('Update totals browser notice', 'Since your browser does not support JavaScript, or it is disabled, please ensure you click the %1$sUpdate Totals%2$s button before placing your order. You may be charged more than the amount stated above if you fail to do so.', 'Theme');
   pll_register_string('VAT', 'VAT', 'Theme');
   pll_register_string('View services', 'View services', 'Theme');
+  pll_register_string('Width (cm)', 'Width (cm)', 'Theme');
   pll_register_string('Width (m)', 'Width (m)', 'Theme');
+  pll_register_string('Price per cm2', 'Price per cm2', 'Theme');
+  pll_register_string('Price per m2', 'Price per m2', 'Theme');
+  pll_register_string('Square Centimeter (cm2)', 'Square Centimeter (cm2)', 'Theme');
+  pll_register_string('Minimum Length (cm)', 'Minimum Length (cm)', 'Theme');
+  pll_register_string('Maximum Length (cm)', 'Maximum Length (cm)', 'Theme');
+  pll_register_string('Minimum Width (cm)', 'Minimum Width (cm)', 'Theme');
+  pll_register_string('Maximum Width (cm)', 'Maximum Width (cm)', 'Theme');
+  pll_register_string('Is Circle', 'Is Circle', 'Theme');
+  pll_register_string('Diameter', 'Diameter', 'Theme');
+  pll_register_string('Diameter (cm)', 'Diameter (cm)', 'Theme');
+  pll_register_string('Shape', 'Shape', 'Theme');
+  pll_register_string('Circle', 'Circle', 'Theme');
+  pll_register_string('Rectangle', 'Rectangle', 'Theme');
+  pll_register_string('Minimum area validation', 'Minimum area is 1 m2. Please increase length or width.', 'Theme');
+  pll_register_string('Smallest Side Threshold (cm)', 'Smallest Side Threshold (cm)', 'Theme');
+  pll_register_string('Smallest Side Surcharge (%)', 'Smallest Side Surcharge (%)', 'Theme');
+  pll_register_string('Smallest side threshold desc', 'If the smaller side (length/width) is above this value, surcharge percent will be added to unit price.', 'Theme');
+  pll_register_string('Smallest side surcharge desc', 'Surcharge percentage to apply when the smaller side is above threshold.', 'Theme');
 }
 add_action('init', 'reonet_register_polylang_strings');

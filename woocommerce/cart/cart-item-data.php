@@ -44,6 +44,7 @@ if (! defined('ABSPATH')) {
 
 		$display_value = isset($data['display']) ? (string) $data['display'] : '';
 		$display_value = preg_replace('/\bm2\b/u', 'm²', $display_value);
+		$display_value = preg_replace('/\bcm2\b/u', 'cm²', $display_value);
 		?>
 		<div class="flex items-center gap-1">
 			<dt class="<?php echo sanitize_html_class('variation-' . $data['key']); ?>"><?php echo wp_kses_post($data['key']); ?>:</dt>
