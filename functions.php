@@ -15,6 +15,7 @@ $modules = [
   '/inc/woocommerce.php',
   '/inc/menu-walker.php',
   '/inc/translations.php',
+  '/inc/order-statuses.php',
   '/inc/enqueue.php',
   '/inc/cpt-service.php',
   '/inc/acf.php',
